@@ -1,0 +1,21 @@
+extends: default
+
+rules:
+  line-length:
+    max: 140
+    level: warning
+
+  document-start:
+    present: false
+
+  empty-lines:
+    max: 2
+    max-start: 0
+    max-end: 1
+
+  indentation:
+    spaces: 2
+    indent-sequences: consistent
+
+  comments:
+    require-starting-space: false

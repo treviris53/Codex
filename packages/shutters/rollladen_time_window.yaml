@@ -1,0 +1,56 @@
+# Zeitfensterberechnung (genau einmal)
+###############################################################################
+template:
+  - sensor:
+      - name: Rollladen Open TS
+        unique_id: rollladen_open_ts
+        device_class: timestamp
+        state: >
+          {% set eo = states('input_datetime.rollladen_earliest_open') %}
+          {% set earliest_open = today_at(eo if eo not in ['unknown','unavailable',''] else '06:00:00') %}
+          {% set lo = states('input_datetime.rollladen_latest_open') %}
+          {% set latest_open   = today_at(lo if lo not in ['unknown','unavailable',''] else '08:00:00') %}
+          {% set offset_m = states('input_number.rollladen_offset_morgen_min') | int(0) %}
+
+          {% set nr = as_local(as_datetime(state_attr('sun.sun','next_rising'))) %}
+          {% if nr %}
+            {% set sunrise_today = nr if nr.date() == now().date() else (nr - timedelta(days=1)) %}
+          {% else %}
+            {% set sunrise_today = earliest_open %}
+          {% endif %}
+
+          {% set open_raw = sunrise_today + timedelta(minutes=offset_m) %}
+          {% set open_clamped = open_raw %}
+          {% if open_clamped < earliest_open %}{% set open_clamped = earliest_open %}{% endif %}
+          {% if open_clamped > latest_open   %}{% set open_clamped = latest_open   %}{% endif %}
+          {{ open_clamped.isoformat() }}
+
+      - name: Rollladen Close TS
+        unique_id: rollladen_close_ts
+        device_class: timestamp
+        state: >
+          {% set lc = states('input_datetime.rollladen_latest_close') %}
+          {% set latest_close = today_at(lc if lc not in ['unknown','unavailable',''] else '23:00:00') %}
+          {% set offset_a = states('input_number.rollladen_offset_abend_min') | int(0) %}
+
+          {% set ns = as_local(as_datetime(state_attr('sun.sun','next_setting'))) %}
+          {% if ns %}
+            {% set sunset_today = ns if ns.date() == now().date() else (ns - timedelta(days=1)) %}
+          {% else %}
+            {% set sunset_today = latest_close %}
+          {% endif %}
+
+          {% set close_raw = sunset_today + timedelta(minutes=offset_a) %}
+          {% set close_capped = close_raw if close_raw <= latest_close else latest_close %}
+          {{ close_capped.isoformat() }}
+
+    binary_sensor:
+      - name: Rollladen Day Window
+        unique_id: rollladen_day_window
+        device_class: running
+        state: >
+          {% set o = as_timestamp(states('sensor.rollladen_open_ts'), default=none) %}
+          {% set c = as_timestamp(states('sensor.rollladen_close_ts'), default=none) %}
+          {% set n = as_timestamp(now()) %}
+          {{ o is not none and c is not none and n >= o and n < c }}
+

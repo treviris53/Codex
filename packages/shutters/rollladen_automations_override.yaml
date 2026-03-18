@@ -1,0 +1,76 @@
+automation:
+  - alias: "Override Ost: Timer starten"
+    id: rollladen_override_ost_timer_start
+    mode: restart
+    trigger:
+      - platform: state
+        entity_id: input_boolean.rollladen_override_ost
+        to: "on"
+    action:
+      - service: timer.start
+        target:
+          entity_id: timer.rollladen_override_ost
+
+  - alias: "Override West: Timer starten"
+    id: rollladen_override_west_timer_start
+    mode: restart
+    trigger:
+      - platform: state
+        entity_id: input_boolean.rollladen_override_west
+        to: "on"
+    action:
+      - service: timer.start
+        target:
+          entity_id: timer.rollladen_override_west
+
+  - alias: "Override Ost: OFF -> Timer stoppen"
+    id: rollladen_override_ost_timer_cancel
+    mode: restart
+    trigger:
+      - platform: state
+        entity_id: input_boolean.rollladen_override_ost
+        to: "off"
+    action:
+      - service: timer.cancel
+        target:
+          entity_id: timer.rollladen_override_ost
+
+  - alias: "Override West: OFF -> Timer stoppen"
+    id: rollladen_override_west_timer_cancel
+    mode: restart
+    trigger:
+      - platform: state
+        entity_id: input_boolean.rollladen_override_west
+        to: "off"
+    action:
+      - service: timer.cancel
+        target:
+          entity_id: timer.rollladen_override_west
+
+  - alias: "Override Ost: Ablauf -> Automatik"
+    id: rollladen_override_ost_timer_finished
+    mode: restart
+    trigger:
+      - platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.rollladen_override_ost
+    action:
+      - service: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.rollladen_override_ost
+      - service: script.rollladen_apply_ost
+
+  - alias: "Override West: Ablauf -> Automatik"
+    id: rollladen_override_west_timer_finished
+    mode: restart
+    trigger:
+      - platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.rollladen_override_west
+    action:
+      - service: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.rollladen_override_west
+      - service: script.rollladen_apply_west

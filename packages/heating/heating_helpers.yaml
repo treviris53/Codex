@@ -38,10 +38,10 @@ input_select:
   heizung_aktives_profil:
     name: Heizungsprofil aktiv
     options:
-    - unbekannt
-    - eco_17
-    - eco_19
-    - komfort_21
+      - unbekannt
+      - eco_17
+      - eco_19
+      - komfort_21
     initial: unbekannt
     icon: mdi:home-thermometer
 input_datetime:

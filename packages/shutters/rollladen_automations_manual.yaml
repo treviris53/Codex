@@ -1,0 +1,61 @@
+automation:
+  - alias: "Rollladen Ost: Manuelle Bedienung erkannt -> Override"
+    id: rollladen_ost_manual_detect_override
+    mode: restart
+    trigger:
+      - platform: state
+        entity_id: cover.rollladen_ost
+        attribute: current_position
+        for: "00:00:05"
+    condition:
+      - condition: state
+        entity_id: input_boolean.rollladen_automation_enabled
+        state: "on"
+      - condition: state
+        entity_id: input_boolean.rollladen_boot_guard
+        state: "off"
+      - condition: state
+        entity_id: input_boolean.rollladen_override_ost
+        state: "off"
+      - condition: template
+        value_template: >
+          {% set last = as_timestamp(states('input_datetime.rollladen_last_auto_ost')) | default(0) %}
+          {% set age = now().timestamp() - last %}
+          {% set fromp = trigger.from_state.attributes.current_position if trigger.from_state else none %}
+          {% set top = trigger.to_state.attributes.current_position if trigger.to_state else none %}
+          {{ (top is not none) and (fromp is not none) and (((top - fromp) | abs) >= 2) and (age > 90) }}
+    action:
+      - service: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.rollladen_override_ost
+
+  - alias: "Rollladen West: Manuelle Bedienung erkannt -> Override"
+    id: rollladen_west_manual_detect_override
+    mode: restart
+    trigger:
+      - platform: state
+        entity_id: cover.rollladen_west
+        attribute: current_position
+        for: "00:00:05"
+    condition:
+      - condition: state
+        entity_id: input_boolean.rollladen_automation_enabled
+        state: "on"
+      - condition: state
+        entity_id: input_boolean.rollladen_boot_guard
+        state: "off"
+      - condition: state
+        entity_id: input_boolean.rollladen_override_west
+        state: "off"
+      - condition: template
+        value_template: >
+          {% set last = as_timestamp(states('input_datetime.rollladen_last_auto_west')) | default(0) %}
+          {% set age = now().timestamp() - last %}
+          {% set fromp = trigger.from_state.attributes.current_position if trigger.from_state else none %}
+          {% set top = trigger.to_state.attributes.current_position if trigger.to_state else none %}
+          {{ (top is not none) and (fromp is not none) and (((top - fromp) | abs) >= 2) and (age > 90) }}
+    action:
+      - service: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.rollladen_override_west
+

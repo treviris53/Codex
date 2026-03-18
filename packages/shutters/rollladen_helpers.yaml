@@ -1,0 +1,123 @@
+###############################################################################
+# Helpers
+###############################################################################
+
+input_datetime:
+  rollladen_earliest_open:
+    name: Rollladen Früheste Öffnung
+    icon: mdi:clock-outline
+    has_date: false
+    has_time: true
+#    initial: '06:00:00'
+  rollladen_latest_open:
+    name: Rollladen Späteste Öffnung
+    icon: mdi:clock-outline
+    has_date: false
+    has_time: true
+#    initial: '08:00:00'
+  rollladen_latest_close:
+    name: Rollladen Spätestes Schließen
+    icon: mdi:clock-outline
+    has_date: false
+    has_time: true
+#    initial: '23:00:00'
+  rollladen_ost_plug_open_start:
+    name: Rollladen Ost Steckdosen-Öffnung Start
+    icon: mdi:clock-start
+    has_date: false
+    has_time: true
+    initial: '05:00:00'
+  rollladen_ost_plug_open_end:
+    name: Rollladen Ost Steckdosen-Öffnung Ende
+    icon: mdi:clock-end
+    has_date: false
+    has_time: true
+    initial: '09:00:00'
+
+  rollladen_last_auto_ost:
+    name: Rollladen Ost letzte Automatik-Aktion
+    icon: mdi:clock-check-outline
+    has_date: true
+    has_time: true
+  rollladen_last_auto_west:
+    name: Rollladen West letzte Automatik-Aktion
+    icon: mdi:clock-check-outline
+    has_date: true
+    has_time: true
+  rollladen_last_auto_nord:
+    name: Rollladen Nord letzte Automatik-Aktion
+    icon: mdi:clock-check-outline
+    has_date: true
+    has_time: true
+
+input_number:
+  rollladen_offset_morgen_min:
+    name: Rollladen Offset morgens (Minuten relativ zu Sonnenaufgang)
+    icon: mdi:timer-sand
+    min: -180
+    max: 180
+    step: 1
+    unit_of_measurement: min
+    mode: box
+
+  rollladen_offset_abend_min:
+    name: Rollladen Offset abends (Minuten relativ zu Sonnenuntergang)
+    icon: mdi:timer-sand
+    min: -180
+    max: 180
+    step: 1
+    unit_of_measurement: min
+    mode: box
+
+  rollladen_last_auto_pos_ost:
+    name: Rollladen Ost letzte Automatik-Position
+    icon: mdi:map-marker
+    min: 0
+    max: 100
+    step: 1
+    unit_of_measurement: "%"
+    mode: box
+  rollladen_last_auto_pos_west:
+    name: Rollladen West letzte Automatik-Position
+    icon: mdi:map-marker
+    min: 0
+    max: 100
+    step: 1
+    unit_of_measurement: "%"
+    mode: box
+  rollladen_last_auto_pos_nord:
+    name: Rollladen Nord letzte Automatik-Position
+    icon: mdi:map-marker
+    min: 0
+    max: 100
+    step: 1
+    unit_of_measurement: "%"
+    mode: box
+
+input_boolean:
+  rollladen_automation_enabled:
+    name: Rollladen Automatik aktiv
+    icon: mdi:power
+
+  rollladen_override_ost:
+    name: Rollladen Override Ost
+    icon: mdi:hand
+
+  rollladen_override_west:
+    name: Rollladen Override West
+    icon: mdi:hand
+
+
+  rollladen_boot_guard:
+    name: Rollladen Startschutz aktiv
+    icon: mdi:timer-sand
+timer:
+  rollladen_override_ost:
+    name: Rollladen Override Ost
+    icon: mdi:timer-outline
+    duration: "02:00:00"
+
+  rollladen_override_west:
+    name: Rollladen Override West
+    icon: mdi:timer-outline
+    duration: "02:00:00"

@@ -1,0 +1,173 @@
+script:
+  rollladen_set_position:
+    alias: "Rollladen: Position setzen"
+    icon: mdi:window-shutter
+    mode: queued
+    fields:
+      target_cover:
+        description: "Cover oder Cover-Gruppe"
+        example: "cover.rollladen_ost"
+      position:
+        description: "0..100"
+        example: 33
+    sequence:
+      - condition: state
+        entity_id: input_boolean.rollladen_automation_enabled
+        state: "on"
+      - condition: state
+        entity_id: input_boolean.rollladen_boot_guard
+        state: "off"
+      # Phase-5: Automatik-Aktion markieren (für automatische Manuell-Erkennung)
+      - choose:
+          - conditions: "{{ target_cover == 'cover.rollladen_ost' }}"
+            sequence:
+              - service: input_datetime.set_datetime
+                target:
+                  entity_id: input_datetime.rollladen_last_auto_ost
+                data:
+                  timestamp: "{{ now().timestamp() }}"
+              - service: input_number.set_value
+                target:
+                  entity_id: input_number.rollladen_last_auto_pos_ost
+                data:
+                  value: "{{ position | int }}"
+          - conditions: "{{ target_cover == 'cover.rollladen_west' }}"
+            sequence:
+              - service: input_datetime.set_datetime
+                target:
+                  entity_id: input_datetime.rollladen_last_auto_west
+                data:
+                  timestamp: "{{ now().timestamp() }}"
+              - service: input_number.set_value
+                target:
+                  entity_id: input_number.rollladen_last_auto_pos_west
+                data:
+                  value: "{{ position | int }}"
+          - conditions: "{{ target_cover == 'cover.rollladen_nord' }}"
+            sequence:
+              - service: input_datetime.set_datetime
+                target:
+                  entity_id: input_datetime.rollladen_last_auto_nord
+                data:
+                  timestamp: "{{ now().timestamp() }}"
+              - service: input_number.set_value
+                target:
+                  entity_id: input_number.rollladen_last_auto_pos_nord
+                data:
+                  value: "{{ position | int }}"
+      - service: cover.set_cover_position
+        target:
+          entity_id: "{{ target_cover }}"
+        data:
+          position: "{{ position | int }}"
+
+  rollladen_apply_ost:
+    alias: "Rollladen Ost: Apply"
+    icon: mdi:calculator-variant
+    mode: restart
+    sequence:
+      - condition: state
+        entity_id: input_boolean.rollladen_automation_enabled
+        state: "on"
+      - condition: state
+        entity_id: input_boolean.rollladen_boot_guard
+        state: "off"
+      - variables:
+          day: "{{ is_state('binary_sensor.rollladen_day_window','on') }}"
+          shade: "{{ is_state('input_boolean.beschattung_ost','on') }}"
+          door_state: "{{ states('binary_sensor.kuche_balkon_turkontakt') }}"
+          door_failsafe: "{{ door_state in ['on','unknown','unavailable'] }}"
+
+          # Zusatzregeln (Steckdosen-Override):
+          # A) Abends: Wenn die Mess-Steckdose AN ist, soll der Ost-Rollladen offen bleiben,
+          #    jedoch spätestens bis zur konfigurierten Latest-Close-Zeit.
+          # B) Morgens: Wenn die Mess-Steckdose zwischen konfiguriertem Start/Ende AN ist,
+          #    soll der Ost-Rollladen ebenfalls offen sein (auch wenn Day-Window noch aus ist).
+          plug_on: "{{ is_state('switch.schalt_mess_steckdose_steckdose','on') }}"
+
+          latest_close: >-
+            {% set lc = states('input_datetime.rollladen_latest_close') %}
+            {{ lc if lc not in ['unknown','unavailable',''] else '23:00:00' }}
+          before_latest_close: "{{ now() < today_at(latest_close) }}"
+          evening_hold: "{{ (not day) and plug_on and before_latest_close }}"
+
+          plug_start: >-
+            {% set s = states('input_datetime.rollladen_ost_plug_open_start') %}
+            {{ s if s not in ['unknown','unavailable',''] else '05:00:00' }}
+          plug_end: >-
+            {% set e = states('input_datetime.rollladen_ost_plug_open_end') %}
+            {{ e if e not in ['unknown','unavailable',''] else '09:00:00' }}
+          in_plug_window: "{{ now() >= today_at(plug_start) and now() < today_at(plug_end) }}"
+          morning_hold: "{{ plug_on and in_plug_window }}"
+
+          # Entscheidungslogik (Priorität von oben nach unten):
+          # 1) Tür-Failsafe (Tür offen/unknown/unavailable) -> immer 100
+          # 2) Steckdosen-Override morgens (im konfigurierten Zeitfenster) -> 100
+          # 3) Steckdosen-Override abends (außerhalb Day-Window, nur vor Latest-Close) -> 100
+          # 4) Außerhalb Day-Window -> 0
+          # 5) Beschattung -> 33
+          # 6) Default -> 100
+          pos: >
+            {% if door_failsafe %}
+              100
+            {% elif morning_hold %}
+              100
+            {% elif evening_hold %}
+              100
+            {% elif not day %}
+              0
+            {% elif shade %}
+              33
+            {% else %}
+              100
+            {% endif %}
+      - service: script.rollladen_set_position
+        data:
+          target_cover: cover.rollladen_ost
+          position: "{{ pos }}"
+
+  rollladen_apply_west:
+    alias: "Rollladen West: Apply"
+    icon: mdi:calculator-variant
+    mode: restart
+    sequence:
+      - condition: state
+        entity_id: input_boolean.rollladen_automation_enabled
+        state: "on"
+      - condition: state
+        entity_id: input_boolean.rollladen_boot_guard
+        state: "off"
+      - variables:
+          day: "{{ is_state('binary_sensor.rollladen_day_window','on') }}"
+          shade: "{{ is_state('input_boolean.beschattung_west','on') }}"
+          pos: >
+            {% if not day %}
+              0
+            {% elif shade %}
+              33
+            {% else %}
+              100
+            {% endif %}
+      - service: script.rollladen_set_position
+        data:
+          target_cover: cover.rollladen_west
+          position: "{{ pos }}"
+
+  rollladen_apply_nord:
+    alias: "Rollladen Nord: Apply"
+    icon: mdi:calculator-variant
+    mode: restart
+    sequence:
+      - condition: state
+        entity_id: input_boolean.rollladen_automation_enabled
+        state: "on"
+      - condition: state
+        entity_id: input_boolean.rollladen_boot_guard
+        state: "off"
+      - variables:
+          day: "{{ is_state('binary_sensor.rollladen_day_window','on') }}"
+          pos: "{{ 100 if day else 0 }}"
+      - service: script.rollladen_set_position
+        data:
+          target_cover: cover.rollladen_nord
+          position: "{{ pos }}"
