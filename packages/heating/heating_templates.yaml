@@ -1,0 +1,112 @@
+template:
+  - triggers:
+      - trigger: homeassistant
+        event: start
+      - trigger: state
+        entity_id: input_boolean.anwesend
+      - trigger: time_pattern
+        minutes: "/10"
+    binary_sensor:
+      - name: Anwesend (stabil)
+        unique_id: anwesend_stabil
+        device_class: presence
+        state: >-
+          {% if is_state('input_boolean.anwesend','on') %}
+            true
+          {% else %}
+            {% set hours = states('input_number.heizung_abwesenheit_stunden') | int(168) %}
+            {% set since = states.input_boolean.anwesend.last_changed %}
+            {{ (as_timestamp(now()) - as_timestamp(since)) < (hours * 3600) }}
+          {% endif %}
+
+  - sensor:
+      - name: "Heizung Sollprofil"
+        unique_id: heizung_sollprofil
+        icon: mdi:thermostat-auto
+        state: >-
+          {% set urlaub = is_state('input_boolean.heizung_urlaub','on') %}
+          {% set anwesend = is_state('binary_sensor.anwesend_stabil','on') %}
+          {% set winter = is_state('binary_sensor.winterbetrieb_empfohlen','on') %}
+          {% set tx = states('sensor.hamburg_fu_temp_next12h_max') | float(99) %}
+          {% set t_sommer = states('input_number.heizung_temperatur_sommer') | float(16) %}
+
+          {% if urlaub %}
+            eco_17
+          {% elif not anwesend %}
+            eco_19
+          {% elif winter %}
+            komfort_21
+          {% elif tx < t_sommer %}
+            komfort_21
+          {% else %}
+            eco_19
+          {% endif %}
+        attributes:
+          grund: >-
+            {% set urlaub = is_state('input_boolean.heizung_urlaub','on') %}
+            {% set anwesend = is_state('binary_sensor.anwesend_stabil','on') %}
+            {% set winter = is_state('binary_sensor.winterbetrieb_empfohlen','on') %}
+            {% set tx = states('sensor.hamburg_fu_temp_next12h_max') | float(99) %}
+            {% set t_sommer = states('input_number.heizung_temperatur_sommer') | float(16) %}
+
+            {% if urlaub %}
+              urlaub_aktiv
+            {% elif not anwesend %}
+              abwesenheit_lang
+            {% elif winter %}
+              winterbetrieb_empfohlen
+            {% elif tx < t_sommer %}
+              tx_unter_sommer_schwelle
+            {% else %}
+              tx_ueber_sommer_schwelle
+            {% endif %}
+
+          decision_chain: >-
+            {% set urlaub = is_state('input_boolean.heizung_urlaub','on') %}
+            {% set anwesend = is_state('binary_sensor.anwesend_stabil','on') %}
+            {% set winter = is_state('binary_sensor.winterbetrieb_empfohlen','on') %}
+            {% set tx = states('sensor.hamburg_fu_temp_next12h_max') | float(99) %}
+            {% set t_sommer = states('input_number.heizung_temperatur_sommer') | float(16) %}
+            {% if urlaub %}
+              Urlaub → eco_17
+            {% elif not anwesend %}
+              Abwesenheit lang → eco_19
+            {% elif winter %}
+              Winterbetrieb empfohlen → komfort_21
+            {% elif tx < t_sommer %}
+              Tagesmax {{ tx }}°C < {{ t_sommer }}°C → komfort_21
+            {% else %}
+              Tagesmax {{ tx }}°C ≥ {{ t_sommer }}°C → eco_19
+            {% endif %}
+
+          urlaub: "{{ 'on' if is_state('input_boolean.heizung_urlaub','on') else 'off' }}"
+          anwesend_stabil: "{{ 'on' if is_state('binary_sensor.anwesend_stabil','on') else 'off' }}"
+          winterbetrieb_empfohlen: "{{ 'on' if is_state('binary_sensor.winterbetrieb_empfohlen','on') else 'off' }}"
+          tx_dwd: "{{ states('sensor.hamburg_fu_temp_next12h_max') }}"
+          sommer_schwellwert: "{{ states('input_number.heizung_temperatur_sommer') }}"
+          automatik_enabled: "{{ 'on' if is_state('input_boolean.heizung_automatik','on') else 'off' }}"
+          debug_enabled: "{{ 'on' if is_state('input_boolean.heizung_debug','on') else 'off' }}"
+          last_profile: "{{ states('input_select.heizung_aktives_profil') }}"
+
+          last_profile_change_local: >-
+            {% set ts = as_timestamp(states.input_select.heizung_aktives_profil.last_changed, default=none) %}
+            {{ ts | timestamp_custom('%Y-%m-%d %H:%M:%S', True) if ts is not none else 'unknown' }}
+
+          last_applied_local: >-
+            {% set ts = as_timestamp(states('input_datetime.heizung_last_applied'), default=none) %}
+            {{ ts | timestamp_custom('%Y-%m-%d %H:%M:%S', True) if ts is not none else 'unknown' }}
+
+          last_action_text: "{{ states('input_text.heizung_last_action') }}"
+          last_scene: "{{ states('input_text.heizung_last_scene') }}"
+
+          now_local: >-
+            {{ now().strftime('%Y-%m-%d %H:%M:%S') }}
+
+  - binary_sensor:
+      - name: Heizung Gäste Fenster offen
+        unique_id: heizung_gaste_fenster_offen
+        device_class: window
+        state: "{{ is_state('binary_sensor.gaste_fenster_kontakt','on') }}"
+        attributes:
+          source: binary_sensor.gaste_fenster_kontakt
+          source_state: "{{ states('binary_sensor.gaste_fenster_kontakt') }}"

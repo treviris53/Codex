@@ -1,0 +1,57 @@
+input_boolean:
+  heizung_automatik:
+    name: Heizungsautomatik
+    icon: mdi:radiator
+  heizung_debug:
+    name: Heizungsdebug (Logbook)
+    icon: mdi:bug
+  heizung_urlaub:
+    name: Heizung Urlaub
+    icon: mdi:airplane
+  heizung_override:
+    name: Heizung Override (manuell erkannt)
+    icon: mdi:hand
+timer:
+  heizung_override:
+    name: Heizung Override
+    icon: mdi:timer-outline
+    duration: "02:00:00"
+input_number:
+  heizung_temperatur_sommer:
+    name: Sommer-Schwellwert (Vorhersage TX)
+    min: 10
+    max: 26
+    step: 0.5
+    unit_of_measurement: °C
+    mode: slider
+    icon: mdi:thermometer
+    #initial: 16
+  heizung_abwesenheit_stunden:
+    name: Abwesenheitsschwelle
+    icon: mdi:timer
+    min: 24
+    max: 504
+    step: 24
+    unit_of_measurement: h
+    #initial: 168
+input_select:
+  heizung_aktives_profil:
+    name: Heizungsprofil aktiv
+    options:
+    - unbekannt
+    - eco_17
+    - eco_19
+    - komfort_21
+    initial: unbekannt
+    icon: mdi:home-thermometer
+input_datetime:
+  heizung_last_applied:
+    name: Heizung – letzte Anwendung
+    has_date: true
+    has_time: true
+input_text:
+  heizung_last_scene:
+    name: Heizung – letzte Szene
+    icon: mdi:palette
+  heizung_last_action:
+    name: Heizung – letzte Entscheidung

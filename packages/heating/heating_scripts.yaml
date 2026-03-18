@@ -1,0 +1,145 @@
+script:
+  heizung_profil_anwenden_pkg:
+    alias: 'Heizung: Profil anwenden (über Szenen)'
+    mode: queued
+    max: 5
+    fields:
+      profil:
+        description: eco_17, eco_19 oder komfort_21 (optional; sonst sensor.heizung_sollprofil)
+        example: komfort_21
+    variables:
+      profil_effektiv: '{{ profil | default(states(''sensor.heizung_sollprofil''))
+        }}'
+      scene_eco: "{% if states('scene.heizung_19deg') != 'unavailable' %}\n  scene.heizung_19deg\n\
+        {% elif states('scene.heizung_19deg_2') != 'unavailable' %}\n  scene.heizung_19deg_2\n\
+        {% else %}\n  scene.heizung_19deg\n{% endif %}"
+      scene_komfort: "{% if states('scene.heizung_21deg') != 'unavailable' %}\n  scene.heizung_21deg\n\
+        {% elif states('scene.heizung_21deg_2') != 'unavailable' %}\n  scene.heizung_21deg_2\n\
+        {% else %}\n  scene.heizung_21deg\n{% endif %}"
+      tx: '{{ states(''sensor.hamburg_fu_temp_next12h_max'') }}'
+      sommer: '{{ states(''input_number.heizung_temperatur_sommer'') }}'
+      winter: '{{ states(''binary_sensor.winterbetrieb_empfohlen'') }}'
+      anwesend: '{{ states(''binary_sensor.anwesend_stabil'') }}'
+      grund: '{{ state_attr(''sensor.heizung_sollprofil'',''grund'') }}'
+      scene_urlaub: "{%- if states('scene.heizung_17deg') != 'unavailable' -%}\n \
+        \ scene.heizung_17deg\n{%- elif states('scene.heizung_17deg_2') != 'unavailable'\
+        \ -%}\n  scene.heizung_17deg_2\n{%- else -%}\n  scene.heizung_17deg\n{%- endif\
+        \ -%}"
+    sequence:
+      - condition: state
+        entity_id: input_boolean.heizung_override
+        state: 'off'
+      - condition: state
+        entity_id: input_boolean.heizung_automatik
+        state: 'on'
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: "{{ profil_effektiv == 'eco_17' }}"
+            sequence:
+              - condition: template
+                value_template: "{{ states(scene_urlaub) != 'unavailable' }}"
+              - action: scene.turn_on
+                target:
+                  entity_id: "{{ scene_urlaub }}"
+              - action: input_select.select_option
+                data:
+                  entity_id: input_select.heizung_aktives_profil
+                  option: eco_17
+              - action: input_datetime.set_datetime
+                data:
+                  entity_id: input_datetime.heizung_last_applied
+                  timestamp: "{{ now().timestamp() }}"
+              - action: input_text.set_value
+                data:
+                  entity_id: input_text.heizung_last_action
+                  value: "{{ now().strftime('%Y-%m-%d %H:%M') }} → eco_17 ({{ grund }})"
+              - action: input_text.set_value
+                data:
+                  entity_id: input_text.heizung_last_scene
+                  value: "{{ scene_urlaub }}"
+              - choose:
+                  - conditions:
+                      - condition: state
+                        entity_id: input_boolean.heizung_debug
+                        state: 'on'
+                    sequence:
+                      - action: logbook.log
+                        data:
+                          name: Heizung
+                          entity_id: sensor.heizung_sollprofil
+                          message: "Profil eco_17 angewendet (Grund={{ grund }}, TX={{ tx }}, Sommer={{ sommer }}, Winterempf={{ winter }}, Anwesenheit={{ anwesend }}, Szene={{ scene_urlaub }})"
+
+          - conditions:
+              - condition: template
+                value_template: "{{ profil_effektiv == 'eco_19' }}"
+            sequence:
+              - condition: template
+                value_template: "{{ states(scene_eco) != 'unavailable' }}"
+              - action: scene.turn_on
+                target:
+                  entity_id: "{{ scene_eco }}"
+              - action: input_select.select_option
+                data:
+                  entity_id: input_select.heizung_aktives_profil
+                  option: eco_19
+              - action: input_datetime.set_datetime
+                data:
+                  entity_id: input_datetime.heizung_last_applied
+                  timestamp: "{{ now().timestamp() }}"
+              - action: input_text.set_value
+                data:
+                  entity_id: input_text.heizung_last_action
+                  value: "{{ now().strftime('%Y-%m-%d %H:%M') }} → eco_19 ({{ grund }})"
+              - action: input_text.set_value
+                data:
+                  entity_id: input_text.heizung_last_scene
+                  value: "{{ scene_eco }}"
+              - choose:
+                  - conditions:
+                      - condition: state
+                        entity_id: input_boolean.heizung_debug
+                        state: 'on'
+                    sequence:
+                      - action: logbook.log
+                        data:
+                          name: Heizung
+                          entity_id: sensor.heizung_sollprofil
+                          message: "Profil eco_19 angewendet (Grund={{ grund }}, TX={{ tx }}, Sommer={{ sommer }}, Winterempf={{ winter }}, Anwesenheit={{ anwesend }}, Szene={{ scene_eco }})"
+
+          - conditions:
+              - condition: template
+                value_template: "{{ profil_effektiv == 'komfort_21' }}"
+            sequence:
+              - condition: template
+                value_template: "{{ states(scene_komfort) != 'unavailable' }}"
+              - action: scene.turn_on
+                target:
+                  entity_id: "{{ scene_komfort }}"
+              - action: input_select.select_option
+                data:
+                  entity_id: input_select.heizung_aktives_profil
+                  option: komfort_21
+              - action: input_datetime.set_datetime
+                data:
+                  entity_id: input_datetime.heizung_last_applied
+                  timestamp: "{{ now().timestamp() }}"
+              - action: input_text.set_value
+                data:
+                  entity_id: input_text.heizung_last_action
+                  value: "{{ now().strftime('%Y-%m-%d %H:%M') }} → komfort_21 ({{ grund }})"
+              - action: input_text.set_value
+                data:
+                  entity_id: input_text.heizung_last_scene
+                  value: "{{ scene_komfort }}"
+              - choose:
+                  - conditions:
+                      - condition: state
+                        entity_id: input_boolean.heizung_debug
+                        state: 'on'
+                    sequence:
+                      - action: logbook.log
+                        data:
+                          name: Heizung
+                          entity_id: sensor.heizung_sollprofil
+                          message: "Profil komfort_21 angewendet (Grund={{ grund }}, TX={{ tx }}, Sommer={{ sommer }}, Winterempf={{ winter }}, Anwesenheit={{ anwesend }}, Szene={{ scene_komfort }})"

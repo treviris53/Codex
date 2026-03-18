@@ -1,0 +1,84 @@
+scene:
+- id: heizung_21deg
+  name: Heizung 21°
+  icon: mdi:radiator
+  entities:
+    climate.flur_wandthermostat:
+      state: auto
+      preset_mode: week_program_1
+
+    climate.gaste_wandthermostat:
+      state: auto
+      preset_mode: week_program_1
+
+    climate.kuche_wandthermostat:
+      state: auto
+      preset_mode: week_program_1
+
+    climate.gastebad_wandthermostat:
+      state: auto
+      preset_mode: week_program_1
+
+    climate.schlazi_wandthermostat:
+      state: auto
+      preset_mode: week_program_1
+
+    climate.wohnzimmer_wandthermostat:
+      state: auto
+      preset_mode: week_program_1
+
+- id: heizung_17deg
+  name: Heizung 17°
+  icon: mdi:radiator
+  entities:
+    climate.flur_wandthermostat:
+      state: auto
+      preset_mode: week_program_4
+
+    climate.gaste_wandthermostat:
+      state: auto
+      preset_mode: week_program_4
+
+    climate.kuche_wandthermostat:
+      state: auto
+      preset_mode: week_program_4
+
+    climate.gastebad_wandthermostat:
+      state: auto
+      preset_mode: week_program_4
+
+    climate.schlazi_wandthermostat:
+      state: auto
+      preset_mode: week_program_4
+
+    climate.wohnzimmer_wandthermostat:
+      state: auto
+      preset_mode: week_program_4
+
+- id: heizung_19deg
+  name: Heizung 19°
+  icon: mdi:radiator
+  entities:
+    climate.flur_wandthermostat:
+      state: auto
+      preset_mode: week_program_3
+
+    climate.gaste_wandthermostat:
+      state: auto
+      preset_mode: week_program_3
+
+    climate.kuche_wandthermostat:
+      state: auto
+      preset_mode: week_program_3
+
+    climate.gastebad_wandthermostat:
+      state: auto
+      preset_mode: week_program_3
+
+    climate.schlazi_wandthermostat:
+      state: auto
+      preset_mode: week_program_3
+
+    climate.wohnzimmer_wandthermostat:
+      state: auto
+      preset_mode: week_program_3
