@@ -1,0 +1,43 @@
+########################################
+# 3) Automation: setzt ausschließlich die beiden Output-Booleans
+########################################
+automation:
+  - id: beschattung_outputs_setzen
+    alias: "Beschattung Outputs setzen (Ost/West) - ohne choose"
+    mode: restart
+    max_exceeded: silent
+
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.beschattung_ost_aktiv
+          - binary_sensor.beschattung_west_aktiv
+
+      # einmal sauber initialisieren nach Neustart
+      - platform: homeassistant
+        event: start
+
+    action:
+      - variables:
+          target_on: >-
+            {% if is_state('binary_sensor.beschattung_west_aktiv', 'on') %}
+              input_boolean.beschattung_west
+            {% elif is_state('binary_sensor.beschattung_ost_aktiv', 'on') %}
+              input_boolean.beschattung_ost
+            {% else %}
+            {% endif %}
+
+      # Erst alles aus (definierter Zustand)
+      - service: input_boolean.turn_off
+        target:
+          entity_id:
+            - input_boolean.beschattung_ost
+            - input_boolean.beschattung_west
+
+      # Dann genau einen an (wenn überhaupt einer aktiv sein soll)
+      - condition: template
+        value_template: "{{ target_on | trim | length > 0 }}"
+
+      - service: input_boolean.turn_on
+        data:
+          entity_id: "{{ target_on | trim }}"

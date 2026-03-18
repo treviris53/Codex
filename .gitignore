@@ -3,6 +3,8 @@
 .storage/
 deps/
 tts/
+backup/
+*.bak
 *.log
 
 # Database
