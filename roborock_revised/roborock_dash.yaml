@@ -1,0 +1,484 @@
+title: Roborock_Saros
+views:
+  - title: Home
+    path: home
+    icon: mdi:robot-vacuum
+    type: sections
+    max_columns: 3
+    sections:
+      - type: grid
+        column_span: 1
+        cards:
+          - type: markdown
+            content: |
+              **Gueltige Job-IDs**
+
+              `duo_wohn_flur`, `schlaf_saugen`, `wohn_standard`, `wohn_saugen`,
+              `schlaf_standard`, `flur_standard`, `duo_saug_dann_wisch`,
+              `pet_zone_1`, `pet_zone_2`
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - type: button
+                name: Schlaf saugen
+                icon: mdi:bed-king-outline
+                tap_action:
+                  action: perform-action
+                  perform_action: script.roborock_run_named_program
+                  data:
+                    program_id: schlaf_saugen
+              - type: button
+                name: Schlaf vac+mop
+                icon: mdi:bed-king
+                tap_action:
+                  action: perform-action
+                  perform_action: script.roborock_run_named_program
+                  data:
+                    program_id: schlaf_vac_mop
+              - type: button
+                name: Flur vac+mop
+                icon: mdi:door
+                tap_action:
+                  action: perform-action
+                  perform_action: script.roborock_run_named_program
+                  data:
+                    program_id: flur_vac_mop
+              - type: button
+                name: Flur saug/wisch
+                icon: mdi:door
+                tap_action:
+                  action: perform-action
+                  perform_action: script.roborock_run_named_program
+                  data:
+                    program_id: flur_saug_wisch
+              - type: button
+                name: Wohn saugen
+                icon: mdi:sofa-outline
+                tap_action:
+                  action: perform-action
+                  perform_action: script.roborock_run_named_program
+                  data:
+                    program_id: wohn_saugen
+              - type: button
+                name: Wohn saug/wisch
+                icon: mdi:sofa
+                tap_action:
+                  action: perform-action
+                  perform_action: script.roborock_run_named_program
+                  data:
+                    program_id: wohn_saug_wisch
+              - type: button
+                name: Alles saugen/wischen
+                icon: mdi:robot-vacuum
+                tap_action:
+                  action: perform-action
+                  perform_action: script.roborock_run_named_program
+                  data:
+                    program_id: alles_saugen_dann_wischen
+              - type: button
+                name: Haustierbedarf
+                icon: mdi:paw
+                tap_action:
+                  action: perform-action
+                  perform_action: script.roborock_run_named_program
+                  data:
+                    program_id: haustierbedarf_1
+      - type: grid
+        cards:
+          - type: entities
+            title: Diagnose
+            show_header_toggle: false
+            entities:
+              - entity: sensor.saros_20_set_status
+                name: Status
+              - entity: sensor.saros_20_set_staubsauger_fehler
+                name: Fehlertext
+              - entity: binary_sensor.roborock_program_ready
+                name: Startbereit
+              - entity: binary_sensor.roborock_program_blocked
+                name: Blockiert
+              - entity: input_boolean.roborock_busy
+                name: Busy
+              - entity: input_datetime.roborock_busy_since
+                name: Busy seit
+              - type: attribute
+                entity: script.roborock_execute_job_chain
+                attribute: last_triggered
+                name: Letzter Job-Start
+              - entity: input_text.roborock_last_slot
+                name: Letzter Slot
+              - entity: input_text.roborock_last_job
+                name: Letzter Job
+              - entity: input_text.roborock_last_program_sequence
+                name: Letzte Programmfolge
+              - entity: input_text.roborock_current_program
+                name: Aktuelles Programm
+              - entity: input_text.roborock_last_error
+                name: Letzter Fehler
+            grid_options:
+              columns: 12
+              rows: auto
+        column_span: 1
+      - type: grid
+        cards:
+          - type: entities
+            title: Wartung
+            show_header_toggle: false
+            entities:
+              - entity: button.saros_20_set_hauptbursten_verbrauchsmaterial_zurucksetzen
+                name: Hauptbuerste zuruecksetzen
+              - entity: button.saros_20_set_seitenbursten_verbrauchsmaterial_zurucksetzen
+                name: Seitenbuerste zuruecksetzen
+              - entity: button.saros_20_set_luftfilter_verbrauchsmaterial_zurucksetzen
+                name: Luftfilter zuruecksetzen
+              - entity: button.saros_20_set_sensor_verbrauchsmaterial_zurucksetzen
+                name: Sensoren zuruecksetzen
+      - type: grid
+        column_span: 3
+        cards:
+          - type: heading
+            heading: Wohnung
+            heading_style: title
+            grid_options:
+              columns: 24
+              rows: 1
+          - type: custom:xiaomi-vacuum-map-card
+            title: Wohnung
+            entity: vacuum.saros_20_set
+            vacuum_platform: Roborock
+            map_source:
+              camera: image.saros_20_set_map_0_custom
+            calibration_source:
+              camera: true
+            map_modes:
+              - template: vacuum_clean_zone
+              - template: vacuum_goto
+            tiles:
+              - label: Status
+                entity: sensor.saros_20_set_status
+                icon: mdi:information-outline
+              - label: Fehler
+                entity: sensor.saros_20_set_staubsauger_fehler
+                icon: mdi:alert-circle
+              - label: Aktueller Raum
+                entity: sensor.saros_20_set_aktueller_raum
+                icon: mdi:floor-plan
+              - label: Reinigungszeit
+                entity: sensor.saros_20_set_reinigungszeit
+                icon: mdi:timer-outline
+                unit: min
+                multiplier: 1
+                precision: 0
+              - label: Hauptbuerste
+                entity: sensor.saros_20_set_verbleibende_zeit_der_hauptburste
+                icon: mdi:brush
+                unit: h
+                multiplier: 1
+                precision: 0
+              - label: Seitenbuerste
+                entity: sensor.saros_20_set_verbleibende_zeit_der_seitenburste
+                icon: mdi:brush-variant
+                unit: h
+                multiplier: 1
+                precision: 0
+              - label: Filter
+                entity: sensor.saros_20_set_verbleibende_filterzeit
+                icon: mdi:air-filter
+                unit: h
+                multiplier: 1
+                precision: 0
+              - label: Sensoren
+                entity: sensor.saros_20_set_verbleibende_sensorzeit
+                icon: mdi:radar
+                unit: h
+                multiplier: 1
+                precision: 0
+              - label: Schmutzfaenger Dock
+                entity: sensor.saros_20_set_dock_schmutzfanger_verbleibend
+                icon: mdi:filter-variant
+                unit: h
+                multiplier: 1
+                precision: 0
+            grid_options:
+              columns: 18
+              rows: auto
+          - type: heading
+            heading: Wochenplan
+            heading_style: title
+            grid_options:
+              columns: 24
+              rows: 1
+          - type: entities
+            title: Wochenplan global
+            show_header_toggle: false
+            entities:
+              - entity: input_boolean.roborock_schedule_enabled
+                name: Zeitplan aktiv
+            grid_options:
+              columns: full
+              rows: auto
+          - type: vertical-stack
+            cards:
+              - type: heading
+                heading: Montag
+                heading_style: subtitle
+              - type: grid
+                columns: 3
+                square: false
+                cards:
+                  - type: entities
+                    title: Slot 1
+                    show_header_toggle: false
+                    entities:
+                      - entity: input_boolean.roborock_slot_enabled_mon_1
+                        name: Aktiv
+                      - entity: input_datetime.roborock_time_mon_1
+                        name: Uhrzeit
+                      - entity: input_text.roborock_jobs_mon_1
+                        name: Jobs (CSV)
+                  - type: entities
+                    title: Slot 2
+                    show_header_toggle: false
+                    entities:
+                      - entity: input_boolean.roborock_slot_enabled_mon_2
+                        name: Aktiv
+                      - entity: input_datetime.roborock_time_mon_2
+                        name: Uhrzeit
+                      - entity: input_text.roborock_jobs_mon_2
+                        name: Jobs (CSV)
+                  - type: entities
+                    title: Slot 3
+                    show_header_toggle: false
+                    entities:
+                      - entity: input_boolean.roborock_slot_enabled_mon_3
+                        name: Aktiv
+                      - entity: input_datetime.roborock_time_mon_3
+                        name: Uhrzeit
+                      - entity: input_text.roborock_jobs_mon_3
+                        name: Jobs (CSV)
+              - type: heading
+                heading: Dienstag
+                heading_style: subtitle
+              - type: grid
+                columns: 3
+                square: false
+                cards:
+                  - type: entities
+                    title: Slot 1
+                    show_header_toggle: false
+                    entities:
+                      - entity: input_boolean.roborock_slot_enabled_tue_1
+                        name: Aktiv
+                      - entity: input_datetime.roborock_time_tue_1
+                        name: Uhrzeit
+                      - entity: input_text.roborock_jobs_tue_1
+                        name: Jobs (CSV)
+                  - type: entities
+                    title: Slot 2
+                    show_header_toggle: false
+                    entities:
+                      - entity: input_boolean.roborock_slot_enabled_tue_2
+                        name: Aktiv
+                      - entity: input_datetime.roborock_time_tue_2
+                        name: Uhrzeit
+                      - entity: input_text.roborock_jobs_tue_2
+                        name: Jobs (CSV)
+                  - type: entities
+                    title: Slot 3
+                    show_header_toggle: false
+                    entities:
+                      - entity: input_boolean.roborock_slot_enabled_tue_3
+                        name: Aktiv
+                      - entity: input_datetime.roborock_time_tue_3
+                        name: Uhrzeit
+                      - entity: input_text.roborock_jobs_tue_3
+                        name: Jobs (CSV)
+              - type: heading
+                heading: Mittwoch
+                heading_style: subtitle
+              - type: grid
+                columns: 3
+                square: false
+                cards:
+                  - type: entities
+                    title: Slot 1
+                    show_header_toggle: false
+                    entities:
+                      - entity: input_boolean.roborock_slot_enabled_wed_1
+                        name: Aktiv
+                      - entity: input_datetime.roborock_time_wed_1
+                        name: Uhrzeit
+                      - entity: input_text.roborock_jobs_wed_1
+                        name: Jobs (CSV)
+                  - type: entities
+                    title: Slot 2
+                    show_header_toggle: false
+                    entities:
+                      - entity: input_boolean.roborock_slot_enabled_wed_2
+                        name: Aktiv
+                      - entity: input_datetime.roborock_time_wed_2
+                        name: Uhrzeit
+                      - entity: input_text.roborock_jobs_wed_2
+                        name: Jobs (CSV)
+                  - type: entities
+                    title: Slot 3
+                    show_header_toggle: false
+                    entities:
+                      - entity: input_boolean.roborock_slot_enabled_wed_3
+                        name: Aktiv
+                      - entity: input_datetime.roborock_time_wed_3
+                        name: Uhrzeit
+                      - entity: input_text.roborock_jobs_wed_3
+                        name: Jobs (CSV)
+              - type: heading
+                heading: Donnerstag
+                heading_style: subtitle
+              - type: grid
+                columns: 3
+                square: false
+                cards:
+                  - type: entities
+                    title: Slot 1
+                    show_header_toggle: false
+                    entities:
+                      - entity: input_boolean.roborock_slot_enabled_thu_1
+                        name: Aktiv
+                      - entity: input_datetime.roborock_time_thu_1
+                        name: Uhrzeit
+                      - entity: input_text.roborock_jobs_thu_1
+                        name: Jobs (CSV)
+                  - type: entities
+                    title: Slot 2
+                    show_header_toggle: false
+                    entities:
+                      - entity: input_boolean.roborock_slot_enabled_thu_2
+                        name: Aktiv
+                      - entity: input_datetime.roborock_time_thu_2
+                        name: Uhrzeit
+                      - entity: input_text.roborock_jobs_thu_2
+                        name: Jobs (CSV)
+                  - type: entities
+                    title: Slot 3
+                    show_header_toggle: false
+                    entities:
+                      - entity: input_boolean.roborock_slot_enabled_thu_3
+                        name: Aktiv
+                      - entity: input_datetime.roborock_time_thu_3
+                        name: Uhrzeit
+                      - entity: input_text.roborock_jobs_thu_3
+                        name: Jobs (CSV)
+              - type: heading
+                heading: Freitag
+                heading_style: subtitle
+              - type: grid
+                columns: 3
+                square: false
+                cards:
+                  - type: entities
+                    title: Slot 1
+                    show_header_toggle: false
+                    entities:
+                      - entity: input_boolean.roborock_slot_enabled_fri_1
+                        name: Aktiv
+                      - entity: input_datetime.roborock_time_fri_1
+                        name: Uhrzeit
+                      - entity: input_text.roborock_jobs_fri_1
+                        name: Jobs (CSV)
+                  - type: entities
+                    title: Slot 2
+                    show_header_toggle: false
+                    entities:
+                      - entity: input_boolean.roborock_slot_enabled_fri_2
+                        name: Aktiv
+                      - entity: input_datetime.roborock_time_fri_2
+                        name: Uhrzeit
+                      - entity: input_text.roborock_jobs_fri_2
+                        name: Jobs (CSV)
+                  - type: entities
+                    title: Slot 3
+                    show_header_toggle: false
+                    entities:
+                      - entity: input_boolean.roborock_slot_enabled_fri_3
+                        name: Aktiv
+                      - entity: input_datetime.roborock_time_fri_3
+                        name: Uhrzeit
+                      - entity: input_text.roborock_jobs_fri_3
+                        name: Jobs (CSV)
+              - type: heading
+                heading: Samstag
+                heading_style: subtitle
+              - type: grid
+                columns: 3
+                square: false
+                cards:
+                  - type: entities
+                    title: Slot 1
+                    show_header_toggle: false
+                    entities:
+                      - entity: input_boolean.roborock_slot_enabled_sat_1
+                        name: Aktiv
+                      - entity: input_datetime.roborock_time_sat_1
+                        name: Uhrzeit
+                      - entity: input_text.roborock_jobs_sat_1
+                        name: Jobs (CSV)
+                  - type: entities
+                    title: Slot 2
+                    show_header_toggle: false
+                    entities:
+                      - entity: input_boolean.roborock_slot_enabled_sat_2
+                        name: Aktiv
+                      - entity: input_datetime.roborock_time_sat_2
+                        name: Uhrzeit
+                      - entity: input_text.roborock_jobs_sat_2
+                        name: Jobs (CSV)
+                  - type: entities
+                    title: Slot 3
+                    show_header_toggle: false
+                    entities:
+                      - entity: input_boolean.roborock_slot_enabled_sat_3
+                        name: Aktiv
+                      - entity: input_datetime.roborock_time_sat_3
+                        name: Uhrzeit
+                      - entity: input_text.roborock_jobs_sat_3
+                        name: Jobs (CSV)
+              - type: heading
+                heading: Sonntag
+                heading_style: subtitle
+              - type: grid
+                columns: 3
+                square: false
+                cards:
+                  - type: entities
+                    title: Slot 1
+                    show_header_toggle: false
+                    entities:
+                      - entity: input_boolean.roborock_slot_enabled_sun_1
+                        name: Aktiv
+                      - entity: input_datetime.roborock_time_sun_1
+                        name: Uhrzeit
+                      - entity: input_text.roborock_jobs_sun_1
+                        name: Jobs (CSV)
+                  - type: entities
+                    title: Slot 2
+                    show_header_toggle: false
+                    entities:
+                      - entity: input_boolean.roborock_slot_enabled_sun_2
+                        name: Aktiv
+                      - entity: input_datetime.roborock_time_sun_2
+                        name: Uhrzeit
+                      - entity: input_text.roborock_jobs_sun_2
+                        name: Jobs (CSV)
+                  - type: entities
+                    title: Slot 3
+                    show_header_toggle: false
+                    entities:
+                      - entity: input_boolean.roborock_slot_enabled_sun_3
+                        name: Aktiv
+                      - entity: input_datetime.roborock_time_sun_3
+                        name: Uhrzeit
+                      - entity: input_text.roborock_jobs_sun_3
+                        name: Jobs (CSV)
+            grid_options:
+              columns: full
+              rows: auto

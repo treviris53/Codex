@@ -1,0 +1,392 @@
+# ======================================================================
+# Roborock Saros 20 - Jobs / Scheduler
+# File: config/packages/roborock/roborock_jobs.yaml
+# Version: 3.0.0
+# Date: 2026-03-18
+# Change note:
+# - Added explicit weekday validation for all 21 time-slot triggers
+# - Added helper defaults directly in YAML to avoid giant startup automation
+# - Kept 3 slots per day and CSV jobs for compatibility with existing dashboard
+# ======================================================================
+
+input_boolean:
+  roborock_slot_enabled_mon_1:
+    name: Roborock Montag Slot 1 aktiv
+    icon: mdi:calendar-check
+  roborock_slot_enabled_mon_2:
+    name: Roborock Montag Slot 2 aktiv
+    icon: mdi:calendar-check
+  roborock_slot_enabled_mon_3:
+    name: Roborock Montag Slot 3 aktiv
+    icon: mdi:calendar-check
+  roborock_slot_enabled_tue_1:
+    name: Roborock Dienstag Slot 1 aktiv
+    icon: mdi:calendar-check
+  roborock_slot_enabled_tue_2:
+    name: Roborock Dienstag Slot 2 aktiv
+    icon: mdi:calendar-check
+  roborock_slot_enabled_tue_3:
+    name: Roborock Dienstag Slot 3 aktiv
+    icon: mdi:calendar-check
+  roborock_slot_enabled_wed_1:
+    name: Roborock Mittwoch Slot 1 aktiv
+    icon: mdi:calendar-check
+  roborock_slot_enabled_wed_2:
+    name: Roborock Mittwoch Slot 2 aktiv
+    icon: mdi:calendar-check
+  roborock_slot_enabled_wed_3:
+    name: Roborock Mittwoch Slot 3 aktiv
+    icon: mdi:calendar-check
+  roborock_slot_enabled_thu_1:
+    name: Roborock Donnerstag Slot 1 aktiv
+    icon: mdi:calendar-check
+  roborock_slot_enabled_thu_2:
+    name: Roborock Donnerstag Slot 2 aktiv
+    icon: mdi:calendar-check
+  roborock_slot_enabled_thu_3:
+    name: Roborock Donnerstag Slot 3 aktiv
+    icon: mdi:calendar-check
+  roborock_slot_enabled_fri_1:
+    name: Roborock Freitag Slot 1 aktiv
+    icon: mdi:calendar-check
+  roborock_slot_enabled_fri_2:
+    name: Roborock Freitag Slot 2 aktiv
+    icon: mdi:calendar-check
+  roborock_slot_enabled_fri_3:
+    name: Roborock Freitag Slot 3 aktiv
+    icon: mdi:calendar-check
+  roborock_slot_enabled_sat_1:
+    name: Roborock Samstag Slot 1 aktiv
+    icon: mdi:calendar-check
+  roborock_slot_enabled_sat_2:
+    name: Roborock Samstag Slot 2 aktiv
+    icon: mdi:calendar-check
+  roborock_slot_enabled_sat_3:
+    name: Roborock Samstag Slot 3 aktiv
+    icon: mdi:calendar-check
+  roborock_slot_enabled_sun_1:
+    name: Roborock Sonntag Slot 1 aktiv
+    icon: mdi:calendar-check
+  roborock_slot_enabled_sun_2:
+    name: Roborock Sonntag Slot 2 aktiv
+    icon: mdi:calendar-check
+  roborock_slot_enabled_sun_3:
+    name: Roborock Sonntag Slot 3 aktiv
+    icon: mdi:calendar-check
+
+input_datetime:
+  roborock_time_mon_1:
+    name: Roborock Montag Slot 1 Uhrzeit
+    has_date: false
+    has_time: true
+    initial: "08:30:00"
+  roborock_time_mon_2:
+    name: Roborock Montag Slot 2 Uhrzeit
+    has_date: false
+    has_time: true
+    initial: "09:30:00"
+  roborock_time_mon_3:
+    name: Roborock Montag Slot 3 Uhrzeit
+    has_date: false
+    has_time: true
+    initial: "10:30:00"
+  roborock_time_tue_1:
+    name: Roborock Dienstag Slot 1 Uhrzeit
+    has_date: false
+    has_time: true
+    initial: "08:30:00"
+  roborock_time_tue_2:
+    name: Roborock Dienstag Slot 2 Uhrzeit
+    has_date: false
+    has_time: true
+    initial: "09:30:00"
+  roborock_time_tue_3:
+    name: Roborock Dienstag Slot 3 Uhrzeit
+    has_date: false
+    has_time: true
+    initial: "10:30:00"
+  roborock_time_wed_1:
+    name: Roborock Mittwoch Slot 1 Uhrzeit
+    has_date: false
+    has_time: true
+    initial: "08:30:00"
+  roborock_time_wed_2:
+    name: Roborock Mittwoch Slot 2 Uhrzeit
+    has_date: false
+    has_time: true
+    initial: "09:30:00"
+  roborock_time_wed_3:
+    name: Roborock Mittwoch Slot 3 Uhrzeit
+    has_date: false
+    has_time: true
+    initial: "10:30:00"
+  roborock_time_thu_1:
+    name: Roborock Donnerstag Slot 1 Uhrzeit
+    has_date: false
+    has_time: true
+    initial: "08:30:00"
+  roborock_time_thu_2:
+    name: Roborock Donnerstag Slot 2 Uhrzeit
+    has_date: false
+    has_time: true
+    initial: "09:30:00"
+  roborock_time_thu_3:
+    name: Roborock Donnerstag Slot 3 Uhrzeit
+    has_date: false
+    has_time: true
+    initial: "10:30:00"
+  roborock_time_fri_1:
+    name: Roborock Freitag Slot 1 Uhrzeit
+    has_date: false
+    has_time: true
+    initial: "08:30:00"
+  roborock_time_fri_2:
+    name: Roborock Freitag Slot 2 Uhrzeit
+    has_date: false
+    has_time: true
+    initial: "09:30:00"
+  roborock_time_fri_3:
+    name: Roborock Freitag Slot 3 Uhrzeit
+    has_date: false
+    has_time: true
+    initial: "10:30:00"
+  roborock_time_sat_1:
+    name: Roborock Samstag Slot 1 Uhrzeit
+    has_date: false
+    has_time: true
+    initial: "08:30:00"
+  roborock_time_sat_2:
+    name: Roborock Samstag Slot 2 Uhrzeit
+    has_date: false
+    has_time: true
+    initial: "09:30:00"
+  roborock_time_sat_3:
+    name: Roborock Samstag Slot 3 Uhrzeit
+    has_date: false
+    has_time: true
+    initial: "10:30:00"
+  roborock_time_sun_1:
+    name: Roborock Sonntag Slot 1 Uhrzeit
+    has_date: false
+    has_time: true
+    initial: "08:30:00"
+  roborock_time_sun_2:
+    name: Roborock Sonntag Slot 2 Uhrzeit
+    has_date: false
+    has_time: true
+    initial: "09:30:00"
+  roborock_time_sun_3:
+    name: Roborock Sonntag Slot 3 Uhrzeit
+    has_date: false
+    has_time: true
+    initial: "10:30:00"
+
+input_text:
+  roborock_jobs_mon_1:
+    name: Roborock Montag Slot 1 Jobs (CSV, max. 4)
+    icon: mdi:playlist-edit
+    max: 255
+    initial: "duo_wohn_flur"
+  roborock_jobs_mon_2:
+    name: Roborock Montag Slot 2 Jobs (CSV, max. 4)
+    icon: mdi:playlist-edit
+    max: 255
+    initial: "schlaf_saugen"
+  roborock_jobs_mon_3:
+    name: Roborock Montag Slot 3 Jobs (CSV, max. 4)
+    icon: mdi:playlist-edit
+    max: 255
+    initial: "wohn_standard"
+  roborock_jobs_tue_1:
+    name: Roborock Dienstag Slot 1 Jobs (CSV, max. 4)
+    icon: mdi:playlist-edit
+    max: 255
+    initial: ""
+  roborock_jobs_tue_2:
+    name: Roborock Dienstag Slot 2 Jobs (CSV, max. 4)
+    icon: mdi:playlist-edit
+    max: 255
+    initial: ""
+  roborock_jobs_tue_3:
+    name: Roborock Dienstag Slot 3 Jobs (CSV, max. 4)
+    icon: mdi:playlist-edit
+    max: 255
+    initial: ""
+  roborock_jobs_wed_1:
+    name: Roborock Mittwoch Slot 1 Jobs (CSV, max. 4)
+    icon: mdi:playlist-edit
+    max: 255
+    initial: "duo_wohn_flur"
+  roborock_jobs_wed_2:
+    name: Roborock Mittwoch Slot 2 Jobs (CSV, max. 4)
+    icon: mdi:playlist-edit
+    max: 255
+    initial: "schlaf_saugen"
+  roborock_jobs_wed_3:
+    name: Roborock Mittwoch Slot 3 Jobs (CSV, max. 4)
+    icon: mdi:playlist-edit
+    max: 255
+    initial: "wohn_standard"
+  roborock_jobs_thu_1:
+    name: Roborock Donnerstag Slot 1 Jobs (CSV, max. 4)
+    icon: mdi:playlist-edit
+    max: 255
+    initial: ""
+  roborock_jobs_thu_2:
+    name: Roborock Donnerstag Slot 2 Jobs (CSV, max. 4)
+    icon: mdi:playlist-edit
+    max: 255
+    initial: ""
+  roborock_jobs_thu_3:
+    name: Roborock Donnerstag Slot 3 Jobs (CSV, max. 4)
+    icon: mdi:playlist-edit
+    max: 255
+    initial: ""
+  roborock_jobs_fri_1:
+    name: Roborock Freitag Slot 1 Jobs (CSV, max. 4)
+    icon: mdi:playlist-edit
+    max: 255
+    initial: "duo_wohn_flur"
+  roborock_jobs_fri_2:
+    name: Roborock Freitag Slot 2 Jobs (CSV, max. 4)
+    icon: mdi:playlist-edit
+    max: 255
+    initial: "schlaf_saugen"
+  roborock_jobs_fri_3:
+    name: Roborock Freitag Slot 3 Jobs (CSV, max. 4)
+    icon: mdi:playlist-edit
+    max: 255
+    initial: "wohn_standard"
+  roborock_jobs_sat_1:
+    name: Roborock Samstag Slot 1 Jobs (CSV, max. 4)
+    icon: mdi:playlist-edit
+    max: 255
+    initial: ""
+  roborock_jobs_sat_2:
+    name: Roborock Samstag Slot 2 Jobs (CSV, max. 4)
+    icon: mdi:playlist-edit
+    max: 255
+    initial: ""
+  roborock_jobs_sat_3:
+    name: Roborock Samstag Slot 3 Jobs (CSV, max. 4)
+    icon: mdi:playlist-edit
+    max: 255
+    initial: ""
+  roborock_jobs_sun_1:
+    name: Roborock Sonntag Slot 1 Jobs (CSV, max. 4)
+    icon: mdi:playlist-edit
+    max: 255
+    initial: ""
+  roborock_jobs_sun_2:
+    name: Roborock Sonntag Slot 2 Jobs (CSV, max. 4)
+    icon: mdi:playlist-edit
+    max: 255
+    initial: ""
+  roborock_jobs_sun_3:
+    name: Roborock Sonntag Slot 3 Jobs (CSV, max. 4)
+    icon: mdi:playlist-edit
+    max: 255
+    initial: ""
+
+automation:
+  - id: roborock_weekday_scheduler
+    alias: Roborock Scheduler - Woche / 3 Slots / 4 Jobs
+    description: >
+      Triggert alle 21 Slots ueber input_datetime, prueft den echten Wochentag
+      und ruft dann die Job-Chain auf.
+    triggers:
+      - trigger: time
+        at: input_datetime.roborock_time_mon_1
+        id: mon_1
+      - trigger: time
+        at: input_datetime.roborock_time_mon_2
+        id: mon_2
+      - trigger: time
+        at: input_datetime.roborock_time_mon_3
+        id: mon_3
+      - trigger: time
+        at: input_datetime.roborock_time_tue_1
+        id: tue_1
+      - trigger: time
+        at: input_datetime.roborock_time_tue_2
+        id: tue_2
+      - trigger: time
+        at: input_datetime.roborock_time_tue_3
+        id: tue_3
+      - trigger: time
+        at: input_datetime.roborock_time_wed_1
+        id: wed_1
+      - trigger: time
+        at: input_datetime.roborock_time_wed_2
+        id: wed_2
+      - trigger: time
+        at: input_datetime.roborock_time_wed_3
+        id: wed_3
+      - trigger: time
+        at: input_datetime.roborock_time_thu_1
+        id: thu_1
+      - trigger: time
+        at: input_datetime.roborock_time_thu_2
+        id: thu_2
+      - trigger: time
+        at: input_datetime.roborock_time_thu_3
+        id: thu_3
+      - trigger: time
+        at: input_datetime.roborock_time_fri_1
+        id: fri_1
+      - trigger: time
+        at: input_datetime.roborock_time_fri_2
+        id: fri_2
+      - trigger: time
+        at: input_datetime.roborock_time_fri_3
+        id: fri_3
+      - trigger: time
+        at: input_datetime.roborock_time_sat_1
+        id: sat_1
+      - trigger: time
+        at: input_datetime.roborock_time_sat_2
+        id: sat_2
+      - trigger: time
+        at: input_datetime.roborock_time_sat_3
+        id: sat_3
+      - trigger: time
+        at: input_datetime.roborock_time_sun_1
+        id: sun_1
+      - trigger: time
+        at: input_datetime.roborock_time_sun_2
+        id: sun_2
+      - trigger: time
+        at: input_datetime.roborock_time_sun_3
+        id: sun_3
+    conditions:
+      - condition: state
+        entity_id: input_boolean.roborock_schedule_enabled
+        state: "on"
+      - condition: state
+        entity_id: input_boolean.roborock_busy
+        state: "off"
+    actions:
+      - variables:
+          trigger_id: "{{ trigger.id }}"
+          trigger_day: "{{ trigger.id.split('_')[0] }}"
+          weekday_map:
+            mon: 1
+            tue: 2
+            wed: 3
+            thu: 4
+            fri: 5
+            sat: 6
+            sun: 7
+          slot_enabled_entity: "input_boolean.roborock_slot_enabled_{{ trigger.id }}"
+          jobs_entity: "input_text.roborock_jobs_{{ trigger.id }}"
+      - condition: template
+        value_template: "{{ now().isoweekday() == weekday_map.get(trigger_day) }}"
+      - condition: template
+        value_template: "{{ is_state(slot_enabled_entity, 'on') }}"
+      - action: script.roborock_execute_job_chain
+        data:
+          slot_name: "{{ trigger_id }}"
+          source: scheduler
+          job_sequence: "{{ states(jobs_entity) }}"
+    mode: queued
+    max: 30

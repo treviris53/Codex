@@ -1,0 +1,41 @@
+# Home Assistant core
+.homeassistant/
+.storage/
+deps/
+tts/
+*.log
+
+# Database
+home-assistant_v2.db
+home-assistant_v2.db-shm
+home-assistant_v2.db-wal
+
+# Backups
+backups/
+*.tar
+
+# Secrets
+secrets.yaml
+
+# SSL / keys
+*.pem
+*.key
+
+# Temporary / cache
+__pycache__/
+*.pyc
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Zigbee2MQTT (optional)
+zigbee2mqtt/database.db
+zigbee2mqtt/coordinator_backup.json
+
+# ESPHome build files
+esphome/.esphome/
+
+# Logs
+*.log
