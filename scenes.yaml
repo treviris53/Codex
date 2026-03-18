@@ -1,0 +1,56 @@
+- id: '1733645078269'
+  name: Bäder 23°
+  entities:
+    climate.bad_wandthermostat:
+      state: auto
+      preset_mode: week_program_1
+      temperature: 23
+    climate.gastebad_wandthermostat:
+      state: auto
+      preset_mode: week_program_1
+      temperature: 23
+  metadata:
+    climate.bad_wandthermostat:
+      entity_only: true
+    climate.gastebad_wandthermostat:
+      entity_only: true
+  icon: mdi:bathtub
+- id: '1733646110422'
+  name: Bäder 21°
+  entities:
+    climate.bad_wandthermostat:
+      state: auto
+      preset_mode: week_program_1
+      temperature: 21
+    climate.gastebad_wandthermostat:
+      state: auto
+      preset_mode: week_program_1
+      temperature: 21
+  metadata:
+    climate.bad_wandthermostat:
+      entity_only: true
+    climate.gastebad_wandthermostat:
+      entity_only: true
+  icon: mdi:bathtub
+- id: '1768152452632'
+  name: Heizung 22°
+  entities:
+    climate.flur_wandthermostat:
+      state: auto
+      preset_mode: week_program_5
+    climate.gaste_wandthermostat:
+      state: auto
+      preset_mode: week_program_5
+    climate.kuche_wandthermostat:
+      state: auto
+      preset_mode: week_program_5
+    climate.gastebad_wandthermostat:
+      state: auto
+      preset_mode: week_program_5
+    climate.schlazi_wandthermostat:
+      state: auto
+      preset_mode: week_program_5
+    climate.wohnzimmer_wandthermostat:
+      state: auto
+      preset_mode: week_program_5
+  icon: mdi:radiator

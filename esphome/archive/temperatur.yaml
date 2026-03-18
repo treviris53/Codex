@@ -1,0 +1,32 @@
+esphome:
+  name: temperatur
+  friendly_name: Temperatur
+
+esp32:
+  board: esp32dev
+  framework:
+    type: esp-idf
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "rVJjZaMw3gguAucObK59F/00/DrhvDUGmyEzJ8wqhFM="
+
+ota:
+  - platform: esphome
+    password: "6434312cbd07a204a6ca5eb2b3dfef08"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Temperatur Fallback Hotspot"
+    password: "4CGelBnbbmoV"
+
+captive_portal:
+    

@@ -1,0 +1,1110 @@
+# Dashboard: Sieker Übersicht
+# Version: 1.1.0
+# Generated: 2026-01-28
+# Notes:
+# - Lovelace YAML exported from UI (Storage dashboards remove comments); comments were re-added for Git readability.
+# - Editing in UI "Raw configuration editor" will strip comments again; prefer editing the file in Git/Editor.
+views:
+  - path: default_view
+    title: Home
+    cards: []
+    type: sections
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading: Küche
+            heading_style: title
+            badges:
+              - type: entity
+                entity: sensor.kuche_wandthermostat_luftfeuchtigkeit
+              - type: entity
+                entity: sensor.kuche_wandthermostat_temperatur
+              - type: entity
+                entity: binary_sensor.kuche_balkon_turkontakt
+            icon: mdi:fridge
+          - type: tile
+            entity: light.licht_herd
+          - type: tile
+            entity: light.0x086bd7fffe404a82
+          - type: tile
+            entity: cover.kuche_balkon_rollo
+          - type: tile
+            entity: cover.kuche_sieker_rollo
+          - type: tile
+            entity: climate.kuche_wandthermostat
+      - type: grid
+        cards:
+          - type: heading
+            heading: Wohnzimmer
+            heading_style: title
+            badges:
+              - type: entity
+                entity: sensor.wohnzimmer_wandthermostat_luftfeuchtigkeit
+              - type: entity
+                entity: sensor.wohnzimmer_wandthermostat_temperatur
+              - type: entity
+                entity: binary_sensor.wohnzimmer_turkontakt
+          - type: tile
+            entity: light.vitrinenlicht
+          - type: tile
+            entity: light.licht_wohnzimmer_haupt
+          - type: tile
+            entity: light.licht_fernseher
+          - type: tile
+            entity: switch.0xa4c138442a735c69
+          - type: tile
+            entity: climate.wohnzimmer_wandthermostat
+      - type: grid
+        cards:
+          - type: heading
+            heading: Schlafzimmer
+            heading_style: title
+            badges:
+              - type: entity
+                entity: sensor.schlazi_wandthermostat_luftfeuchtigkeit
+              - type: entity
+                entity: sensor.schlazi_wandthermostat_temperatur
+              - type: entity
+                entity: sensor.fritz_dect_repeater_100_temperatur
+              - type: entity
+                entity: sensor.lichtsensor_schlafzimmer_illuminance
+          - type: tile
+            entity: light.licht_schlafzimmer
+          - type: tile
+            entity: cover.schlazi_rollo
+          - type: tile
+            entity: climate.schlazi_wandthermostat
+      - type: grid
+        cards:
+          - type: heading
+            heading: Bad
+            heading_style: title
+            icon: mdi:bathtub
+            badges:
+              - type: entity
+                entity: sensor.bad_wandthermostat_luftfeuchtigkeit
+              - type: entity
+                entity: sensor.bad_wandthermostat_temperatur
+          - type: tile
+            entity: climate.bad_wandthermostat
+      - type: grid
+        cards:
+          - type: heading
+            heading: Flur
+            heading_style: title
+            badges:
+              - type: entity
+                entity: sensor.flur_wandthermostat_luftfeuchtigkeit
+              - type: entity
+                entity: sensor.flur_wandthermostat_temperatur
+          - type: tile
+            entity: climate.flur_wandthermostat
+      - type: grid
+        cards:
+          - type: heading
+            heading: Gästebad
+            heading_style: title
+            badges:
+              - type: entity
+                entity: sensor.gastebad_wandthermostat_temperatur
+              - type: entity
+                entity: sensor.gastebad_wandthermostat_luftfeuchtigkeit
+              - type: entity
+                entity: sensor.0xa4c1384490e4e5ea_temperature
+              - type: entity
+                entity: sensor.0xa4c1384490e4e5ea_humidity
+          - type: tile
+            entity: cover.gaste_bad_rollo
+          - type: tile
+            entity: climate.gastebad_wandthermostat
+      - type: grid
+        cards:
+          - type: heading
+            heading: Gästezimmer
+            heading_style: title
+            badges:
+              - type: entity
+                entity: sensor.gaste_wandthermostat_luftfeuchtigkeit
+              - type: entity
+                entity: sensor.gaste_wandthermostat_temperatur
+              - type: entity
+                entity: binary_sensor.gaste_fenster_kontakt
+          - type: tile
+            entity: cover.gaste_heck_rollo
+          - type: tile
+            entity: cover.gaste_sieker_rollo
+          - type: tile
+            entity: climate.gaste_wandthermostat
+      - type: grid
+        cards:
+          - type: heading
+            heading: Balkon
+            heading_style: title
+            badges:
+              - type: entity
+                entity: sensor.0x00158d008b61ad80_temperature
+              - type: entity
+                entity: sensor.0x00158d008b61ad80_humidity
+              - type: entity
+                show_state: true
+                show_icon: true
+                entity: sensor.0x00158d008b61ad80_pressure
+              - type: entity
+                entity: sensor.balkon_lichtsensor_beleuchtungsstarke
+          - type: tile
+            entity: switch.schalt_mess_steckdose_steckdose
+          - type: tile
+            entity: input_boolean.steckdose_show_button
+            vertical: false
+            features_position: bottom
+      - type: grid
+        cards:
+          - type: heading
+            heading: Subviews
+            heading_style: title
+            icon: mdi:view-dashboard
+            grid_options:
+              columns: full
+              rows: 1
+          - type: button
+            name: Heizung
+            icon: mdi:radiator
+            tap_action:
+              action: navigate
+              navigation_path: heizung
+          - type: button
+            name: Rollladen
+            icon: mdi:window-shutter
+            tap_action:
+              action: navigate
+              navigation_path: rollladen
+          - show_name: true
+            show_icon: true
+            type: button
+            name: Steckdose Balkon
+            icon: mdi:power-socket-de
+            tap_action:
+              action: navigate
+              navigation_path: steckdose-balkon
+            grid_options:
+              columns: 6
+              rows: 2
+            visibility:
+              - condition: or
+                conditions:
+                  - condition: state
+                    entity: binary_sensor.steckdose_saison_aktiv
+                    state: 'on'
+                  - condition: state
+                    entity: input_boolean.steckdose_show_button
+                    state: 'on'
+          - type: custom:button-card
+            entity: sensor.eaton_3s850d_statusdaten
+            name: USV
+            icon: mdi:generator-mobile
+            show_name: true
+            show_icon: true
+            grid_options:
+              columns: 6
+              rows: 2
+            styles:
+              icon:
+                - color: var(--state-icon-color)
+            tap_action:
+              action: navigate
+              navigation_path: usv
+            color_type: card
+            state:
+              - operator: '!='
+                value: OL
+                color: red
+                styles:
+                  icon:
+                    - color: white
+                  name:
+                    - color: white
+      - type: grid
+        cards:
+          - type: heading
+            heading: Keller
+            heading_style: title
+            badges:
+              - type: entity
+                show_state: true
+                show_icon: true
+                entity: sensor.waschmaschine_maschinenzustand
+              - type: entity
+                entity: sensor.waschmaschine_fertigstellungszeit
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: tile
+            entity: switch.waschmaschine_bubble_soak
+            color: amber
+            vertical: false
+            features_position: bottom
+          - type: tile
+            entity: select.waschmaschine_dosiermenge_fur_waschmittel
+          - type: tile
+            entity: select.waschmaschine_schleuderstufe
+          - type: tile
+            entity: number.waschmaschine_spulgange
+        column_span: 1
+      - type: grid
+        cards:
+          - type: heading
+            heading: Kontrollraum
+            heading_style: title
+            badges:
+              - type: entity
+                entity: sensor.0xa4c13838e02b32cf_energy
+              - type: entity
+                entity: sensor.0xa4c13838e02b32cf_power
+          - type: tile
+            entity: switch.0xa4c13838e02b32cf
+    max_columns: 4
+    icon: mdi:home
+  - title: Steuerung
+    path: heizung
+    icon: mdi:radiator
+    type: sections
+    max_columns: 3
+    sections:
+      - cards:
+          - type: heading
+            heading: Betrieb
+          - type: entities
+            title: Hauptschalter & Modi
+            show_header_toggle: false
+            entities:
+              - entity: input_boolean.heizung_automatik
+                name: Heizungsautomatik
+              - entity: input_boolean.heizung_urlaub
+                name: Urlaubsmodus (2–3 Wochen)
+              - entity: input_boolean.heizung_debug
+                name: Debug-Logging (Logbook)
+              - entity: input_select.heizung_aktives_profil
+                name: Aktives Profil
+              - entity: input_boolean.heizung_override
+                name: Heizung Override
+              - entity: timer.heizung_override
+                name: Override Timer
+          - type: entities
+            title: Stellschrauben
+            show_header_toggle: false
+            entities:
+              - entity: input_number.heizung_abwesenheit_stunden
+                name: Abwesenheitsschwelle (h)
+              - entity: input_number.heizung_temperatur_sommer
+                name: Sommer-Schwelle Tagesmax (°C)
+          - type: button
+            name: Debug-Übersicht öffnen
+            icon: mdi:bug-outline
+            tap_action:
+              action: navigate
+              navigation_path: heizung-debug
+      - cards:
+          - type: heading
+            heading: Status
+          - type: entities
+            title: Entscheidungsinputs
+            show_header_toggle: false
+            entities:
+              - entity: input_boolean.anwesend
+                name: Anwesenheit (Quelle)
+              - entity: binary_sensor.anwesend_stabil
+                name: Anwesenheit stabil
+              - entity: binary_sensor.winterbetrieb_empfohlen
+                name: Winterbetrieb empfohlen
+              - entity: sensor.hamburg_fu_temp_next12h_max
+                name: Tagesmax (Vorhersage)
+              - entity: sensor.season
+                name: Saison
+          - type: entities
+            title: Sollprofil & Diagnose (Kurz)
+            show_header_toggle: false
+            entities:
+              - entity: sensor.heizung_sollprofil
+                name: Sollprofil (berechnet)
+              - entity: input_datetime.heizung_last_applied
+                name: Letzte Anwendung
+              - entity: input_text.heizung_last_action
+                name: Letzte Entscheidung
+      - cards:
+          - type: heading
+            heading: Historie (24h)
+          - type: history-graph
+            title: Profil & Entscheidung (24h)
+            hours_to_show: 24
+            refresh_interval: 60
+            entities:
+              - entity: sensor.heizung_sollprofil
+              - entity: input_select.heizung_aktives_profil
+              - entity: binary_sensor.winterbetrieb_empfohlen
+              - entity: binary_sensor.anwesend_stabil
+              - entity: input_boolean.heizung_urlaub
+          - type: history-graph
+            title: Wetter / Saison (24h)
+            hours_to_show: 24
+            refresh_interval: 60
+            entities:
+              - entity: sensor.hamburg_fu_temp_next12h_max
+              - entity: sensor.season
+    subview: true
+  - title: Debug
+    path: heizung-debug
+    icon: mdi:bug-outline
+    subview: true
+    type: sections
+    max_columns: 3
+    sections:
+      - cards:
+          - type: heading
+            heading: Debug-Übersicht
+          - type: entities
+            title: Entscheidungen & Gründe
+            show_header_toggle: false
+            entities:
+              - entity: sensor.heizung_sollprofil
+                name: Sollprofil (State)
+              - type: attribute
+                entity: sensor.heizung_sollprofil
+                attribute: grund
+                name: Grund (Attribut)
+              - type: attribute
+                entity: sensor.heizung_sollprofil
+                attribute: tx_dwd
+                name: Tagesmax tx (Attribut)
+              - type: attribute
+                entity: sensor.heizung_sollprofil
+                attribute: sommer_schwellwert
+                name: Sommer-Schwelle (Attribut)
+              - type: attribute
+                entity: sensor.heizung_sollprofil
+                attribute: winterbetrieb_empfohlen
+                name: Winter empfohlen (Attribut)
+              - type: attribute
+                entity: sensor.heizung_sollprofil
+                attribute: anwesend_stabil
+                name: Anwesenheit stabil (Attribut)
+              - type: attribute
+                entity: sensor.heizung_sollprofil
+                attribute: urlaub
+                name: Urlaub (Attribut)
+              - type: attribute
+                entity: sensor.heizung_sollprofil
+                attribute: tx_dwd
+                name: Tagesmax DWD (Attribut)
+              - type: attribute
+                entity: sensor.heizung_sollprofil
+                attribute: sommer_schwellwert
+                name: Sommer-Schwellwert (Attribut)
+              - type: attribute
+                entity: sensor.heizung_sollprofil
+                attribute: icon
+                name: Icon (Attribut)
+              - type: attribute
+                entity: sensor.heizung_sollprofil
+                attribute: friendly_name
+                name: Friendly Name (Attribut)
+              - type: attribute
+                entity: sensor.heizung_sollprofil
+                attribute: decision_chain
+                name: Decision Chain
+              - type: attribute
+                entity: sensor.heizung_sollprofil
+                attribute: automatik_enabled
+                name: Automatik enabled
+              - type: attribute
+                entity: sensor.heizung_sollprofil
+                attribute: debug_enabled
+                name: Debug enabled
+              - type: attribute
+                entity: sensor.heizung_sollprofil
+                attribute: last_profile
+                name: Last profile
+              - type: attribute
+                entity: sensor.heizung_sollprofil
+                attribute: last_profile_change_local
+                name: Last profile change (local)
+              - type: attribute
+                entity: sensor.heizung_sollprofil
+                attribute: last_applied_local
+                name: Last applied (local)
+              - type: attribute
+                entity: sensor.heizung_sollprofil
+                attribute: last_scene
+                name: Last scene
+              - type: attribute
+                entity: sensor.heizung_sollprofil
+                attribute: last_action_text
+                name: Last action text
+              - type: attribute
+                entity: sensor.heizung_sollprofil
+                attribute: now_local
+                name: Now (local)
+              - entity: input_text.heizung_last_action
+                name: Letzte Entscheidung (Text)
+              - entity: input_datetime.heizung_last_applied
+                name: Letzte Anwendung
+          - type: entities
+            title: Eingänge (Rohwerte)
+            show_header_toggle: false
+            entities:
+              - entity: input_boolean.heizung_automatik
+              - entity: input_boolean.heizung_urlaub
+              - entity: input_boolean.anwesend
+              - entity: binary_sensor.anwesend_stabil
+              - entity: binary_sensor.winterbetrieb_empfohlen
+              - entity: sensor.hamburg_fu_temp_next12h_max
+              - entity: sensor.aussentemperatur_mittel_24h
+              - entity: sensor.aussentemperatur_mittel_72h
+              - entity: sensor.season
+      - cards:
+          - type: heading
+            heading: Service
+          - type: entities
+            title: Aktionen (manuell)
+            show_header_toggle: false
+            entities:
+              - entity: script.heizung_profil_anwenden_pkg
+                name: Profil jetzt anwenden
+          - type: entities
+            title: Grenzwerte / Policies
+            show_header_toggle: false
+            entities:
+              - entity: input_number.heizung_abwesenheit_stunden
+              - entity: input_number.heizung_temperatur_sommer
+      - cards:
+          - type: heading
+            heading: Historie (7 Tage)
+          - type: history-graph
+            title: Profilwechsel (7 Tage)
+            hours_to_show: 168
+            refresh_interval: 300
+            entities:
+              - entity: sensor.heizung_sollprofil
+              - entity: input_select.heizung_aktives_profil
+              - entity: input_boolean.heizung_urlaub
+              - entity: binary_sensor.winterbetrieb_empfohlen
+              - entity: binary_sensor.anwesend_stabil
+  - title: Rollladen
+    path: rollladen
+    icon: mdi:window-shutter
+    type: sections
+    max_columns: 3
+    sections:
+      - cards:
+          - type: heading
+            heading: Steuerung
+          - type: entities
+            title: Automatik
+            show_header_toggle: false
+            entities:
+              - entity: input_boolean.rollladen_automation_enabled
+                name: Rollladen Automatik
+              - entity: binary_sensor.rollladen_day_window
+                name: Day Window
+          - type: entities
+            title: Overrides
+            show_header_toggle: false
+            entities:
+              - entity: input_boolean.rollladen_override_ost
+                name: Override Ost
+              - entity: timer.rollladen_override_ost
+                name: Override Timer Ost
+              - entity: input_boolean.rollladen_override_west
+                name: Override West
+              - entity: timer.rollladen_override_west
+                name: Override Timer West
+          - type: grid
+            columns: 3
+            square: false
+            cards:
+              - type: button
+                name: Diagnose
+                icon: mdi:bug-outline
+                tap_action:
+                  action: navigate
+                  navigation_path: rollladen-diagnose
+              - type: button
+                name: Service
+                icon: mdi:tools
+                tap_action:
+                  action: navigate
+                  navigation_path: rollladen-service
+              - type: button
+                name: Beschattung
+                icon: mdi:roller-shade
+                tap_action:
+                  action: navigate
+                  navigation_path: rollladen-beschattung
+      - cards:
+          - type: heading
+            heading: Zeit-Offsets
+          - type: entities
+            title: Feinjustierung (Sonne)
+            show_header_toggle: false
+            entities:
+              - entity: input_number.rollladen_offset_morgen_min
+                name: Morgen-Offset (Minuten)
+              - entity: input_number.rollladen_offset_abend_min
+                name: Abend-Offset (Minuten)
+      - cards:
+          - type: heading
+            heading: Rollläden
+          - type: tile
+            entity: cover.rollladen_ost
+            name: Rollladen Ost
+            features:
+              - type: cover-position
+          - type: tile
+            entity: cover.rollladen_west
+            name: Rollladen West
+            features:
+              - type: cover-position
+          - type: tile
+            entity: cover.rollladen_nord
+            name: Rollladen Nord
+            features:
+              - type: cover-position
+          - type: tile
+            entity: cover.rollladen_all
+            name: Rollladen Alle
+            features:
+              - type: cover-position
+          - type: entities
+            title: Einflussfaktoren
+            show_header_toggle: false
+            entities:
+              - entity: sensor.sun_next_rising
+                name: Sonnenaufgang
+              - entity: sensor.sun_next_setting
+                name: Sonnenuntergang
+              - entity: switch.schalt_mess_steckdose_steckdose
+                name: Steckdose (Ost)
+              - entity: input_boolean.beschattung_ost
+                name: Beschattung Ost
+              - entity: input_boolean.beschattung_west
+                name: Beschattung West
+              - entity: binary_sensor.kuche_balkon_turkontakt
+                name: Türkontakt
+      - cards:
+          - type: heading
+            heading: Debug
+          - type: entities
+            title: Debug Ost
+            show_header_toggle: false
+            entities:
+              - entity: sensor.rollladen_ost_debug
+                name: Ost Debug
+          - type: entities
+            title: Debug West
+            show_header_toggle: false
+            entities:
+              - entity: sensor.rollladen_west_debug
+                name: West Debug
+          - type: entities
+            title: Debug Nord
+            show_header_toggle: false
+            entities:
+              - entity: sensor.rollladen_nord_debug
+                name: Nord Debug
+    subview: true
+  - title: Diagnose
+    path: rollladen-diagnose
+    icon: mdi:bug-outline
+    subview: true
+    type: sections
+    max_columns: 3
+    sections:
+      - cards:
+          - type: heading
+            heading: Status
+          - type: entities
+            title: Überblick
+            show_header_toggle: false
+            entities:
+              - entity: input_boolean.rollladen_automation_enabled
+                name: Automatik (Master)
+              - entity: binary_sensor.rollladen_day_window
+                name: Day Window
+              - entity: sensor.rollladen_open_ts
+                name: Open TS
+              - entity: sensor.rollladen_close_ts
+                name: Close TS
+          - type: entities
+            title: Einflussfaktoren
+            show_header_toggle: false
+            entities:
+              - entity: switch.schalt_mess_steckdose_steckdose
+                name: Steckdose (Ost)
+              - entity: input_boolean.beschattung_ost
+                name: Beschattung Ost
+              - entity: input_boolean.beschattung_west
+                name: Beschattung West
+              - entity: binary_sensor.kuche_balkon_turkontakt
+                name: Türkontakt (Failsafe)
+              - entity: sensor.rollladen_open_ts
+                name: Öffnet um
+              - entity: sensor.rollladen_close_ts
+                name: Schließt um
+      - cards:
+          - type: heading
+            heading: Debug-Sensoren
+          - type: entities
+            title: Ost Debug (State + Attribute)
+            show_header_toggle: false
+            entities:
+              - entity: sensor.rollladen_ost_debug
+                name: Zielposition / Status
+              - type: attribute
+                entity: sensor.rollladen_ost_debug
+                attribute: reason
+                name: reason
+              - type: attribute
+                entity: sensor.rollladen_ost_debug
+                attribute: master_enabled
+                name: master_enabled
+              - type: attribute
+                entity: sensor.rollladen_ost_debug
+                attribute: day_window
+                name: day_window
+              - type: attribute
+                entity: sensor.rollladen_ost_debug
+                attribute: shade
+                name: shade
+              - type: attribute
+                entity: sensor.rollladen_ost_debug
+                attribute: plug_on
+                name: plug_on
+              - type: attribute
+                entity: sensor.rollladen_ost_debug
+                attribute: door_state
+                name: door_state
+              - type: attribute
+                entity: sensor.rollladen_ost_debug
+                attribute: latest_close
+                name: latest_close
+              - type: attribute
+                entity: sensor.rollladen_ost_debug
+                attribute: plug_open_start
+                name: plug_open_start
+              - type: attribute
+                entity: sensor.rollladen_ost_debug
+                attribute: plug_open_end
+                name: plug_open_end
+          - type: entities
+            title: West Debug (State + Attribute)
+            show_header_toggle: false
+            entities:
+              - entity: sensor.rollladen_west_debug
+                name: Zielposition / Status
+              - type: attribute
+                entity: sensor.rollladen_west_debug
+                attribute: reason
+                name: reason
+              - type: attribute
+                entity: sensor.rollladen_west_debug
+                attribute: master_enabled
+                name: master_enabled
+              - type: attribute
+                entity: sensor.rollladen_west_debug
+                attribute: day_window
+                name: day_window
+          - type: entities
+            title: Nord Debug (State + Attribute)
+            show_header_toggle: false
+            entities:
+              - entity: sensor.rollladen_nord_debug
+                name: Zielposition / Status
+              - type: attribute
+                entity: sensor.rollladen_nord_debug
+                attribute: reason
+                name: reason
+              - type: attribute
+                entity: sensor.rollladen_nord_debug
+                attribute: master_enabled
+                name: master_enabled
+              - type: attribute
+                entity: sensor.rollladen_nord_debug
+                attribute: day_window
+                name: day_window
+      - cards:
+          - type: heading
+            heading: Historie
+          - type: history-graph
+            title: Zielpositionen (Debug)
+            hours_to_show: 24
+            refresh_interval: 60
+            entities:
+              - entity: sensor.rollladen_ost_debug
+              - entity: sensor.rollladen_west_debug
+              - entity: sensor.rollladen_nord_debug
+          - type: history-graph
+            title: Einflussfaktoren (24h)
+            hours_to_show: 24
+            refresh_interval: 60
+            entities:
+              - entity: input_boolean.rollladen_automation_enabled
+              - entity: binary_sensor.rollladen_day_window
+              - entity: switch.schalt_mess_steckdose_steckdose
+              - entity: input_boolean.beschattung_ost
+              - entity: input_boolean.beschattung_west
+              - entity: binary_sensor.kuche_balkon_turkontakt
+  - title: Service
+    path: rollladen-service
+    icon: mdi:tools
+    subview: true
+    type: sections
+    max_columns: 3
+    sections:
+      - cards:
+          - type: heading
+            heading: Direkte Bedienung
+          - type: tile
+            entity: cover.rollladen_ost
+            name: Rollladen Ost
+            features:
+              - type: cover-position
+          - type: tile
+            entity: cover.rollladen_west
+            name: Rollladen West
+            features:
+              - type: cover-position
+          - type: tile
+            entity: cover.rollladen_nord
+            name: Rollladen Nord
+            features:
+              - type: cover-position
+      - cards:
+          - type: heading
+            heading: Policies (UI-Helper)
+          - type: entities
+            title: Zeitregeln
+            show_header_toggle: false
+            entities:
+              - entity: input_datetime.rollladen_earliest_open
+              - entity: input_datetime.rollladen_latest_open
+              - entity: input_datetime.rollladen_latest_close
+              - entity: input_datetime.rollladen_ost_plug_open_start
+              - entity: input_datetime.rollladen_ost_plug_open_end
+          - type: entities
+            title: Offsets
+            show_header_toggle: false
+            entities:
+              - entity: input_number.rollladen_offset_morgen_min
+              - entity: input_number.rollladen_offset_abend_min
+      - cards:
+          - type: heading
+            heading: Tools
+          - type: entities
+            title: Apply-Scripts (manuell auslösen)
+            show_header_toggle: false
+            entities:
+              - entity: script.rollladen_ost_apply
+              - entity: script.rollladen_apply_west
+                name: 'Rollladen West: Apply'
+              - entity: script.rollladen_apply_nord
+                name: 'Rollladen Nord: Apply'
+  - title: Beschattung
+    path: rollladen-beschattung
+    icon: mdi:roller-shade
+    subview: true
+    cards:
+      - type: entities
+        title: Parameter (zentral pflegbar)
+        entities:
+          - entity: input_number.beschattung_azimut_ost_min
+          - entity: input_number.beschattung_azimut_ost_max
+          - entity: input_number.beschattung_azimut_west_min
+          - entity: input_number.beschattung_azimut_west_max
+          - entity: input_number.beschattung_elevation_min
+          - entity: input_number.beschattung_sommer_temp_min
+          - entity: input_number.beschattung_lux_ost_min
+          - entity: input_number.beschattung_lux_west_min
+          - entity: input_number.beschattung_temp_ost_min
+          - entity: input_number.beschattung_temp_west_min
+      - type: entities
+        title: Live Werte (Sensoren)
+        entities:
+          - entity: sensor.sun_solar_azimuth
+          - entity: sensor.sun_solar_elevation
+          - entity: sensor.0x00158d008b61ad80_temperature
+          - entity: sensor.balkon_lichtsensor_durchschnittliche_beleuchtungsstarke
+          - entity: sensor.lichtsensor_schlafzimmer_illuminance
+          - entity: sensor.kuche_wandthermostat_temperatur
+          - entity: sensor.fritz_dect_repeater_100_temperatur
+      - type: entities
+        title: Abstand zum Schwellwert (Diff = Ist - Soll)
+        entities:
+          - entity: sensor.beschattung_diff_elevation
+          - entity: sensor.beschattung_diff_sommer_temp
+          - entity: sensor.beschattung_diff_lux_ost
+          - entity: sensor.beschattung_diff_lux_west
+          - entity: sensor.beschattung_diff_temp_ost
+          - entity: sensor.beschattung_diff_temp_west
+      - type: entities
+        title: Debug (Warum AN/AUS?)
+        entities:
+          - entity: sensor.beschattung_debug_ost
+          - entity: sensor.beschattung_debug_west
+      - type: history-graph
+        title: Verlauf (12h)
+        hours_to_show: 12
+        entities:
+          - entity: input_boolean.beschattung_ost
+            name: Beschattung_Ost
+          - entity: input_boolean.beschattung_west
+            name: Beschattung_West
+          - entity: binary_sensor.beschattung_ost_aktiv
+            name: Beschattung Ost Aktiv
+          - entity: binary_sensor.beschattung_west_aktiv
+            name: Beschattung West Aktiv
+          - entity: sensor.sun_solar_azimuth
+            name: Sun Solarer Azimut
+          - entity: sensor.sun_solar_elevation
+            name: Sun Solarer Elevation
+          - entity: sensor.balkon_lichtsensor_durchschnittliche_beleuchtungsstarke
+            name: Balkon_Lichtsensor
+          - entity: sensor.lichtsensor_schlafzimmer_illuminance
+            name: Lichtsensor Schlafzimmer
+      - type: entities
+        title: Outputs (fix)
+        entities:
+          - entity: input_boolean.beschattung_ost
+          - entity: input_boolean.beschattung_west
+      - type: entities
+        title: Logik (berechnet)
+        entities:
+          - entity: binary_sensor.beschattung_elevation_ok
+          - entity: binary_sensor.beschattung_sommer_temperatur_ok
+          - entity: binary_sensor.beschattung_freigabe
+          - entity: binary_sensor.beschattung_azimut_ost
+          - entity: binary_sensor.beschattung_azimut_west
+          - entity: binary_sensor.beschattung_lux_ost_ok
+          - entity: binary_sensor.beschattung_lux_west_ok
+          - entity: binary_sensor.beschattung_temp_ost_ok
+          - entity: binary_sensor.beschattung_temp_west_ok
+          - entity: binary_sensor.beschattung_ost_aktiv
+          - entity: binary_sensor.beschattung_west_aktiv
+  - title: Steckdose
+    path: steckdose-balkon
+    icon: mdi:power-socket-de
+    type: sections
+    max_columns: 3
+    sections:
+      - cards:
+          - type: heading
+            heading: Steuerung
+          - type: entities
+            title: Status & Schalter
+            show_header_toggle: false
+            entities:
+              - entity: binary_sensor.steckdose_saison_aktiv
+                name: Saison aktiv
+              - entity: switch.schalt_mess_steckdose_steckdose
+                name: Steckdose Balkon
+              - entity: binary_sensor.dunkelheit_balkon
+                name: Dunkelheit (Balkon)
+          - type: entities
+            title: Zeitfenster (Saison)
+            show_header_toggle: false
+            entities:
+              - entity: input_datetime.steckdose_morgens_ein
+                name: Morgens Ein
+              - type: text
+                name: Morgens Aus (fix)
+                text: '08:15'
+              - entity: input_datetime.steckdose_abends_ein
+                name: Abends Ein
+              - entity: input_datetime.steckdose_abends_aus
+                name: Abends Aus (22:00)
+          - type: entities
+            title: Helligkeit (nur morgens relevant)
+            show_header_toggle: false
+            entities:
+              - entity: sensor.balkon_lichtsensor_durchschnittliche_beleuchtungsstarke
+                name: Lux (Balkon)
+              - entity: input_number.dunkelheit_lux_schwelle
+                name: Lux-Schwelle
+              - entity: input_number.dunkelheit_lux_hysterese
+                name: Lux-Hysterese
+          - type: button
+            name: Debug
+            icon: mdi:bug-outline
+            tap_action:
+              action: navigate
+              navigation_path: steckdose-balkon-debug
+      - cards:
+          - type: heading
+            heading: Historie
+          - type: history-graph
+            title: Steckdose / Saison / Dunkelheit (24h)
+            hours_to_show: 24
+            refresh_interval: 60
+            entities:
+              - entity: switch.schalt_mess_steckdose_steckdose
+              - entity: binary_sensor.steckdose_saison_aktiv
+              - entity: binary_sensor.dunkelheit_balkon
+          - type: history-graph
+            title: Helligkeit (24h)
+            hours_to_show: 24
+            refresh_interval: 60
+            entities:
+              - sensor.balkon_lichtsensor_durchschnittliche_beleuchtungsstarke
+      - cards:
+          - type: heading
+            heading: Kurz-Debug
+          - type: entities
+            title: Letzte Entscheidung
+            show_header_toggle: false
+            entities:
+              - entity: sensor.steckdose_balkon_debug
+                name: Debug (State)
+              - entity: input_text.steckdose_balkon_last_action
+                name: Letzte Aktion
+              - entity: input_text.steckdose_balkon_last_reason
+                name: Letzter Grund
+              - entity: input_datetime.steckdose_balkon_last_action_at
+                name: Zeitpunkt
+    subview: true
+  - title: Debug
+    path: steckdose-balkon-debug
+    icon: mdi:bug-outline
+    subview: true
+    type: sections
+    max_columns: 3
+    sections:
+      - cards:
+          - type: heading
+            heading: Debug-Sensor (State + Attribute)
+          - type: entities
+            title: Steckdose Balkon Debug
+            show_header_toggle: false
+            entities:
+              - entity: sensor.steckdose_balkon_debug
+                name: State (on/off)
+              - type: attribute
+                entity: sensor.steckdose_balkon_debug
+                attribute: reason
+                name: reason
+              - type: attribute
+                entity: sensor.steckdose_balkon_debug
+                attribute: expected_state
+                name: expected_state
+              - type: attribute
+                entity: sensor.steckdose_balkon_debug
+                attribute: season_active
+                name: season_active
+              - type: attribute
+                entity: sensor.steckdose_balkon_debug
+                attribute: dunkelheit
+                name: dunkelheit
+              - type: attribute
+                entity: sensor.steckdose_balkon_debug
+                attribute: within_morning_window
+                name: within_morning_window
+              - type: attribute
+                entity: sensor.steckdose_balkon_debug
+                attribute: within_evening_window
+                name: within_evening_window
+              - type: attribute
+                entity: sensor.steckdose_balkon_debug
+                attribute: morgens_start
+                name: morgens_start
+              - type: attribute
+                entity: sensor.steckdose_balkon_debug
+                attribute: morgens_ende
+                name: morgens_ende
+              - type: attribute
+                entity: sensor.steckdose_balkon_debug
+                attribute: abends_ein
+                name: abends_ein
+              - type: attribute
+                entity: sensor.steckdose_balkon_debug
+                attribute: abends_aus
+                name: abends_aus
+              - type: attribute
+                entity: sensor.steckdose_balkon_debug
+                attribute: lux
+                name: lux
+              - type: attribute
+                entity: sensor.steckdose_balkon_debug
+                attribute: lux_schwelle
+                name: lux_schwelle
+              - type: attribute
+                entity: sensor.steckdose_balkon_debug
+                attribute: last_action
+                name: last_action
+              - type: attribute
+                entity: sensor.steckdose_balkon_debug
+                attribute: last_reason
+                name: last_reason
+              - type: attribute
+                entity: sensor.steckdose_balkon_debug
+                attribute: last_action_at
+                name: last_action_at
+              - type: attribute
+                entity: sensor.steckdose_balkon_debug
+                attribute: now_local
+                name: now_local
+      - cards:
+          - type: heading
+            heading: Historie
+          - type: history-graph
+            title: Debug vs Inputs (24h)
+            hours_to_show: 24
+            refresh_interval: 60
+            entities:
+              - entity: switch.schalt_mess_steckdose_steckdose
+              - entity: sensor.steckdose_balkon_debug
+              - entity: binary_sensor.steckdose_saison_aktiv
+              - entity: binary_sensor.dunkelheit_balkon
+              - entity: sensor.balkon_helligkeit_lux
+  - title: USV
+    path: usv
+    icon: mdi:generator-mobile
+    type: sections
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading: USV-Status
+          - type: gauge
+            entity: sensor.eaton_3s850d_batterie_ladung
+            severity:
+              green: 60
+              yellow: 25
+              red: 0
+            needle: true
+            name: Akku-Ladung
+          - type: tile
+            entity: sensor.eaton_3s850d_status
+            name: Status
+          - type: tile
+            entity: sensor.eaton_3s850d_statusdaten
+            name: Status Daten
+          - type: tile
+            entity: sensor.eaton_3s850d_batterielaufzeit
+            name: Akkulaufzeit
+          - type: tile
+            entity: sensor.eaton_3s850d_wirkleistung
+            name: Leistung
+          - type: tile
+            entity: sensor.eaton_3s850d_last
+            name: Last
+          - type: tile
+            entity: sensor.eaton_3s850d_ausgangsspannung
+            name: Spannung
+          - type: tile
+            entity: sensor.eaton_3s850d_sollwert_fur_schwache_batterie
+            name: Soll Batterie schwach
+          - type: tile
+            entity: timer.os_timer_ups
+            name: Shut Timer
+          - type: tile
+            entity: sensor.eaton_3s850d_piepser_status
+            name: Piepser
+    subview: true

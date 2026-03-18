@@ -1,0 +1,54 @@
+# <config>/templates/sun_helpers.yaml
+# Wird via: template: !include_dir_merge_list templates/ eingebunden
+
+# Variante 1: "klassisch" (aktualisiert, wenn sich sun.sun / next_rising/next_setting ändern)
+- sensor:
+    - name: "Zeit 30 min vor Sonnenaufgang"
+      unique_id: time_30min_before_sunrise
+      device_class: timestamp
+      state: >
+        {{ (as_datetime(state_attr('sun.sun','next_rising')) - timedelta(minutes=30)).isoformat() }}
+
+    - name: "Zeit 30 min nach Sonnenuntergang"
+      unique_id: time_30min_after_sunset
+      device_class: timestamp
+      state: >
+        {{ (as_datetime(state_attr('sun.sun','next_setting')) + timedelta(minutes=30)).isoformat() }}
+
+# Variante 2: Trigger-basiert (wird gezielt neu berechnet: bei HA-Start + alle 15 Min + bei Sun-Attributänderung)
+- trigger:
+    - platform: homeassistant
+      event: start
+    - platform: time_pattern
+      minutes: "/15"
+    - platform: state
+      entity_id: sun.sun
+      attribute: next_rising
+    - platform: state
+      entity_id: sun.sun
+      attribute: next_setting
+  sensor:
+    - name: "Zeit 30 min vor Sonnenaufgang (trigger)"
+      unique_id: time_30min_before_sunrise_trigger
+      device_class: timestamp
+      state: >
+        {{ (as_datetime(state_attr('sun.sun','next_rising')) - timedelta(minutes=30)).isoformat() }}
+
+    - name: "Zeit 30 min nach Sonnenuntergang (trigger)"
+      unique_id: time_30min_after_sunset_trigger
+      device_class: timestamp
+      state: >
+        {{ (as_datetime(state_attr('sun.sun','next_setting')) + timedelta(minutes=30)).isoformat() }}
+
+- binary_sensor:
+    - name: "Civil Sun Dawn"
+      unique_id: civil_sun_dawn
+      state: >
+        {% set elev = state_attr('sun.sun','elevation') | float(-99) %}
+        {{ elev <= 0 and elev >= -6 and is_state('sun.sun','above_horizon') == false }}
+
+    - name: "Civil Sun Dusk"
+      unique_id: civil_sun_dusk
+      state: >
+        {% set elev = state_attr('sun.sun','elevation') | float(-99) %}
+        {{ elev <= 0 and elev >= -6 and is_state('sun.sun','above_horizon') == true }}

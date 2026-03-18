@@ -1,0 +1,57 @@
+# Version 1.0.0
+# /config/packages/winterbetrieb.yaml
+
+template:
+  # Tag-only Temperatur: nur wenn Sonne über Horizont, sonst unknown (none)
+  - sensor:
+      - name: "Hamburg Fu Temperatur Tag"
+        unique_id: hamburg_fu_temperatur_tag
+        unit_of_measurement: "°C"
+        device_class: temperature
+        state_class: measurement
+        state: >
+          {% if is_state('sun.sun', 'above_horizon') %}
+            {{ states('sensor.hamburg_fu_temperatur') | float(none) }}
+          {% else %}
+            {{ none }}
+          {% endif %}
+
+  # Winterbetrieb empfohlen – nutzt die (tagbasierten) Mittelwerte
+  - triggers:
+      - trigger: time_pattern
+        minutes: "/15"
+      - trigger: state
+        entity_id:
+          - sensor.season
+          - sensor.aussentemperatur_mittel_24h
+          - sensor.aussentemperatur_mittel_72h
+    binary_sensor:
+      - name: "Winterbetrieb empfohlen"
+        unique_id: winterbetrieb_empfohlen
+        state: >
+          {% set season = states('sensor.season') %}
+          {% set t24 = states('sensor.aussentemperatur_mittel_24h') | float(99) %}
+          {% set t72 = states('sensor.aussentemperatur_mittel_72h') | float(99) %}
+          {% set not_summer = season != 'summer' %}
+
+          {% if this.state == 'on' %}
+            {{ not_summer and (t24 < 15) and (t72 < 16) }}
+          {% else %}
+            {{ not_summer and (t24 < 12) and (t72 < 14) }}
+          {% endif %}
+
+sensor:
+  # Statistik-Sensoren jetzt auf Basis des Tag-Sensors
+  - platform: statistics
+    name: "Aussentemperatur Mittel 24h"
+    entity_id: sensor.hamburg_fu_temperatur_tag
+    state_characteristic: mean
+    max_age:
+      hours: 24
+
+  - platform: statistics
+    name: "Aussentemperatur Mittel 72h"
+    entity_id: sensor.hamburg_fu_temperatur_tag
+    state_characteristic: mean
+    max_age:
+      hours: 72

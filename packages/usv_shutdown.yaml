@@ -1,0 +1,102 @@
+# Version 1.0.1
+###############################################################################
+# Helpers
+###############################################################################
+input_boolean:
+  os_shutdown_pending:
+    name: "Shutdown anstehend"
+    initial: off
+    icon: mdi:power
+
+timer:
+  os_timer_ups:
+    duration: "00:30:00"
+    name: "Shutdown Timer"
+    icon: mdi:power
+    # optional:
+    # restore: true
+
+###############################################################################
+# Automations
+###############################################################################
+automation:
+  - alias: "OS Shutdown"
+    id: os_powerloss_shutdown
+    description: "OS Shutdown after power loss (Timer abgelaufen)"
+    triggers:
+      - trigger: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.os_timer_ups
+    conditions:
+      # Sicherheitsgurt: nur wenn UPS wirklich noch auf Batterie ist
+      - condition: state
+        entity_id: sensor.eaton_3s850d_statusdaten
+        state: "OB"
+    actions:
+      - action: notify.email_smtp
+        data:
+          title: "⚠️ Stromausfall erkannt – Shutdown"
+          message: >-
+            Die USV meldet weiterhin Batteriebetrieb (Status:
+            {{ states('sensor.eaton_3s850d_statusdaten') }}).
+            Home Assistant wird jetzt heruntergefahren.
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.os_shutdown_pending
+      - action: hassio.host_shutdown
+        data: {}
+    mode: single
+
+  - alias: "OS Shutdown nach Stromausfall"
+    id: os_ups_shutdown_proof
+    description: "Startet Shutdown-Timer bei OB, bricht bei OL ab"
+    triggers:
+      - trigger: state
+        entity_id: sensor.eaton_3s850d_statusdaten
+        from: "OL"
+        to: "OB"
+        id: Strom weg
+      - trigger: state
+        entity_id: sensor.eaton_3s850d_statusdaten
+        from: "OB"
+        to: "OL"
+        id: Strom zurueck
+    actions:
+      - choose:
+          - conditions:
+              - condition: trigger
+                id: Strom weg
+            sequence:
+              - action: input_boolean.turn_on
+                target:
+                  entity_id: input_boolean.os_shutdown_pending
+              - action: timer.start
+                target:
+                  entity_id: timer.os_timer_ups
+                data:
+                  duration: "00:30:00"
+              - action: notify.email_smtp
+                data:
+                  title: "⚠️ Stromausfall erkannt"
+                  message: >-
+                    Die USV meldet Batteriebetrieb (Status: OB).
+                    Home Assistant fährt in 30 Minuten herunter,
+                    falls der Strom nicht zurückkehrt.
+          - conditions:
+              - condition: trigger
+                id: Strom zurueck
+            sequence:
+              - action: timer.cancel
+                target:
+                  entity_id: timer.os_timer_ups
+              - action: input_boolean.turn_off
+                target:
+                  entity_id: input_boolean.os_shutdown_pending
+              - action: notify.email_smtp
+                data:
+                  title: "🔌 Stromversorgung wiederhergestellt"
+                  message: >-
+                    Die Stromversorgung ist zurück (UPS-Status: OL).
+                    Der geplante Shutdown wurde abgebrochen.
+    mode: single

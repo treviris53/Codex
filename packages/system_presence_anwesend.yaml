@@ -1,0 +1,106 @@
+# Version: 1.0.0
+# Change: derive input_boolean.anwesend automatically from person entities with guardrails (2026-01-19)
+
+input_boolean:
+  anwesend_auto_enabled:
+    name: Anwesenheit Auto-Modus aktiv
+    icon: mdi:account-sync
+    initial: true
+
+  anwesend_manual_force_home:
+    name: Anwesenheit manuell erzwingen (HOME)
+    icon: mdi:account-check
+    initial: false
+
+  anwesend_manual_force_away:
+    name: Anwesenheit manuell erzwingen (AWAY)
+    icon: mdi:account-off
+    initial: false
+
+template:
+  - binary_sensor:
+      - name: "Presence: Any Person Home"
+        unique_id: presence_any_person_home
+        icon: mdi:home-account
+        state: >
+          {% set presence_person_entities = [
+            'person.axel',
+            'person.marina'
+          ] %}
+          {{ presence_person_entities | select('has_value') | map('states') | select('eq', 'home') | list | count > 0 }}
+        attributes:
+          configured_person_entities: >
+            {% set presence_person_entities = [
+              'person.axel',
+              'person.marina'
+            ] %}
+            {{ presence_person_entities }}
+
+automation:
+  - id: presence_sync_anwesend_from_persons
+    alias: "Presence: anwesend aus Personen ableiten"
+    description: >
+      Setzt input_boolean.anwesend basierend auf person.* (home/away).
+      Guardrails: Auto-Schalter, manuelle Erzwingung (HOME/AWAY), Debounce gegen Flapping.
+    mode: single
+    trigger:
+      - platform: state
+        entity_id:
+          - person.axel
+          - person.marina
+      - platform: homeassistant
+        event: start
+      - platform: state
+        entity_id:
+          - input_boolean.anwesend_auto_enabled
+          - input_boolean.anwesend_manual_force_home
+          - input_boolean.anwesend_manual_force_away
+      - platform: time_pattern
+        minutes: "/30"
+    action:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.anwesend_manual_force_home
+                state: "on"
+            sequence:
+              - service: input_boolean.turn_on
+                target:
+                  entity_id: input_boolean.anwesend
+
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.anwesend_manual_force_away
+                state: "on"
+            sequence:
+              - service: input_boolean.turn_off
+                target:
+                  entity_id: input_boolean.anwesend
+
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.anwesend_auto_enabled
+                state: "on"
+            sequence:
+              - variables:
+                  any_home: "{{ is_state('binary_sensor.presence_any_person_home', 'on') }}"
+              - choose:
+                  - conditions:
+                      - condition: template
+                        value_template: "{{ any_home }}"
+                    sequence:
+                      - service: input_boolean.turn_on
+                        target:
+                          entity_id: input_boolean.anwesend
+                  - conditions:
+                      - condition: template
+                        value_template: "{{ not any_home }}"
+                    sequence:
+                      - delay: "00:02:00"
+                      - condition: state
+                        entity_id: binary_sensor.presence_any_person_home
+                        state: "off"
+                      - service: input_boolean.turn_off
+                        target:
+                          entity_id: input_boolean.anwesend
+        default: []

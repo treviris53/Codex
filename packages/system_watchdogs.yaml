@@ -1,0 +1,115 @@
+# Version: 1.0.0
+# Change note (2026-01-20): Phase 4 - add low-risk watchdog notifications for entity health (opt-in).
+
+input_boolean:
+  system_watchdogs_enabled:
+    name: "System Watchdogs Enabled"
+    icon: mdi:shield-check
+
+  system_watchdog_alert_active:
+    name: "System Watchdog Alert Active"
+    icon: mdi:alert
+    initial: false
+
+input_text:
+  system_watchdog_notify_service:
+    name: "System Watchdog Notify Service"
+    icon: mdi:bell
+    initial: "persistent_notification.create"
+
+input_number:
+  system_watchdog_unavailable_grace_minutes:
+    name: "System Watchdog Grace Minutes"
+    icon: mdi:timer-sand
+    min: 1
+    max: 120
+    step: 1
+    mode: slider
+    initial: 10
+
+timer:
+  system_watchdog_unavailable_grace:
+    name: "System Watchdog Unavailable Grace"
+    duration: "00:10:00"
+
+automation:
+  - id: system_watchdog_start_timer_on_unavailable
+    alias: "System: Watchdog - start grace timer when entities go unavailable"
+    description: >
+      Opt-in watchdog. When enabled and at least one entity is unavailable, start a grace timer.
+      After the timer finishes, a notification is sent if the situation persists.
+    mode: single
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.system_unavailable_entities_count
+        above: 0
+    condition:
+      - condition: state
+        entity_id: input_boolean.system_watchdogs_enabled
+        state: "on"
+      - condition: state
+        entity_id: input_boolean.system_watchdog_alert_active
+        state: "off"
+    action:
+      - service: timer.start
+        target:
+          entity_id: timer.system_watchdog_unavailable_grace
+        data:
+          duration: >
+            {%- set m = states('input_number.system_watchdog_unavailable_grace_minutes') | int(10) -%}
+            {%- set h = (m // 60) | int -%}
+            {%- set mm = (m % 60) | int -%}
+            {{ '%02d:%02d:00' | format(h, mm) }}
+
+  - id: system_watchdog_cancel_timer_on_recovery
+    alias: "System: Watchdog - cancel grace timer when recovered"
+    description: "Cancels the grace timer and clears active-alert state once all entities are back to normal."
+    mode: single
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.system_unavailable_entities_count
+        below: 1
+    action:
+      - service: timer.cancel
+        target:
+          entity_id: timer.system_watchdog_unavailable_grace
+      - service: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.system_watchdog_alert_active
+
+  - id: system_watchdog_notify_on_timer_finished
+    alias: "System: Watchdog - notify if unavailable persists"
+    description: >
+      Sends a notification if the grace timer finishes and entities are still unavailable.
+      Notification service is configurable via input_text.system_watchdog_notify_service.
+    mode: single
+    trigger:
+      - platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.system_watchdog_unavailable_grace
+    condition:
+      - condition: state
+        entity_id: input_boolean.system_watchdogs_enabled
+        state: "on"
+      - condition: numeric_state
+        entity_id: sensor.system_unavailable_entities_count
+        above: 0
+      - condition: state
+        entity_id: input_boolean.system_watchdog_alert_active
+        state: "off"
+    action:
+      - service: "{{ states('input_text.system_watchdog_notify_service') }}"
+        data:
+          title: "Home Assistant Watchdog"
+          message: >
+            Unavailable entities detected for more than
+            {{ states('input_number.system_watchdog_unavailable_grace_minutes') | int(10) }} minutes.
+
+            Count: {{ states('sensor.system_unavailable_entities_count') }}
+
+            Entities:
+            {{ state_attr('sensor.system_unavailable_entities_count', 'entities') if state_attr('sensor.system_unavailable_entities_count', 'entities') else 'n/a' }}
+      - service: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.system_watchdog_alert_active

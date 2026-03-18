@@ -1,0 +1,147 @@
+# Version 1.0.0
+template:
+  - triggers:
+      - trigger: event
+        event_type: homeassistant_started
+
+      - trigger: state
+        entity_id: sensor.hamburg_fu_zeit_messwerte
+
+      - trigger: state
+        entity_id: sensor.hamburg_fu_zeit_vorhersagewerte
+
+      - trigger: event
+        event_type: event_template_reloaded
+
+    actions:
+      - action: weather.get_forecasts
+        target:
+          entity_id: weather.hamburg_fu
+        data:
+          type: hourly
+        response_variable: hourly
+
+      - action: weather.get_forecasts
+        target:
+          entity_id: weather.hamburg_fu
+        data:
+          type: daily
+        response_variable: daily
+
+    sensor:
+      # --- Tages-Max / Tages-Min (heute) ---
+      - name: hamburg_fu_tx_heute
+        unique_id: hamburg_fu_tx_heute
+        unit_of_measurement: "°C"
+        device_class: temperature
+        state: >
+          {% set fc = daily['weather.hamburg_fu'].forecast if daily is defined and 'weather.hamburg_fu' in daily else [] %}
+          {% set v = fc[0].temperature if fc|count>0 else none %}
+          {{ v if v is not none else this.state }}
+
+      - name: hamburg_fu_tn_heute
+        unique_id: hamburg_fu_tn_heute
+        unit_of_measurement: "°C"
+        device_class: temperature
+        state: >
+          {% set fc = daily['weather.hamburg_fu'].forecast if daily is defined and 'weather.hamburg_fu' in daily else [] %}
+          {% set v = fc[0].templow if fc|count>0 else none %}
+          {{ v if v is not none else this.state }}
+
+      # --- Min/Max nächste 12h ---
+      - name: hamburg_fu_temp_next12h_min
+        unique_id: hamburg_fu_temp_next12h_min
+        unit_of_measurement: "°C"
+        device_class: temperature
+        state: >
+          {% set fc = hourly['weather.hamburg_fu'].forecast if hourly is defined and 'weather.hamburg_fu' in hourly else [] %}
+          {% set ns = namespace(t=[]) %}
+          {% for it in fc[:12] %}
+            {% if it.temperature is not none %}
+              {% set ns.t = ns.t + [it.temperature|float] %}
+            {% endif %}
+          {% endfor %}
+          {{ (ns.t|min) if ns.t|count>0 else this.state }}
+
+      - name: hamburg_fu_temp_next12h_max
+        unique_id: hamburg_fu_temp_next12h_max
+        unit_of_measurement: "°C"
+        device_class: temperature
+        state: >
+          {% set fc = hourly['weather.hamburg_fu'].forecast if hourly is defined and 'weather.hamburg_fu' in hourly else [] %}
+          {% set ns = namespace(t=[]) %}
+          {% for it in fc[:12] %}
+            {% if it.temperature is not none %}
+              {% set ns.t = ns.t + [it.temperature|float] %}
+            {% endif %}
+          {% endfor %}
+          {{ (ns.t|max) if ns.t|count>0 else this.state }}
+
+      # --- Regenwahrscheinlichkeit nächste Stunde (hourly[0]) ---
+      - name: hamburg_fu_precip_probability_next1h
+        unique_id: hamburg_fu_precip_probability_next1h
+        unit_of_measurement: "%"
+        state: >
+          {% set fc = hourly['weather.hamburg_fu'].forecast if hourly is defined and 'weather.hamburg_fu' in hourly else [] %}
+          {% set v = fc[0].precipitation_probability if fc|count>0 else none %}
+          {{ (v|float(0)) if v is not none else this.state }}
+
+      # --- Niederschlagssumme nächste 24h (mm) ---
+      - name: hamburg_fu_precip_sum_24h
+        unique_id: hamburg_fu_precip_sum_24h
+        unit_of_measurement: "mm"
+        state: >
+          {% set fc = hourly['weather.hamburg_fu'].forecast if hourly is defined and 'weather.hamburg_fu' in hourly else [] %}
+          {% set end = now() + timedelta(hours=24) %}
+          {% set ns = namespace(sum=0) %}
+          {% for it in fc %}
+            {% if as_datetime(it.datetime) < end %}
+              {% set ns.sum = ns.sum + (it.precipitation | float(0)) %}
+            {% endif %}
+          {% endfor %}
+          {{ ns.sum | round(1) }}
+
+      # --- Vorhersagezeit (erste hourly-Zeit) lokal ---
+      - name: hamburg_fu_vorhersagezeit_local
+        unique_id: hamburg_fu_vorhersagezeit_local
+        device_class: timestamp
+        state: >
+          {% set fc = hourly['weather.hamburg_fu'].forecast if hourly is defined and 'weather.hamburg_fu' in hourly else [] %}
+          {% if fc|count>0 %}
+            {{ as_local(as_datetime(fc[0].datetime)) }}
+          {% else %}
+            {{ this.state }}
+          {% endif %}
+
+      # --- Beaufort aus aktueller Windgeschwindigkeit (weather entity) ---
+      - name: hamburg_fu_beaufort
+        unique_id: hamburg_fu_beaufort
+        unit_of_measurement: "Bft"
+        state: >
+          {% set ws = state_attr('weather.hamburg_fu','wind_speed') | float(none) %}
+          {% set u  = state_attr('weather.hamburg_fu','wind_speed_unit') %}
+          {% if ws is none %}
+            {{ this.state }}
+          {% else %}
+            {% set kmh = (ws * 3.6) if u == 'm/s' else ws %}
+            {% set ms = kmh / 3.6 %}
+            {% set limits = [0.3,1.6,3.4,5.5,8.0,10.8,13.9,17.2,20.8,24.5,28.5,32.7] %}
+            {% set ns = namespace(b=0) %}
+            {% for l in limits %}
+              {% if ms >= l %}{% set ns.b = loop.index %}{% endif %}
+            {% endfor %}
+            {{ ns.b }}
+          {% endif %}
+
+      # --- Windrose (16er) aus aktueller Windrichtung (Grad) ---
+      - name: hamburg_fu_windrose
+        unique_id: hamburg_fu_windrose
+        state: >
+          {% set deg = state_attr('weather.hamburg_fu','wind_bearing') | float(none) %}
+          {% if deg is none %}
+            {{ this.state }}
+          {% else %}
+            {% set dirs = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"] %}
+            {% set idx = (((deg % 360) + 11.25) / 22.5) | int %}
+            {{ dirs[idx % 16] }}
+          {% endif %}

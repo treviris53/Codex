@@ -1,0 +1,43 @@
+esphome:
+  name: temperatur-sensor
+  friendly_name: Temperatur_Sensor
+
+esp32:
+  board: esp32dev
+  framework:
+    type: esp-idf
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "iIWIJy7vKn4TD8XV0LitlvGUHblRCmQ4ZKY9HTsFwAQ="
+
+ota:
+  - platform: esphome
+    password: "63241f2be70dcde3c37964d8f9f13dc0"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Temperatur-Sensor"
+    password: "QtX1EgrZGvlB"
+
+captive_portal:
+    
+sensor:
+  - platform: dht
+    model: DHT11
+    pin: GPIO4
+    temperature:
+      name: "Temperatur DHT11"
+      accuracy_decimals: 1
+    humidity:
+      name: "Luftfeuchte DHT11"
+      accuracy_decimals: 0
+    update_interval: 30s

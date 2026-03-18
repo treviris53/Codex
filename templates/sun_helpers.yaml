@@ -1,0 +1,39 @@
+    sensor:
+      - name: "Zeit 30 min vor Sonnenaufgang"
+        unique_id: time_30min_before_sunrise
+        device_class: timestamp
+        state: >
+          {{ (as_datetime(state_attr('sun.sun','next_rising')) - timedelta(minutes=30)).isoformat() }}
+
+      - name: "Zeit 30 min nach Sonnenuntergang"
+        unique_id: time_30min_after_sunset
+        device_class: timestamp
+        state: >
+          {{ (as_datetime(state_attr('sun.sun','next_setting')) + timedelta(minutes=30)).isoformat() }}
+
+    trigger:
+        # Civil dawn: wenn Elevation von unter -6° in den Bereich [-6..0] steigt
+      - platform: numeric_state
+        entity_id: sun.sun
+        attribute: elevation
+        above: -6
+      # Civil dusk: wenn Elevation von über 0° in den Bereich [-6..0] fällt
+      - platform: numeric_state
+        entity_id: sun.sun
+        attribute: elevation
+        below: 0
+
+    binary_sensor:
+      - name: "Civil Sun Dawn (Pulse)"
+        unique_id: civil_sun_dawn_pulse
+        state: >
+          {% set elev = state_attr('sun.sun','elevation') | float(-99) %}
+          {{ elev <= 0 and elev >= -6 and is_state('sun.sun','below_horizon') }}
+        auto_off: "00:00:10"
+
+      - name: "Civil Sun Dusk (Pulse)"
+        unique_id: civil_sun_dusk_pulse
+        state: >
+          {% set elev = state_attr('sun.sun','elevation') | float(-99) %}
+          {{ elev <= 0 and elev >= -6 and is_state('sun.sun','above_horizon') }}
+        auto_off: "00:00:10"

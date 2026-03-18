@@ -1,0 +1,165 @@
+# Dashboard: Wetter
+# Version: 1.0.1
+# Generated: 2026-01-26
+# Notes:
+# - Lovelace YAML exported from UI (Storage dashboards remove comments); comments were re-added for Git readability.
+# - Editing in UI "Raw configuration editor" will strip comments again; prefer editing the file in Git/Editor.
+
+title: Wetter
+views:
+  - title: Home
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading: Vorhersage heute
+            heading_style: title
+          - show_current: true
+            show_forecast: true
+            type: weather-forecast
+            entity: weather.hamburg_fu
+            forecast_type: hourly
+            secondary_info_attribute: latest_update_utc
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: title
+            heading: 5 Tage Vorhersage
+          - type: custom:weather-chart-card
+            entity: weather.hamburg_fu
+            show_main: true
+            show_temperature: true
+            show_current_condition: true
+            show_attributes: true
+            show_time: false
+            show_time_seconds: false
+            show_day: false
+            show_date: false
+            show_humidity: true
+            show_pressure: true
+            show_wind_direction: true
+            show_wind_speed: true
+            show_sun: true
+            show_feels_like: true
+            show_dew_point: false
+            show_wind_gust_speed: false
+            show_visibility: false
+            show_last_changed: false
+            use_12hour_format: false
+            icons_size: 25
+            animated_icons: false
+            icon_style: style1
+            autoscroll: false
+            forecast:
+              precipitation_type: rainfall
+              show_probability: true
+              labels_font_size: '11'
+              precip_bar_size: '100'
+              style: style1
+              show_wind_forecast: true
+              condition_icons: true
+              round_temp: true
+              type: daily
+              number_of_forecasts: '0'
+              disable_animation: false
+            units:
+              speed: ''
+          - type: custom:horizon-card
+            moon: true
+            refresh_period: 60
+            fields:
+              sunrise: true
+              sunset: true
+              dawn: true
+              noon: true
+              dusk: true
+              azimuth: true
+              sun_azimuth: true
+              moon_azimuth: true
+              elevation: true
+              sun_elevation: true
+              moon_elevation: true
+              moonrise: true
+              moonset: true
+              moon_phase: true
+            southern_flip: false
+            language: de
+        column_span: 3
+      - type: grid
+        cards:
+          - type: heading
+            heading: DWD Hamburg-Fuhlsbüttel
+            heading_style: title
+          - type: entities
+            title: 'Kennzahlen '
+            show_header_toggle: false
+            entities:
+              - entity: sensor.hamburg_fu_wetterzustand
+              - entity: sensor.hamburg_fu_druck
+                name: Luftdruck
+              - entity: sensor.hamburg_fu_temperatur
+                name: Temperatur (aktuell)
+              - entity: sensor.hamburg_fu_tx_heute
+                name: Tagesmax (heute)
+              - entity: sensor.hamburg_fu_tn_heute
+                name: Tagesmin (heute)
+              - entity: sensor.hamburg_fu_luftfeuchtigkeit
+                name: Luftfeuchtigkeit
+              - entity: sensor.hamburg_fu_precip_probability_next1h
+                name: Niederschlag-Wahrsch. 1h
+              - entity: sensor.hamburg_fu_precip_sum_24h
+                name: Niederschlag Summe 24h
+              - entity: sensor.hamburg_fu_windrichtung
+                name: Windrichtung °
+              - entity: sensor.hamburg_fu_windgeschwindigkeit
+                name: Windgeschwindigkeit
+              - entity: sensor.hamburg_fu_windboen
+                name: Windböen
+              - entity: sensor.hamburg_fu_windrose
+                name: Windrichtung (Text)
+              - entity: sensor.hamburg_fu_beaufort
+                name: Wind (Beaufort)
+              - entity: sensor.hamburg_fu_vorhersagezeit_local
+                name: Vorhersagezeit (lokal)
+          - type: history-graph
+            title: Temperatur-Verlauf (48h)
+            hours_to_show: 48
+            refresh_interval: 120
+            entities:
+              - entity: sensor.hamburg_fu_temperatur
+                name: Aktuell
+              - entity: sensor.hamburg_fu_tx_heute
+                name: Vorhersage-Max
+              - entity: sensor.hamburg_fu_tn_heute
+                name: Vorhersage-Min
+            grid_options:
+              columns: 12
+              rows: 7
+        column_span: 2
+      - type: grid
+        cards:
+          - type: heading
+            heading: Hamburg
+            heading_style: title
+          - show_state: true
+            show_name: true
+            camera_view: auto
+            type: picture-entity
+            entity: camera.precipitation_3
+            image: https://demo.home-assistant.io/stub_config/bedroom.png
+            name: Regenradar 35km
+      - type: grid
+        cards:
+          - type: heading
+            heading: Umgebung
+            heading_style: title
+          - show_state: true
+            show_name: true
+            camera_view: auto
+            type: picture-entity
+            entity: camera.precipitation_2
+            image: https://demo.home-assistant.io/stub_config/bedroom.png
+            name: Regenradar 250km
+      - type: grid
+        cards: []
+    cards: []

@@ -1,0 +1,112 @@
+# Version: 1.0.1
+homeassistant:
+  packages: !include_dir_named packages
+  auth_providers:
+    - type: homeassistant
+    - type: trusted_networks
+      trusted_networks:
+        - 192.168.178.70/32
+        - 192.168.178.80/32
+      allow_bypass_login: true
+
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+template: !include_dir_merge_list templates/
+
+# Keep the internal HA database small (InfluxDB is independent)
+recorder:
+  purge_keep_days: 14
+  auto_purge: true
+
+# InfluxDB (runs as Home Assistant add-on on HA-OS)
+influxdb:
+
+  # Writes everything into ONE measurement (recommended for Grafana/querying).
+  # If you want to keep measurements grouped by unit ("°C", "kWh", ...), remove this line.
+  override_measurement: state
+
+  tags:
+    source: HA
+  tags_attributes:
+    - friendly_name
+  default_measurement: state
+  exclude:
+    entities:
+      - zone.home
+    domains:
+      - persistent_notification
+      - person
+  include:
+    domains:
+      - sensor
+      - binary_sensor
+      - sun
+      - light
+      - cover
+      - switch
+      - climate
+      - vacuum
+    entities:
+      - weather.home
+
+# Local access in LAN/WLAN via HTTP (external access via Home Assistant Cloud)
+http:
+  ip_ban_enabled: true
+  login_attempts_threshold: 5
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 192.168.178.10        # QNAP/NPM Host
+    - 172.29.0.0/16         # Docker-Bridge auf QNAP (falls NPM von dort kommt)
+
+notify:
+  - name: "Email_SMTP"
+    platform: smtp
+    server: "securesmtp.t-online.de"
+    port: 587
+    timeout: 15
+    encryption: starttls
+    username: !secret smtp_user
+    password: !secret smtp_password
+
+    # Optional: move sender/recipient into secrets.yaml for cleaner config
+    # sender: !secret smtp_sender
+    # recipient:
+    #   - !secret smtp_recipient
+    sender: !secret smtp_sender
+    recipient:
+      - !secret smtp_recipient
+# Dashboard Definitionen als yaml Version: 1.0.0
+lovelace:
+  mode: storage
+  dashboards:
+    roborock-dashboard:
+      mode: yaml
+      title: Roborock
+      icon: mdi:robot-vacuum
+      show_in_sidebar: true
+      require_admin: false
+      filename: dashboards/roborock.yaml
+
+    sieker-dashboard:
+      mode: yaml
+      title: Sieker Wohnung
+      icon: mdi:home
+      show_in_sidebar: true
+      require_admin: false
+      filename: dashboards/sieker_dashboard.yaml
+
+    wetter-dashboard:
+      mode: yaml
+      title: Wetter Aktuell
+      icon: mdi:weather-cloudy-clock
+      show_in_sidebar: true
+      require_admin: false
+      filename: dashboards/wetter_dashboard.yaml

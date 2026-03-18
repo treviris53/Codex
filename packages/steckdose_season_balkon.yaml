@@ -1,0 +1,490 @@
+# Version 1.0.0
+# Steckdose Balkon – Saisonsteuerung (konsolidiert, v3)
+# - Saison: 1. Advent bis 31.01. (inkl. Weihnachtszeit)
+# - Policy: Morgens 06:00–08:15 und Abends 16:00–22:00 (jeweils nur wenn dunkel)
+# - Debug: sensor.steckdose_balkon_debug inkl. reason/expected_state + letzte Aktion (Helper)
+
+input_datetime:
+  steckdose_morgens_ein:
+    name: Steckdose morgens EIN
+    has_date: false
+    has_time: true
+    #initial: "06:30:00"
+
+  steckdose_abends_ein:
+    name: Steckdose abends EIN
+    has_date: false
+    has_time: true
+    #initial: "16:30:00"
+
+  steckdose_abends_aus:
+    name: Steckdose abends AUS
+    has_date: false
+    has_time: true
+    #initial: "22:00:00"
+
+  steckdose_balkon_last_action_at:
+    name: Steckdose Balkon letzte Aktion Zeitpunkt
+    has_date: true
+    has_time: true
+
+input_number:
+  dunkelheit_lux_schwelle:
+    name: Dunkelheit Lux Schwelle
+    min: 0
+    max: 2000
+    step: 1
+    unit_of_measurement: lx
+    icon: mdi:brightness-6
+    #initial: 80
+
+  dunkelheit_lux_hysterese:
+    name: Dunkelheit Lux Hysterese
+    min: 0
+    max: 500
+    step: 1
+    unit_of_measurement: lx
+    icon: mdi:brightness-5
+    #initial: 20
+
+input_text:
+  steckdose_balkon_last_action:
+    name: Steckdose Balkon letzte Aktion
+    max: 255
+
+  steckdose_balkon_last_reason:
+    name: Steckdose Balkon letzte Begründung
+    max: 255
+input_boolean:
+  steckdose_show_button:        
+    name: Steckdose Button sichtbar
+    initial: false
+
+template:
+  - binary_sensor:
+      - name: Dunkelheit Balkon
+        unique_id: dunkelheit_balkon
+        state: >-
+          {% set lux = states('sensor.balkon_lichtsensor_durchschnittliche_beleuchtungsstarke') | float(-1) %}
+          {% set thr = states('input_number.dunkelheit_lux_schwelle') | float(80) %}
+          {% set hyst = states('input_number.dunkelheit_lux_hysterese') | float(20) %}
+          {% set prev_on = (this.state == 'on') %}
+          {% if lux < 0 %}
+            {{ prev_on }}
+          {% else %}
+            {% if prev_on %}
+              {{ lux < (thr + hyst) }}
+            {% else %}
+              {{ lux < thr }}
+            {% endif %}
+          {% endif %}
+        delay_on: "00:05:00"
+        delay_off: "00:05:00"
+
+      - name: Steckdose Saison aktiv
+        unique_id: steckdose_saison_aktiv
+        state: >-
+          {% set now_ts = as_timestamp(now()) %}
+          {% set y = now().year %}
+          {% set years = [y-1, y] %}
+          {% set ns = namespace(active=false) %}
+          {% for sy in years %}
+            {# 4. Advent = Sonntag am/vor 24.12. #}
+            {% set dec24 = strptime(sy|string ~ '-12-24', '%Y-%m-%d') %}
+            {% set fourth_advent = dec24 - timedelta(days=(dec24.weekday()+1) % 7) %}
+            {# 1. Advent = 4. Advent - 21 Tage #}
+            {% set first_advent = fourth_advent - timedelta(days=21) %}
+            {% set start = first_advent - timedelta(days=(first_advent.weekday() - 0) % 7) %}
+            {# Ende: Sonntag am/ nach dem 20.01. (Folgejahr) bis 23:59:59 #}
+            {% set jan20 = strptime((sy+1)|string ~ '-01-20', '%Y-%m-%d') %}
+            {% set end_sunday = jan20 + timedelta(days=(6 - jan20.weekday()) % 7) %}
+            {% set end = end_sunday + timedelta(days=1) - timedelta(seconds=1) %}
+            {% if now_ts >= as_timestamp(start) and now_ts <= as_timestamp(end) %}
+              {% set ns.active = true %}
+            {% endif %}
+          {% endfor %}
+          {{ ns.active }}
+
+    sensor:
+      - name: Steckdose Balkon Debug
+        unique_id: steckdose_balkon_debug
+        icon: mdi:bug-outline
+        state: "{{ states('switch.schalt_mess_steckdose_steckdose') }}"
+        attributes:
+          now_local: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"
+
+          # Inputs
+          season_active: "{{ is_state('binary_sensor.steckdose_saison_aktiv', 'on') }}"
+          dunkelheit: "{{ is_state('binary_sensor.dunkelheit_balkon', 'on') }}"
+          lux: "{{ states('sensor.balkon_lichtsensor_durchschnittliche_beleuchtungsstarke') }}"
+          lux_schwelle: "{{ states('input_number.dunkelheit_lux_schwelle') }}"
+          lux_hysterese: "{{ states('input_number.dunkelheit_lux_hysterese') }}"
+          morgens_start: "{{ states('input_datetime.steckdose_morgens_ein') }}"
+          morgens_ende: "08:15:00"
+          abends_ein: "{{ states('input_datetime.steckdose_abends_ein') }}"
+          abends_aus: "{{ states('input_datetime.steckdose_abends_aus') }}"
+
+          # Zeitfenster (bool)
+          within_morning_window: >-
+            {% set s = states('input_datetime.steckdose_morgens_ein') %}
+            {% if s in ['unknown','unavailable',''] %}
+              false
+            {% else %}
+              {{ now() >= today_at(s) and now() < today_at('08:15:00') }}
+            {% endif %}
+
+          within_evening_window: >-
+            {% set s = states('input_datetime.steckdose_abends_ein') %}
+            {% set e = states('input_datetime.steckdose_abends_aus') %}
+            {% if s in ['unknown','unavailable',''] or e in ['unknown','unavailable',''] %}
+              false
+            {% else %}
+              {{ now() >= today_at(s) and now() < today_at(e) }}
+            {% endif %}
+
+          # Erwarteter Zustand nach Policy
+          expected_state: >-
+            {% set season = is_state('binary_sensor.steckdose_saison_aktiv','on') %}
+            {% set dark = is_state('binary_sensor.dunkelheit_balkon','on') %}
+
+            {# Morning window: [morgens_ein .. 08:15) #}
+            {% set s_m = states('input_datetime.steckdose_morgens_ein') %}
+            {% set in_m = (s_m not in ['unknown','unavailable',''] and (now() >= today_at(s_m) and now() < today_at('08:15:00'))) %}
+
+            {# Evening window: [abends_ein .. abends_aus) #}
+            {% set s_e = states('input_datetime.steckdose_abends_ein') %}
+            {% set e_e = states('input_datetime.steckdose_abends_aus') %}
+            {% set in_e = (s_e not in ['unknown','unavailable',''] and e_e not in ['unknown','unavailable',''] and (now() >= today_at(s_e) and now() < today_at(e_e))) %}
+
+            {% if season and dark and (in_m or in_e) %}
+              on
+            {% else %}
+              off
+            {% endif %}
+
+          # Begründung (Debug)
+          reason: >-
+            {% set season = is_state('binary_sensor.steckdose_saison_aktiv','on') %}
+            {% set dark = is_state('binary_sensor.dunkelheit_balkon','on') %}
+            {% set s_m = states('input_datetime.steckdose_morgens_ein') %}
+            {% set s_e = states('input_datetime.steckdose_abends_ein') %}
+            {% set e_e = states('input_datetime.steckdose_abends_aus') %}
+            {% set in_m = (s_m not in ['unknown','unavailable',''] and (now() >= today_at(s_m) and now() < today_at('08:15:00'))) %}
+            {% set in_e = (s_e not in ['unknown','unavailable',''] and e_e not in ['unknown','unavailable',''] and (now() >= today_at(s_e) and now() < today_at(e_e))) %}
+
+            {% if not season %}
+              saison_aus
+            {% elif not dark %}
+              hell
+            {% elif in_m %}
+              morgens_fenster
+            {% elif in_e %}
+              abends_fenster
+            {% else %}
+              ausserhalb_fenster
+            {% endif %}
+
+          # Letzte Aktion (Helper)
+          last_action: "{{ states('input_text.steckdose_balkon_last_action') }}"
+          last_reason: "{{ states('input_text.steckdose_balkon_last_reason') }}"
+          last_action_at: "{{ states('input_datetime.steckdose_balkon_last_action_at') }}"
+
+automation:
+  - id: steckdose_anschaltzeiten_begrenzen
+    alias: Steckdose – Anschaltzeiten begrenzen (06:00–08:15 / 16:00–22:00)
+    mode: restart
+    trigger:
+      - platform: state
+        entity_id:
+          - input_datetime.steckdose_morgens_ein
+          - input_datetime.steckdose_abends_ein
+    action:
+      - choose:
+          - conditions: "{{ trigger.entity_id == 'input_datetime.steckdose_morgens_ein' }}"
+            sequence:
+              - variables:
+                  t: "{{ states('input_datetime.steckdose_morgens_ein') }}"
+                  clamped: >-
+                    {{ '06:00:00'
+                       if t in ['unknown','unavailable',''] or t < '06:00:00'
+                       else '08:15:00'
+                       if t > '08:15:00'
+                       else t }}
+              - condition: template
+                value_template: "{{ clamped != t }}"
+              - service: input_datetime.set_datetime
+                target:
+                  entity_id: input_datetime.steckdose_morgens_ein
+                data:
+                  time: "{{ clamped }}"
+
+          - conditions: "{{ trigger.entity_id == 'input_datetime.steckdose_abends_ein' }}"
+            sequence:
+              - variables:
+                  t: "{{ states('input_datetime.steckdose_abends_ein') }}"
+                  max_t: >-
+                    {% set e = states('input_datetime.steckdose_abends_aus') %}
+                    {{ '22:00:00' if e in ['unknown','unavailable',''] else e }}
+                  clamped: >-
+                    {{ '16:00:00'
+                       if t in ['unknown','unavailable',''] or t < '16:00:00'
+                       else max_t
+                       if t > max_t
+                       else t }}
+              - condition: template
+                value_template: "{{ clamped != t }}"
+              - service: input_datetime.set_datetime
+                target:
+                  entity_id: input_datetime.steckdose_abends_ein
+                data:
+                  time: "{{ clamped }}"
+
+  - id: steckdose_morgens_dunkelheit_an
+    alias: Steckdose – morgens bei Dunkelheit AN (im Zeitfenster)
+    mode: single
+    trigger:
+      - platform: time
+        at: input_datetime.steckdose_morgens_ein
+      - platform: state
+        entity_id: binary_sensor.dunkelheit_balkon
+        to: "on"
+    condition:
+      - condition: state
+        entity_id: binary_sensor.steckdose_saison_aktiv
+        state: "on"
+      - condition: time
+        before: "08:15:00"
+      - condition: template
+        value_template: >-
+          {% set s = states('input_datetime.steckdose_morgens_ein') %}
+          {% if s in ['unknown','unavailable',''] %}
+            false
+          {% else %}
+            {{ now() >= today_at(s) and now() < today_at('08:15:00') }}
+          {% endif %}
+      - condition: state
+        entity_id: binary_sensor.dunkelheit_balkon
+        state: "on"
+    action:
+      - service: switch.turn_on
+        target:
+          entity_id: switch.schalt_mess_steckdose_steckdose
+
+  - id: steckdose_morgens_helligkeit_aus
+    alias: Steckdose – morgens bei Helligkeit AUS (im Zeitfenster)
+    mode: single
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.dunkelheit_balkon
+        to: "off"
+    condition:
+      - condition: state
+        entity_id: binary_sensor.steckdose_saison_aktiv
+        state: "on"
+      - condition: template
+        value_template: >-
+          {% set s = states('input_datetime.steckdose_morgens_ein') %}
+          {% if s in ['unknown','unavailable',''] %}
+            false
+          {% else %}
+            {{ now() >= today_at(s) and now() < today_at('08:15:00') }}
+          {% endif %}
+      - condition: state
+        entity_id: switch.schalt_mess_steckdose_steckdose
+        state: "on"
+    action:
+      - service: switch.turn_off
+        target:
+          entity_id: switch.schalt_mess_steckdose_steckdose
+
+  - id: steckdose_morgens_fix_0815_aus
+    alias: Steckdose – morgens 08:15 Fix AUS (nur Saison)
+    mode: single
+    trigger:
+      - platform: time
+        at: "08:15:00"
+    condition:
+      - condition: state
+        entity_id: binary_sensor.steckdose_saison_aktiv
+        state: "on"
+    action:
+      - service: switch.turn_off
+        target:
+          entity_id: switch.schalt_mess_steckdose_steckdose
+
+  - id: steckdose_abends_dunkelheit_an
+    alias: Steckdose – abends bei Dunkelheit AN (im Zeitfenster)
+    mode: single
+    trigger:
+      - platform: time
+        at: input_datetime.steckdose_abends_ein
+      - platform: state
+        entity_id: binary_sensor.dunkelheit_balkon
+        to: "on"
+    condition:
+      - condition: state
+        entity_id: binary_sensor.steckdose_saison_aktiv
+        state: "on"
+      - condition: template
+        value_template: >-
+          {% set s = states('input_datetime.steckdose_abends_ein') %}
+          {% set e = states('input_datetime.steckdose_abends_aus') %}
+          {% if s in ['unknown','unavailable',''] or e in ['unknown','unavailable',''] %}
+            false
+          {% else %}
+            {{ now() >= today_at(s) and now() < today_at(e) }}
+          {% endif %}
+      - condition: state
+        entity_id: binary_sensor.dunkelheit_balkon
+        state: "on"
+    action:
+      - service: switch.turn_on
+        target:
+          entity_id: switch.schalt_mess_steckdose_steckdose
+
+  - id: steckdose_abends_helligkeit_aus
+    alias: Steckdose – abends bei Helligkeit AUS (im Zeitfenster)
+    mode: single
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.dunkelheit_balkon
+        to: "off"
+    condition:
+      - condition: state
+        entity_id: binary_sensor.steckdose_saison_aktiv
+        state: "on"
+      - condition: template
+        value_template: >-
+          {% set s = states('input_datetime.steckdose_abends_ein') %}
+          {% set e = states('input_datetime.steckdose_abends_aus') %}
+          {% if s in ['unknown','unavailable',''] or e in ['unknown','unavailable',''] %}
+            false
+          {% else %}
+            {{ now() >= today_at(s) and now() < today_at(e) }}
+          {% endif %}
+      - condition: state
+        entity_id: switch.schalt_mess_steckdose_steckdose
+        state: "on"
+    action:
+      - service: switch.turn_off
+        target:
+          entity_id: switch.schalt_mess_steckdose_steckdose
+
+  - id: steckdose_abends_fix_2200_aus
+    alias: Steckdose – 22:00 Fix OFF (nur Saison)
+    mode: single
+    trigger:
+      - platform: time
+        at: input_datetime.steckdose_abends_aus
+    condition:
+      - condition: state
+        entity_id: binary_sensor.steckdose_saison_aktiv
+        state: "on"
+    action:
+      - service: switch.turn_off
+        target:
+          entity_id: switch.schalt_mess_steckdose_steckdose
+
+  - id: steckdose_safety_2300_aus
+    alias: Steckdose – 23:00 Not-Aus (immer)
+    trigger:
+      - platform: time
+        at: "23:00:00"
+    action:
+      - service: switch.turn_off
+        target:
+          entity_id: switch.schalt_mess_steckdose_steckdose
+
+  - id: steckdose_startup_sync
+    alias: Steckdose – Startup Sync (Saison & Zeitfenster)
+    mode: single
+    trigger:
+      - platform: homeassistant
+        event: start
+      - platform: state
+        entity_id: binary_sensor.steckdose_saison_aktiv
+        to: "on"
+    condition:
+      - condition: state
+        entity_id: binary_sensor.steckdose_saison_aktiv
+        state: "on"
+    action:
+      - variables:
+          now_s: "{{ now().strftime('%H:%M:%S') }}"
+
+          # Morning window: [morgens_ein .. 08:15)
+          m_on_raw: "{{ states('input_datetime.steckdose_morgens_ein') }}"
+          m_on: >-
+            {{ '06:00:00'
+               if m_on_raw in ['unknown','unavailable',''] or m_on_raw < '06:00:00'
+               else '08:15:00'
+               if m_on_raw > '08:15:00'
+               else m_on_raw }}
+          m_off: "08:15:00"
+
+          # Evening window: [abends_ein .. abends_aus)
+          e_on_raw: "{{ states('input_datetime.steckdose_abends_ein') }}"
+          e_off: >-
+            {% set e = states('input_datetime.steckdose_abends_aus') %}
+            {{ '22:00:00' if e in ['unknown','unavailable',''] else e }}
+          e_on: >-
+            {{ '16:00:00'
+               if e_on_raw in ['unknown','unavailable',''] or e_on_raw < '16:00:00'
+               else e_off
+               if e_on_raw > e_off
+               else e_on_raw }}
+
+          is_dark: "{{ is_state('binary_sensor.dunkelheit_balkon', 'on') }}"
+
+          in_morning: "{{ m_on <= now_s and now_s < m_off }}"
+          in_evening: "{{ e_on <= now_s and now_s < e_off }}"
+
+      - choose:
+          - conditions: "{{ in_morning or in_evening }}"
+            sequence:
+              - choose:
+                  - conditions: "{{ is_dark }}"
+                    sequence:
+                      - service: switch.turn_on
+                        target:
+                          entity_id: switch.schalt_mess_steckdose_steckdose
+                  - conditions: "{{ not is_dark }}"
+                    sequence:
+                      - service: switch.turn_off
+                        target:
+                          entity_id: switch.schalt_mess_steckdose_steckdose
+
+  - id: steckdose_saison_ende_aus
+    alias: Steckdose – bei Saison AUS sofort AUS
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.steckdose_saison_aktiv
+        to: "off"
+    action:
+      - service: switch.turn_off
+        target:
+          entity_id: switch.schalt_mess_steckdose_steckdose
+
+  - id: steckdose_balkon_debug_update
+    alias: Steckdose Balkon – Debug Update (letzte Aktion)
+    mode: queued
+    trigger:
+      - platform: state
+        entity_id: switch.schalt_mess_steckdose_steckdose
+      - platform: state
+        entity_id: binary_sensor.steckdose_saison_aktiv
+      - platform: state
+        entity_id: binary_sensor.dunkelheit_balkon
+    action:
+      - service: input_text.set_value
+        data:
+          entity_id: input_text.steckdose_balkon_last_action
+          value: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}...→ switch={{ states('switch.schalt_mess_steckdose_steckdose') }}"
+      - service: input_text.set_value
+        data:
+          entity_id: input_text.steckdose_balkon_last_reason
+          value: "reason={{ state_attr('sensor.steckdose_balkon_debug','reason') }}; expected={{ state_attr('sensor.steckdose_balkon_debug','expected_state') }}"
+      - service: input_datetime.set_datetime
+        data:
+          entity_id: input_datetime.steckdose_balkon_last_action_at
+          timestamp: "{{ now().timestamp() }}"

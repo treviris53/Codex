@@ -1,0 +1,506 @@
+# Version 1.0.0
+########################################
+# Beschattung - komplett parametrierbar
+# Outputs fix: input_boolean.beschattung_ost / input_boolean.beschattung_west
+# Alle Grenzwerte zentral per input_number
+# Debug inkl. Abstand zum Schwellenwert (Diff)
+########################################
+
+homeassistant:
+  customize:
+    input_boolean.beschattung_ost:
+      friendly_name: "Beschattung_Ost"
+      icon: mdi:roller-shade
+    input_boolean.beschattung_west:
+      friendly_name: "Beschattung_West"
+      icon: mdi:roller-shade
+
+########################################
+# 1) Zentrale Parameter (Dashboard)
+########################################
+input_number:
+  beschattung_azimut_ost_min:
+    name: "Azimut Ost min"
+    min: 0
+    max: 360
+    step: 1
+    unit_of_measurement: "°"
+    mode: box
+    icon: mdi:sun-compass
+
+  beschattung_azimut_ost_max:
+    name: "Azimut Ost max"
+    min: 0
+    max: 360
+    step: 1
+    unit_of_measurement: "°"
+    mode: box
+    icon: mdi:sun-compass
+
+  beschattung_azimut_west_min:
+    name: "Azimut West min"
+    min: 0
+    max: 360
+    step: 1
+    unit_of_measurement: "°"
+    mode: box
+    icon: mdi:sun-compass
+
+  beschattung_azimut_west_max:
+    name: "Azimut West max"
+    min: 0
+    max: 360
+    step: 1
+    unit_of_measurement: "°"
+    mode: box
+    icon: mdi:sun-compass
+
+  beschattung_elevation_min:
+    name: "Elevation min"
+    min: 0
+    max: 90
+    step: 0.5
+    unit_of_measurement: "°"
+    mode: box
+    icon: mdi:sun-angle
+    initial: 26
+
+  beschattung_sommer_temp_min:
+    name: "Sommer Temp (außen) min"
+    min: -20
+    max: 40
+    step: 0.5
+    unit_of_measurement: "°C"
+    mode: box
+    icon: mdi:home-thermometer-outline
+
+  beschattung_lux_ost_min:
+    name: "Lux Ost min"
+    min: 0
+    max: 20000
+    step: 50
+    unit_of_measurement: "lx"
+    mode: box
+    icon: mdi:weather-sunny
+
+  beschattung_lux_west_min:
+    name: "Lux West min"
+    min: 0
+    max: 20000
+    step: 50
+    unit_of_measurement: "lx"
+    mode: box
+    icon: mdi:weather-sunny
+
+  beschattung_temp_ost_min:
+    name: "Temp Ost (Küche) min"
+    min: 10
+    max: 35
+    step: 0.1
+    unit_of_measurement: "°C"
+    mode: box
+    icon: mdi:thermometer
+
+  beschattung_temp_west_min:
+    name: "Temp West (Schlafzimmer) min"
+    min: 10
+    max: 35
+    step: 0.1
+    unit_of_measurement: "°C"
+    mode: box
+    icon: mdi:thermometer
+
+########################################
+# 2) Template Sensoren: Live-Werte + Diffs
+########################################
+template:
+  - sensor:
+      # --- Live Werte (Debug) ---
+      # FIX: überall float(0) statt float ohne default
+
+      - name: "Beschattung Live Azimut"
+        unique_id: beschattung_live_azimut
+        unit_of_measurement: "°"
+        icon: mdi:sun-compass
+        state: "{{ states('sensor.sun_solar_azimuth') | float(0) }}"
+
+      - name: "Beschattung Live Elevation"
+        unique_id: beschattung_live_elevation
+        unit_of_measurement: "°"
+        icon: mdi:sun-angle
+        state: "{{ states('sensor.sun_solar_elevation') | float(0) }}"
+
+      - name: "Beschattung Live Temp Außen"
+        unique_id: beschattung_live_temp_aussen
+        unit_of_measurement: "°C"
+        icon: mdi:home-thermometer-outline
+        state: "{{ states('sensor.0x00158d008b61ad80_temperature') | float(0) }}"
+
+      - name: "Beschattung Live Lux Ost"
+        unique_id: beschattung_live_lux_ost
+        unit_of_measurement: "lx"
+        icon: mdi:weather-sunny
+        state: "{{ states('sensor.balkon_lichtsensor_durchschnittliche_beleuchtungsstarke') | float(0) }}"
+
+      - name: "Beschattung Live Lux West"
+        unique_id: beschattung_live_lux_west
+        unit_of_measurement: "lx"
+        icon: mdi:weather-sunny
+        state: "{{ states('sensor.lichtsensor_schlafzimmer_illuminance') | float(0) }}"
+
+      - name: "Beschattung Live Temp Ost"
+        unique_id: beschattung_live_temp_ost
+        unit_of_measurement: "°C"
+        icon: mdi:thermometer
+        state: "{{ states('sensor.kuche_wandthermostat_temperatur') | float(0) }}"
+
+      - name: "Beschattung Live Temp West"
+        unique_id: beschattung_live_temp_west
+        unit_of_measurement: "°C"
+        icon: mdi:thermometer
+        state: "{{ states('sensor.fritz_dect_repeater_100_temperatur') | float(0) }}"
+
+      # --- Abstand zum Schwellwert (Diff = Ist - Soll) ---
+      - name: "Beschattung Diff Elevation"
+        unique_id: beschattung_diff_elevation
+        unit_of_measurement: "°"
+        icon: mdi:sun-angle
+        state: >
+          {% set el = states('sensor.sun_solar_elevation') | float(0) %}
+          {% set thr = states('input_number.beschattung_elevation_min') | float(0) %}
+          {{ (el - thr) | round(1) }}
+
+      - name: "Beschattung Diff Sommer Temp"
+        unique_id: beschattung_diff_sommer_temp
+        unit_of_measurement: "°C"
+        icon: mdi:home-thermometer-outline
+        state: >
+          {% set t = states('sensor.0x00158d008b61ad80_temperature') | float(0) %}
+          {% set thr = states('input_number.beschattung_sommer_temp_min') | float(0) %}
+          {{ (t - thr) | round(1) }}
+
+      - name: "Beschattung Diff Lux Ost"
+        unique_id: beschattung_diff_lux_ost
+        unit_of_measurement: "lx"
+        icon: mdi:weather-sunny
+        state: >
+          {% set lx = states('sensor.balkon_lichtsensor_durchschnittliche_beleuchtungsstarke') | float(0) %}
+          {% set thr = states('input_number.beschattung_lux_ost_min') | float(0) %}
+          {{ (lx - thr) | round(0) }}
+
+      - name: "Beschattung Diff Lux West"
+        unique_id: beschattung_diff_lux_west
+        unit_of_measurement: "lx"
+        icon: mdi:weather-sunny
+        state: >
+          {% set lx = states('sensor.lichtsensor_schlafzimmer_illuminance') | float(0) %}
+          {% set thr = states('input_number.beschattung_lux_west_min') | float(0) %}
+          {{ (lx - thr) | round(0) }}
+
+      - name: "Beschattung Diff Temp Ost"
+        unique_id: beschattung_diff_temp_ost
+        unit_of_measurement: "°C"
+        icon: mdi:thermometer
+        state: >
+          {% set t = states('sensor.kuche_wandthermostat_temperatur') | float(0) %}
+          {% set thr = states('input_number.beschattung_temp_ost_min') | float(0) %}
+          {{ (t - thr) | round(1) }}
+
+      - name: "Beschattung Diff Temp West"
+        unique_id: beschattung_diff_temp_west
+        unit_of_measurement: "°C"
+        icon: mdi:thermometer
+        state: >
+          {% set t = states('sensor.fritz_dect_repeater_100_temperatur') | float(0) %}
+          {% set thr = states('input_number.beschattung_temp_west_min') | float(0) %}
+          {{ (t - thr) | round(1) }}
+
+  - binary_sensor:
+      # --- Freigaben ---
+      - name: "Beschattung Elevation OK"
+        unique_id: beschattung_elevation_ok
+        icon: mdi:sun-angle
+        state: >
+          {% set el = states('sensor.sun_solar_elevation') | float(-999) %}
+          {% set thr = states('input_number.beschattung_elevation_min') | float(26) %}
+          {{ el >= thr }}
+        attributes:
+          value: "{{ states('sensor.sun_solar_elevation') | float(0) }}"
+          threshold: "{{ states('input_number.beschattung_elevation_min') | float(0) }}"
+          diff: "{{ states('sensor.beschattung_diff_elevation') | float(0) }}"
+
+      - name: "Beschattung Sommer Temp OK"
+        unique_id: beschattung_sommer_temp_ok
+        icon: mdi:home-thermometer-outline
+        device_class: heat
+        state: >
+          {% set t = states('sensor.0x00158d008b61ad80_temperature') | float(-999) %}
+          {% set thr = states('input_number.beschattung_sommer_temp_min') | float(19) %}
+          {{ t >= thr }}
+        attributes:
+          value: "{{ states('sensor.0x00158d008b61ad80_temperature') | float(0) }}"
+          threshold: "{{ states('input_number.beschattung_sommer_temp_min') | float(0) }}"
+          diff: "{{ states('sensor.beschattung_diff_sommer_temp') | float(0) }}"
+
+      - name: "Beschattung Freigabe"
+        unique_id: beschattung_freigabe
+        icon: mdi:shield-check-outline
+        state: >
+          {{ is_state('binary_sensor.beschattung_elevation_ok', 'on')
+             and is_state('binary_sensor.beschattung_sommer_temp_ok', 'on') }}
+        attributes:
+          ok_elevation: "{{ is_state('binary_sensor.beschattung_elevation_ok', 'on') }}"
+          ok_sommer_temp: "{{ is_state('binary_sensor.beschattung_sommer_temp_ok', 'on') }}"
+
+      # --- Azimut Ost ---
+      - name: "Beschattung Azimut Ost"
+        unique_id: beschattung_azimut_ost
+        icon: mdi:sun-compass
+        state: >
+          {% set az = states('sensor.sun_solar_azimuth') | float(-999) %}
+          {% set lo = states('input_number.beschattung_azimut_ost_min') | float(120) %}
+          {% set hi = states('input_number.beschattung_azimut_ost_max') | float(175) %}
+          {% if lo <= hi %}
+            {{ lo <= az <= hi }}
+          {% else %}
+            {{ az >= lo or az <= hi }}
+          {% endif %}
+        attributes:
+          azimuth: "{{ states('sensor.sun_solar_azimuth') | float(0) }}"
+          min: "{{ states('input_number.beschattung_azimut_ost_min') | float(0) }}"
+          max: "{{ states('input_number.beschattung_azimut_ost_max') | float(0) }}"
+          degrees_to_range: >
+            {% set az = states('sensor.sun_solar_azimuth') | float(-999) %}
+            {% set lo = states('input_number.beschattung_azimut_ost_min') | float(0) %}
+            {% set hi = states('input_number.beschattung_azimut_ost_max') | float(0) %}
+            {% if az == -999 %}
+              unknown
+            {% elif lo <= hi %}
+              {% if az < lo %}{{ (lo - az) | round(1) }}
+              {% elif az > hi %}{{ (az - hi) | round(1) }}
+              {% else %}0{% endif %}
+            {% else %}
+              {% if az >= lo or az <= hi %}
+                0
+              {% else %}
+                {{ [ (az - hi), (lo - az) ] | min | round(1) }}
+              {% endif %}
+            {% endif %}
+
+      # --- Azimut West ---
+      - name: "Beschattung Azimut West"
+        unique_id: beschattung_azimut_west
+        icon: mdi:sun-compass
+        state: >
+          {% set az = states('sensor.sun_solar_azimuth') | float(-999) %}
+          {% set lo = states('input_number.beschattung_azimut_west_min') | float(190) %}
+          {% set hi = states('input_number.beschattung_azimut_west_max') | float(290) %}
+          {% if lo <= hi %}
+            {{ lo <= az <= hi }}
+          {% else %}
+            {{ az >= lo or az <= hi }}
+          {% endif %}
+        attributes:
+          azimuth: "{{ states('sensor.sun_solar_azimuth') | float(0) }}"
+          min: "{{ states('input_number.beschattung_azimut_west_min') | float(0) }}"
+          max: "{{ states('input_number.beschattung_azimut_west_max') | float(0) }}"
+          degrees_to_range: >
+            {% set az = states('sensor.sun_solar_azimuth') | float(-999) %}
+            {% set lo = states('input_number.beschattung_azimut_west_min') | float(0) %}
+            {% set hi = states('input_number.beschattung_azimut_west_max') | float(0) %}
+            {% if az == -999 %}
+              unknown
+            {% elif lo <= hi %}
+              {% if az < lo %}{{ (lo - az) | round(1) }}
+              {% elif az > hi %}{{ (az - hi) | round(1) }}
+              {% else %}0{% endif %}
+            {% else %}
+              {% if az >= lo or az <= hi %}
+                0
+              {% else %}
+                {{ [ (az - hi), (lo - az) ] | min | round(1) }}
+              {% endif %}
+            {% endif %}
+
+      # --- Lux Ost ---
+      - name: "Beschattung Lux Ost OK"
+        unique_id: beschattung_lux_ost_ok
+        icon: mdi:weather-sunny
+        state: >
+          {% set lx = states('sensor.balkon_lichtsensor_durchschnittliche_beleuchtungsstarke') | float(-999) %}
+          {% set thr = states('input_number.beschattung_lux_ost_min') | float(1200) %}
+          {{ lx >= thr }}
+        attributes:
+          value: "{{ states('sensor.balkon_lichtsensor_durchschnittliche_beleuchtungsstarke') | float(0) }}"
+          threshold: "{{ states('input_number.beschattung_lux_ost_min') | float(0) }}"
+          diff: "{{ states('sensor.beschattung_diff_lux_ost') | float(0) }}"
+
+      # --- Lux West ---
+      - name: "Beschattung Lux West OK"
+        unique_id: beschattung_lux_west_ok
+        icon: mdi:weather-sunny
+        state: >
+          {% set lx = states('sensor.lichtsensor_schlafzimmer_illuminance') | float(-999) %}
+          {% set thr = states('input_number.beschattung_lux_west_min') | float(700) %}
+          {{ lx >= thr }}
+        attributes:
+          value: "{{ states('sensor.lichtsensor_schlafzimmer_illuminance') | float(0) }}"
+          threshold: "{{ states('input_number.beschattung_lux_west_min') | float(0) }}"
+          diff: "{{ states('sensor.beschattung_diff_lux_west') | float(0) }}"
+
+      # --- Temp Ost ---
+      - name: "Beschattung Temp Ost OK"
+        unique_id: beschattung_temp_ost_ok
+        icon: mdi:thermometer
+        device_class: heat
+        state: >
+          {% set t = states('sensor.kuche_wandthermostat_temperatur') | float(-999) %}
+          {% set thr = states('input_number.beschattung_temp_ost_min') | float(22) %}
+          {{ t >= thr }}
+        attributes:
+          value: "{{ states('sensor.kuche_wandthermostat_temperatur') | float(0) }}"
+          threshold: "{{ states('input_number.beschattung_temp_ost_min') | float(0) }}"
+          diff: "{{ states('sensor.beschattung_diff_temp_ost') | float(0) }}"
+
+      # --- Temp West ---
+      - name: "Beschattung Temp West OK"
+        unique_id: beschattung_temp_west_ok
+        icon: mdi:thermometer
+        device_class: heat
+        state: >
+          {% set t = states('sensor.fritz_dect_repeater_100_temperatur') | float(-999) %}
+          {% set thr = states('input_number.beschattung_temp_west_min') | float(22.5) %}
+          {{ t >= thr }}
+        attributes:
+          value: "{{ states('sensor.fritz_dect_repeater_100_temperatur') | float(0) }}"
+          threshold: "{{ states('input_number.beschattung_temp_west_min') | float(0) }}"
+          diff: "{{ states('sensor.beschattung_diff_temp_west') | float(0) }}"
+
+      # --- Endzustände Ost/West inkl. Debug ---
+      - name: "Beschattung Ost Aktiv"
+        unique_id: beschattung_ost_aktiv
+        icon: mdi:roller-shade
+        state: >
+          {{ is_state('binary_sensor.beschattung_freigabe', 'on')
+             and is_state('binary_sensor.beschattung_azimut_ost', 'on')
+             and is_state('binary_sensor.beschattung_lux_ost_ok', 'on')
+             and is_state('binary_sensor.beschattung_temp_ost_ok', 'on') }}
+        attributes:
+          blocker: >
+            {% set ns = namespace(b=[]) %}
+            {% if not is_state('binary_sensor.beschattung_freigabe','on') %}{% set ns.b = ns.b + ['Freigabe'] %}{% endif %}
+            {% if not is_state('binary_sensor.beschattung_azimut_ost','on') %}{% set ns.b = ns.b + ['Azimut Ost'] %}{% endif %}
+            {% if not is_state('binary_sensor.beschattung_lux_ost_ok','on') %}{% set ns.b = ns.b + ['Lux Ost'] %}{% endif %}
+            {% if not is_state('binary_sensor.beschattung_temp_ost_ok','on') %}{% set ns.b = ns.b + ['Temp Ost'] %}{% endif %}
+            {{ ns.b | join(', ') if ns.b|length > 0 else 'none' }}
+          diff_elevation: "{{ states('sensor.beschattung_diff_elevation') | float(0) }}"
+          diff_sommer_temp: "{{ states('sensor.beschattung_diff_sommer_temp') | float(0) }}"
+          diff_lux: "{{ states('sensor.beschattung_diff_lux_ost') | float(0) }}"
+          diff_temp: "{{ states('sensor.beschattung_diff_temp_ost') | float(0) }}"
+          azimut_degrees_to_range: "{{ state_attr('binary_sensor.beschattung_azimut_ost','degrees_to_range') }}"
+
+      - name: "Beschattung West Aktiv"
+        unique_id: beschattung_west_aktiv
+        icon: mdi:roller-shade
+        state: >
+          {{ is_state('binary_sensor.beschattung_freigabe', 'on')
+             and is_state('binary_sensor.beschattung_azimut_west', 'on')
+             and is_state('binary_sensor.beschattung_lux_west_ok', 'on')
+             and is_state('binary_sensor.beschattung_temp_west_ok', 'on') }}
+        attributes:
+          blocker: >
+            {% set ns = namespace(b=[]) %}
+            {% if not is_state('binary_sensor.beschattung_freigabe','on') %}{% set ns.b = ns.b + ['Freigabe'] %}{% endif %}
+            {% if not is_state('binary_sensor.beschattung_azimut_west','on') %}{% set ns.b = ns.b + ['Azimut West'] %}{% endif %}
+            {% if not is_state('binary_sensor.beschattung_lux_west_ok','on') %}{% set ns.b = ns.b + ['Lux West'] %}{% endif %}
+            {% if not is_state('binary_sensor.beschattung_temp_west_ok','on') %}{% set ns.b = ns.b + ['Temp West'] %}{% endif %}
+            {{ ns.b | join(', ') if ns.b|length > 0 else 'none' }}
+          diff_elevation: "{{ states('sensor.beschattung_diff_elevation') | float(0) }}"
+          diff_sommer_temp: "{{ states('sensor.beschattung_diff_sommer_temp') | float(0) }}"
+          diff_lux: "{{ states('sensor.beschattung_diff_lux_west') | float(0) }}"
+          diff_temp: "{{ states('sensor.beschattung_diff_temp_west') | float(0) }}"
+          azimut_degrees_to_range: "{{ state_attr('binary_sensor.beschattung_azimut_west','degrees_to_range') }}"
+
+  - sensor:
+      # Debug-Textsensoren (Kurzüberblick)
+      - name: "Beschattung Debug Ost"
+        unique_id: beschattung_debug_ost
+        icon: mdi:information-outline
+        state: >
+          {% if is_state('binary_sensor.beschattung_ost_aktiv','on') %}OST: AN{% else %}OST: AUS{% endif %}
+        attributes:
+          reason: >
+            {% if is_state('binary_sensor.beschattung_ost_aktiv','on') %}
+              Alle Bedingungen erfüllt.
+            {% else %}
+              Blocker: {{ state_attr('binary_sensor.beschattung_ost_aktiv','blocker') }}
+            {% endif %}
+          diffs: >
+            Elev {{ states('sensor.beschattung_diff_elevation') }},
+            SommerT {{ states('sensor.beschattung_diff_sommer_temp') }},
+            Lux {{ states('sensor.beschattung_diff_lux_ost') }},
+            Temp {{ states('sensor.beschattung_diff_temp_ost') }},
+            AzDist {{ state_attr('binary_sensor.beschattung_azimut_ost','degrees_to_range') }}
+
+      - name: "Beschattung Debug West"
+        unique_id: beschattung_debug_west
+        icon: mdi:information-outline
+        state: >
+          {% if is_state('binary_sensor.beschattung_west_aktiv','on') %}WEST: AN{% else %}WEST: AUS{% endif %}
+        attributes:
+          reason: >
+            {% if is_state('binary_sensor.beschattung_west_aktiv','on') %}
+              Alle Bedingungen erfüllt.
+            {% else %}
+              Blocker: {{ state_attr('binary_sensor.beschattung_west_aktiv','blocker') }}
+            {% endif %}
+          diffs: >
+            Elev {{ states('sensor.beschattung_diff_elevation') }},
+            SommerT {{ states('sensor.beschattung_diff_sommer_temp') }},
+            Lux {{ states('sensor.beschattung_diff_lux_west') }},
+            Temp {{ states('sensor.beschattung_diff_temp_west') }},
+            AzDist {{ state_attr('binary_sensor.beschattung_azimut_west','degrees_to_range') }}
+
+########################################
+# 3) Automation: setzt ausschließlich die beiden Output-Booleans
+########################################
+automation:
+  - id: beschattung_outputs_setzen
+    alias: "Beschattung Outputs setzen (Ost/West) - ohne choose"
+    mode: restart
+    max_exceeded: silent
+
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.beschattung_ost_aktiv
+          - binary_sensor.beschattung_west_aktiv
+
+      # einmal sauber initialisieren nach Neustart
+      - platform: homeassistant
+        event: start
+
+    action:
+      - variables:
+          target_on: >-
+            {% if is_state('binary_sensor.beschattung_west_aktiv', 'on') %}
+              input_boolean.beschattung_west
+            {% elif is_state('binary_sensor.beschattung_ost_aktiv', 'on') %}
+              input_boolean.beschattung_ost
+            {% else %}
+            {% endif %}
+
+      # Erst alles aus (definierter Zustand)
+      - service: input_boolean.turn_off
+        target:
+          entity_id:
+            - input_boolean.beschattung_ost
+            - input_boolean.beschattung_west
+
+      # Dann genau einen an (wenn überhaupt einer aktiv sein soll)
+      - condition: template
+        value_template: "{{ target_on | trim | length > 0 }}"
+
+      - service: input_boolean.turn_on
+        data:
+          entity_id: "{{ target_on | trim }}"

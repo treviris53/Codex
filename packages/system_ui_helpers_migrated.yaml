@@ -1,0 +1,36 @@
+# Version: 1.0.0
+# Change: migrate UI-created helpers to YAML for Git-managed maintainability (2026-01-19)
+
+input_boolean:
+  anwesend:
+    name: Anwesend
+    icon: mdi:account-check
+    # Hinweis: "initial" absichtlich NICHT gesetzt -> HA stellt typischerweise den letzten Zustand wieder her.
+
+  beschattung_ost:
+    name: Beschattung Ost
+    icon: mdi:blinds-horizontal
+    # initial bewusst nicht gesetzt (State-Restore beibehalten)
+
+  beschattung_west:
+    name: Beschattung West
+    icon: mdi:blinds-horizontal
+    # initial bewusst nicht gesetzt (State-Restore beibehalten)
+
+  roborock_busy:
+    name: Roborock busy
+    icon: mdi:robot-vacuum
+    # initial bewusst nicht gesetzt (State-Restore beibehalten)
+
+input_datetime:
+  roborock_busy_since:
+    name: Roborock busy since
+    has_date: true
+    has_time: true
+    icon: mdi:clock-outline
+
+timer:
+  tv_licht_sperre:
+    name: TV Licht Sperre
+    duration: "00:15:00"
+    icon: mdi:television-off

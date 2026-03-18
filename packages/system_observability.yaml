@@ -1,0 +1,155 @@
+# Version: 1.0.2
+# Change note (2026-01-20): Patch - prevent template loop for unknown/unavailable entity counters by using trigger-based template sensors.
+
+input_boolean:
+  system_debug:
+    name: "System Debug"
+    icon: mdi:bug
+
+input_datetime:
+  system_last_start:
+    name: "System Last Start"
+    has_date: true
+    has_time: true
+    icon: mdi:restart
+
+template:
+  # Uptime: trigger-based (updates immediately at start and then every minute)
+  - trigger:
+      - platform: homeassistant
+        event: start
+      - platform: state
+        entity_id: input_datetime.system_last_start
+      - platform: time_pattern
+        minutes: "/1"
+    sensor:
+      - name: "HA Uptime"
+        unique_id: ha_uptime
+        icon: mdi:clock-outline
+        unit_of_measurement: "s"
+        device_class: duration
+        state_class: measurement
+        availability: >
+          {{ states('input_datetime.system_last_start') not in ['unknown','unavailable','none',''] }}
+        state: >
+          {% set last = states('input_datetime.system_last_start') %}
+          {{ (as_timestamp(now()) - as_timestamp(last)) | int }}
+        attributes:
+          human: >
+            {% set s = (this.state | int(0)) %}
+            {% set d = (s // 86400) %}
+            {% set h = (s % 86400) // 3600 %}
+            {% set m = (s % 3600) // 60 %}
+            {% if d > 0 %}{{ d }}d {% endif %}{{ '%02d'|format(h) }}:{{ '%02d'|format(m) }}
+
+  # Unknown/Unavailable counters: trigger-based to avoid self-trigger loop caused by using global "states"
+  - trigger:
+      - platform: homeassistant
+        event: start
+      - platform: time_pattern
+        minutes: "/5"
+    sensor:
+      - name: "System Unavailable Entities Count"
+        unique_id: system_unavailable_entities_count
+        icon: mdi:alert-circle-outline
+        state: >
+          {%- set ignore_domains = [
+              'button','camera','conversation','event','group','image','input_button',
+              'persistent_notification','scene','script','sun','update'
+            ] -%}
+          {{ states
+            | rejectattr('entity_id', 'eq', this.entity_id)
+            | rejectattr('domain','in', ignore_domains)
+            | selectattr('state','eq','unavailable')
+            | list
+            | count }}
+        attributes:
+          entities: >
+            {%- set ignore_domains = [
+                'button','camera','conversation','event','group','image','input_button',
+                'persistent_notification','scene','script','sun','update'
+              ] -%}
+            {{ states
+              | rejectattr('entity_id', 'eq', this.entity_id)
+              | rejectattr('domain','in', ignore_domains)
+              | selectattr('state','eq','unavailable')
+              | map(attribute='entity_id')
+              | list
+              | sort
+              | join(', ') }}
+
+      - name: "System Unknown Entities Count"
+        unique_id: system_unknown_entities_count
+        icon: mdi:help-circle-outline
+        state: >
+          {%- set ignore_domains = [
+              'button','camera','conversation','event','group','image','input_button',
+              'persistent_notification','scene','script','sun','update'
+            ] -%}
+          {{ states
+            | rejectattr('entity_id', 'eq', this.entity_id)
+            | rejectattr('domain','in', ignore_domains)
+            | selectattr('state','eq','unknown')
+            | list
+            | count }}
+        attributes:
+          entities: >
+            {%- set ignore_domains = [
+                'button','camera','conversation','event','group','image','input_button',
+                'persistent_notification','scene','script','sun','update'
+              ] -%}
+            {{ states
+              | rejectattr('entity_id', 'eq', this.entity_id)
+              | rejectattr('domain','in', ignore_domains)
+              | selectattr('state','eq','unknown')
+              | map(attribute='entity_id')
+              | list
+              | sort
+              | join(', ') }}
+
+automation:
+  - id: system_observability_set_last_start
+    alias: "System: Set last start timestamp"
+    description: "Writes the current timestamp into input_datetime.system_last_start whenever Home Assistant starts."
+    mode: single
+    trigger:
+      - platform: homeassistant
+        event: start
+    action:
+      - service: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.system_last_start
+        data:
+          datetime: "{{ now().isoformat() }}"
+
+  - id: system_observability_logger_debug_toggle
+    alias: "System: Toggle debug logger levels"
+    description: >
+      Optional runtime log-level switch controlled by input_boolean.system_debug.
+      Default is OFF. Safe: affects only logging verbosity.
+    mode: restart
+    trigger:
+      - platform: state
+        entity_id: input_boolean.system_debug
+    action:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.system_debug
+                state: "on"
+            sequence:
+              - service: logger.set_level
+                data:
+                  homeassistant.core: debug
+                  homeassistant.components.automation: debug
+                  homeassistant.components.template: debug
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.system_debug
+                state: "off"
+            sequence:
+              - service: logger.set_level
+                data:
+                  homeassistant.core: info
+                  homeassistant.components.automation: info
+                  homeassistant.components.template: info
