@@ -13,9 +13,9 @@ views:
             content: |
               **Gueltige Job-IDs**
 
-              `duo_wohn_flur`, `schlaf_saugen`, `wohn_standard`, `wohn_saugen`,
-              `schlaf_standard`, `flur_standard`, `duo_saug_dann_wisch`,
-              `pet_zone_1`, `pet_zone_2`
+              `schlaf_saug`, `schlaf_vac_mop`, `schlaf_saug_wisch`, `flur_saug`,
+              `flur_vac_mop`, `flur_saug_wisch`, `wohn_saug`, 'wohn_vac_mop',
+              `wohn_saug_wisch`, `haustier`
           - type: grid
             columns: 2
             square: false
@@ -217,7 +217,8 @@ views:
                 name: Zeitplan aktiv
             grid_options:
               columns: full
-              rows: auto
+              rows: auto
+
           - type: vertical-stack
             cards:
               - type: heading

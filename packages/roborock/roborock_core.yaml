@@ -180,16 +180,16 @@ script:
           slot_label: "{{ slot_name | default('manual') }}"
           raw_sequence: "{{ program_sequence }}"
           program_map:
-            wohn_saugen: button.saros_20_set_wohn_saugen
+            wohn_saug: button.saros_20_set_wohn_saugen_2
             wohn_saug_wisch: button.saros_20_set_wohn_saug_wisch
-            schlaf_saugen: button.saros_20_set_saugen_schlafzimmer
+            wohn_vac_mop: button.saros_20_set_wohn_saugen
+            schlaf_saug: button.saros_20_set_saugen_schlafzimmer
             schlaf_saug_wisch: button.saros_20_set_schlaf_saug_wisch
             schlaf_vac_mop: button.saros_20_set_schlaf_vac_mop
-            alles_saugen_dann_wischen: button.saros_20_set_saugen_dann_wischen
-            haustierbedarf_1: button.saros_20_set_reinigung_von_haustierbedarf
-            haustierbedarf_2: button.saros_20_set_reinigung_von_haustierbedarf2
+            haustier: button.saros_20_set_reinigung_von_haustierbedarf
             flur_saug_wisch: button.saros_20_set_flur_saug_wisch
             flur_vac_mop: button.saros_20_set_flur_vac_mop
+            flur_saug: button.saros_20_set_flur_saugen
           program_tokens: >-
             {% if raw_sequence is string %}
               {% set parts = raw_sequence.split(',') %}
