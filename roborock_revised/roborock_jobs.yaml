@@ -73,113 +73,95 @@ input_boolean:
   roborock_slot_enabled_sun_3:
     name: Roborock Sonntag Slot 3 aktiv
     icon: mdi:calendar-check
+  roborock_slot_time_bootstrap_done:
+    name: Roborock Slot-Zeiten Bootstrap erledigt
+    icon: mdi:progress-check
 
 input_datetime:
   roborock_time_mon_1:
     name: Roborock Montag Slot 1 Uhrzeit
     has_date: false
     has_time: true
-    initial: "08:30:00"
   roborock_time_mon_2:
     name: Roborock Montag Slot 2 Uhrzeit
     has_date: false
     has_time: true
-    initial: "09:30:00"
   roborock_time_mon_3:
     name: Roborock Montag Slot 3 Uhrzeit
     has_date: false
     has_time: true
-    initial: "10:30:00"
   roborock_time_tue_1:
     name: Roborock Dienstag Slot 1 Uhrzeit
     has_date: false
     has_time: true
-    initial: "08:30:00"
   roborock_time_tue_2:
     name: Roborock Dienstag Slot 2 Uhrzeit
     has_date: false
     has_time: true
-    initial: "09:30:00"
   roborock_time_tue_3:
     name: Roborock Dienstag Slot 3 Uhrzeit
     has_date: false
     has_time: true
-    initial: "10:30:00"
   roborock_time_wed_1:
     name: Roborock Mittwoch Slot 1 Uhrzeit
     has_date: false
     has_time: true
-    initial: "08:30:00"
   roborock_time_wed_2:
     name: Roborock Mittwoch Slot 2 Uhrzeit
     has_date: false
     has_time: true
-    initial: "09:30:00"
   roborock_time_wed_3:
     name: Roborock Mittwoch Slot 3 Uhrzeit
     has_date: false
     has_time: true
-    initial: "10:30:00"
   roborock_time_thu_1:
     name: Roborock Donnerstag Slot 1 Uhrzeit
     has_date: false
     has_time: true
-    initial: "08:30:00"
   roborock_time_thu_2:
     name: Roborock Donnerstag Slot 2 Uhrzeit
     has_date: false
     has_time: true
-    initial: "09:30:00"
   roborock_time_thu_3:
     name: Roborock Donnerstag Slot 3 Uhrzeit
     has_date: false
     has_time: true
-    initial: "10:30:00"
   roborock_time_fri_1:
     name: Roborock Freitag Slot 1 Uhrzeit
     has_date: false
     has_time: true
-    initial: "08:30:00"
   roborock_time_fri_2:
     name: Roborock Freitag Slot 2 Uhrzeit
     has_date: false
     has_time: true
-    initial: "09:30:00"
   roborock_time_fri_3:
     name: Roborock Freitag Slot 3 Uhrzeit
     has_date: false
     has_time: true
-    initial: "10:30:00"
   roborock_time_sat_1:
     name: Roborock Samstag Slot 1 Uhrzeit
     has_date: false
     has_time: true
-    initial: "08:30:00"
   roborock_time_sat_2:
     name: Roborock Samstag Slot 2 Uhrzeit
     has_date: false
     has_time: true
-    initial: "09:30:00"
   roborock_time_sat_3:
     name: Roborock Samstag Slot 3 Uhrzeit
     has_date: false
     has_time: true
-    initial: "10:30:00"
   roborock_time_sun_1:
     name: Roborock Sonntag Slot 1 Uhrzeit
     has_date: false
     has_time: true
-    initial: "08:30:00"
   roborock_time_sun_2:
     name: Roborock Sonntag Slot 2 Uhrzeit
     has_date: false
     has_time: true
-    initial: "09:30:00"
   roborock_time_sun_3:
     name: Roborock Sonntag Slot 3 Uhrzeit
     has_date: false
     has_time: true
-    initial: "10:30:00"
 
 input_text:
   roborock_jobs_mon_1:
@@ -287,6 +269,130 @@ input_text:
     icon: mdi:playlist-edit
     max: 255
     initial: ""
+
+# Migration note:
+# - Run script.roborock_slot_time_bootstrap_manual once only if the 21 slot
+#   times need to be seeded back to the previous defaults after removing
+#   input_datetime initial values.
+script:
+  roborock_slot_time_bootstrap_manual:
+    alias: Roborock Slot-Zeiten Bootstrap (manuell)
+    description: >
+      Manuelles Einmal-Migrationswerkzeug. Setzt die 21 Slot-Uhrzeiten auf die
+      bisherigen Standardwerte und markiert den Bootstrap danach als erledigt.
+    sequence:
+      - condition: state
+        entity_id: input_boolean.roborock_slot_time_bootstrap_done
+        state: "off"
+      - action: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.roborock_time_mon_1
+        data:
+          time: "08:30:00"
+      - action: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.roborock_time_mon_2
+        data:
+          time: "09:30:00"
+      - action: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.roborock_time_mon_3
+        data:
+          time: "10:30:00"
+      - action: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.roborock_time_tue_1
+        data:
+          time: "08:30:00"
+      - action: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.roborock_time_tue_2
+        data:
+          time: "09:30:00"
+      - action: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.roborock_time_tue_3
+        data:
+          time: "10:30:00"
+      - action: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.roborock_time_wed_1
+        data:
+          time: "08:30:00"
+      - action: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.roborock_time_wed_2
+        data:
+          time: "09:30:00"
+      - action: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.roborock_time_wed_3
+        data:
+          time: "10:30:00"
+      - action: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.roborock_time_thu_1
+        data:
+          time: "08:30:00"
+      - action: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.roborock_time_thu_2
+        data:
+          time: "09:30:00"
+      - action: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.roborock_time_thu_3
+        data:
+          time: "10:30:00"
+      - action: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.roborock_time_fri_1
+        data:
+          time: "08:30:00"
+      - action: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.roborock_time_fri_2
+        data:
+          time: "09:30:00"
+      - action: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.roborock_time_fri_3
+        data:
+          time: "10:30:00"
+      - action: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.roborock_time_sat_1
+        data:
+          time: "08:30:00"
+      - action: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.roborock_time_sat_2
+        data:
+          time: "09:30:00"
+      - action: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.roborock_time_sat_3
+        data:
+          time: "10:30:00"
+      - action: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.roborock_time_sun_1
+        data:
+          time: "08:30:00"
+      - action: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.roborock_time_sun_2
+        data:
+          time: "09:30:00"
+      - action: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.roborock_time_sun_3
+        data:
+          time: "10:30:00"
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.roborock_slot_time_bootstrap_done
+    mode: single
 
 automation:
   - id: roborock_weekday_scheduler
