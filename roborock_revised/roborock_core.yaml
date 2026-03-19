@@ -1,13 +1,14 @@
 # ======================================================================
 # Roborock Saros 20 - Core / Program Executor
 # File: config/packages/roborock/roborock_core.yaml
-# Version: 3.0.0
-# Date: 2026-03-18
+# Version: 3.0.1
+# Date: 2026-03-19
 # Change note:
 # - Added missing busy helpers to remove hidden package dependencies
 # - Normalized program/job identifiers to consistent snake_case keys
 # - Added safe cleanup script so busy lock is cleared on all known failures
 # - Added safe manual program launcher for dashboard use
+# - Busy timestamp is now written only on true busy-lock acquisition
 # ======================================================================
 
 input_boolean:
@@ -86,11 +87,6 @@ automation:
           entity_id: input_text.roborock_current_program
         data:
           value: ""
-      - action: input_datetime.set_datetime
-        target:
-          entity_id: input_datetime.roborock_busy_since
-        data:
-          datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"
     mode: single
 
 script:
