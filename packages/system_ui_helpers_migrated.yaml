@@ -17,18 +17,6 @@ input_boolean:
     icon: mdi:blinds-horizontal
     # initial bewusst nicht gesetzt (State-Restore beibehalten)
 
-  roborock_busy:
-    name: Roborock busy
-    icon: mdi:robot-vacuum
-    # initial bewusst nicht gesetzt (State-Restore beibehalten)
-
-input_datetime:
-  roborock_busy_since:
-    name: Roborock busy since
-    has_date: true
-    has_time: true
-    icon: mdi:clock-outline
-
 timer:
   tv_licht_sperre:
     name: TV Licht Sperre

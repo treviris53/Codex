@@ -1,11 +1,11 @@
 # ======================================================================
 # Roborock Saros 20 - Jobs / Scheduler
 # File: config/packages/roborock/roborock_jobs.yaml
-# Version: 3.0.0
-# Date: 2026-03-18
+# Version: 3.0.1
+# Date: 2026-03-19
 # Change note:
 # - Added explicit weekday validation for all 21 time-slot triggers
-# - Added helper defaults directly in YAML to avoid giant startup automation
+# - Removed input_text helper initial values to keep persisted job selections stable
 # - Kept 3 slots per day and CSV jobs for compatibility with existing dashboard
 # ======================================================================
 
@@ -168,107 +168,86 @@ input_text:
     name: Roborock Montag Slot 1 Jobs (CSV, max. 4)
     icon: mdi:playlist-edit
     max: 255
-    initial: "duo_wohn_flur"
   roborock_jobs_mon_2:
     name: Roborock Montag Slot 2 Jobs (CSV, max. 4)
     icon: mdi:playlist-edit
     max: 255
-    initial: "schlaf_saugen"
   roborock_jobs_mon_3:
     name: Roborock Montag Slot 3 Jobs (CSV, max. 4)
     icon: mdi:playlist-edit
     max: 255
-    initial: "wohn_standard"
   roborock_jobs_tue_1:
     name: Roborock Dienstag Slot 1 Jobs (CSV, max. 4)
     icon: mdi:playlist-edit
     max: 255
-    initial: ""
   roborock_jobs_tue_2:
     name: Roborock Dienstag Slot 2 Jobs (CSV, max. 4)
     icon: mdi:playlist-edit
     max: 255
-    initial: ""
   roborock_jobs_tue_3:
     name: Roborock Dienstag Slot 3 Jobs (CSV, max. 4)
     icon: mdi:playlist-edit
     max: 255
-    initial: ""
   roborock_jobs_wed_1:
     name: Roborock Mittwoch Slot 1 Jobs (CSV, max. 4)
     icon: mdi:playlist-edit
     max: 255
-    initial: "duo_wohn_flur"
   roborock_jobs_wed_2:
     name: Roborock Mittwoch Slot 2 Jobs (CSV, max. 4)
     icon: mdi:playlist-edit
     max: 255
-    initial: "schlaf_saugen"
   roborock_jobs_wed_3:
     name: Roborock Mittwoch Slot 3 Jobs (CSV, max. 4)
     icon: mdi:playlist-edit
     max: 255
-    initial: "wohn_standard"
   roborock_jobs_thu_1:
     name: Roborock Donnerstag Slot 1 Jobs (CSV, max. 4)
     icon: mdi:playlist-edit
     max: 255
-    initial: ""
   roborock_jobs_thu_2:
     name: Roborock Donnerstag Slot 2 Jobs (CSV, max. 4)
     icon: mdi:playlist-edit
     max: 255
-    initial: ""
   roborock_jobs_thu_3:
     name: Roborock Donnerstag Slot 3 Jobs (CSV, max. 4)
     icon: mdi:playlist-edit
     max: 255
-    initial: ""
   roborock_jobs_fri_1:
     name: Roborock Freitag Slot 1 Jobs (CSV, max. 4)
     icon: mdi:playlist-edit
     max: 255
-    initial: "duo_wohn_flur"
   roborock_jobs_fri_2:
     name: Roborock Freitag Slot 2 Jobs (CSV, max. 4)
     icon: mdi:playlist-edit
     max: 255
-    initial: "schlaf_saugen"
   roborock_jobs_fri_3:
     name: Roborock Freitag Slot 3 Jobs (CSV, max. 4)
     icon: mdi:playlist-edit
     max: 255
-    initial: "wohn_standard"
   roborock_jobs_sat_1:
     name: Roborock Samstag Slot 1 Jobs (CSV, max. 4)
     icon: mdi:playlist-edit
     max: 255
-    initial: ""
   roborock_jobs_sat_2:
     name: Roborock Samstag Slot 2 Jobs (CSV, max. 4)
     icon: mdi:playlist-edit
     max: 255
-    initial: ""
   roborock_jobs_sat_3:
     name: Roborock Samstag Slot 3 Jobs (CSV, max. 4)
     icon: mdi:playlist-edit
     max: 255
-    initial: ""
   roborock_jobs_sun_1:
     name: Roborock Sonntag Slot 1 Jobs (CSV, max. 4)
     icon: mdi:playlist-edit
     max: 255
-    initial: ""
   roborock_jobs_sun_2:
     name: Roborock Sonntag Slot 2 Jobs (CSV, max. 4)
     icon: mdi:playlist-edit
     max: 255
-    initial: ""
   roborock_jobs_sun_3:
     name: Roborock Sonntag Slot 3 Jobs (CSV, max. 4)
     icon: mdi:playlist-edit
     max: 255
-    initial: ""
 
 # Migration note:
 # - Run script.roborock_slot_time_bootstrap_manual once only if the 21 slot
