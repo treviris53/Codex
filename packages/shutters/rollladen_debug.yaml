@@ -1,147 +1,76 @@
+# Version: 2.0.0
+# Change note (2026-03-19): Debug sensors derive from the centralized target-position logic and no longer duplicate decisions.
 template:
   - trigger:
+      - platform: homeassistant
+        event: start
       - platform: state
         entity_id:
           - input_boolean.rollladen_automation_enabled
-          - binary_sensor.rollladen_day_window
-          - input_boolean.beschattung_ost
-          - input_boolean.beschattung_west
-          - binary_sensor.kuche_balkon_turkontakt
-          - switch.schalt_mess_steckdose_steckdose
-          - input_datetime.rollladen_latest_close
-          - input_datetime.rollladen_ost_plug_open_start
-          - input_datetime.rollladen_ost_plug_open_end
-      - platform: time_pattern
-        minutes: "/1"
+          - sensor.rollladen_ost_target_position
+          - sensor.rollladen_west_target_position
+          - sensor.rollladen_nord_target_position
     sensor:
       - name: "Rollladen Ost Debug"
         unique_id: rollladen_ost_debug
         icon: mdi:bug-outline
         state: >-
-          {% set master = is_state('input_boolean.rollladen_automation_enabled','on') %}
-          {% if not master %}
+          {% if not is_state('input_boolean.rollladen_automation_enabled','on') %}
             disabled
           {% else %}
-            {% set day = is_state('binary_sensor.rollladen_day_window','on') %}
-            {% set shade = is_state('input_boolean.beschattung_ost','on') %}
-            {% set door = states('binary_sensor.kuche_balkon_turkontakt') %}
-            {% set door_failsafe = door in ['on','unknown','unavailable'] %}
-            {% set plug_on = is_state('switch.schalt_mess_steckdose_steckdose','on') %}
-            {% set latest_close = states('input_datetime.rollladen_latest_close') %}
-            {% set lc = latest_close if latest_close not in ['unknown','unavailable',''] else '23:00:00' %}
-            {% set before_close = now() < today_at(lc) %}
-            {% set s = states('input_datetime.rollladen_ost_plug_open_start') %}
-            {% set e = states('input_datetime.rollladen_ost_plug_open_end') %}
-            {% set start = s if s not in ['unknown','unavailable',''] else '05:00:00' %}
-            {% set end = e if e not in ['unknown','unavailable',''] else '09:00:00' %}
-            {% set in_morning = today_at(start) <= now() < today_at(end) %}
-            {% set plug_morning = plug_on and in_morning %}
-            {% set plug_evening = (not day) and plug_on and before_close %}
-
-            {% if door_failsafe %}
-              100
-            {% elif plug_morning %}
-              100
-            {% elif plug_evening %}
-              100
-            {% elif not day %}
-              0
-            {% elif shade %}
-              33
-            {% else %}
-              100
-            {% endif %}
+            {{ states('sensor.rollladen_ost_target_position') }}
           {% endif %}
         attributes:
           reason: >-
-            {% set master = is_state('input_boolean.rollladen_automation_enabled','on') %}
-            {% if not master %} master_disabled
+            {% if not is_state('input_boolean.rollladen_automation_enabled','on') %}
+              master_disabled
             {% else %}
-              {% set day = is_state('binary_sensor.rollladen_day_window','on') %}
-              {% set shade = is_state('input_boolean.beschattung_ost','on') %}
-              {% set door = states('binary_sensor.kuche_balkon_turkontakt') %}
-              {% set door_failsafe = door in ['on','unknown','unavailable'] %}
-              {% set plug_on = is_state('switch.schalt_mess_steckdose_steckdose','on') %}
-              {% set latest_close = states('input_datetime.rollladen_latest_close') %}
-              {% set lc = latest_close if latest_close not in ['unknown','unavailable',''] else '23:00:00' %}
-              {% set before_close = now() < today_at(lc) %}
-              {% set s = states('input_datetime.rollladen_ost_plug_open_start') %}
-              {% set e = states('input_datetime.rollladen_ost_plug_open_end') %}
-              {% set start = s if s not in ['unknown','unavailable',''] else '05:00:00' %}
-              {% set end = e if e not in ['unknown','unavailable',''] else '09:00:00' %}
-              {% set in_morning = today_at(start) <= now() < today_at(end) %}
-              {% set plug_morning = plug_on and in_morning %}
-              {% set plug_evening = (not day) and plug_on and before_close %}
-
-              {% if door_failsafe %} door_failsafe
-              {% elif plug_morning %} plug_morning_window
-              {% elif plug_evening %} plug_evening_hold_until_latest_close
-              {% elif not day %} outside_day_window
-              {% elif shade %} shading
-              {% else %} default_open
-              {% endif %}
+              {{ state_attr('sensor.rollladen_ost_target_position','reason') }}
             {% endif %}
           master_enabled: "{{ is_state('input_boolean.rollladen_automation_enabled','on') }}"
-          day_window: "{{ is_state('binary_sensor.rollladen_day_window','on') }}"
-          shade: "{{ is_state('input_boolean.beschattung_ost','on') }}"
-          door_state: "{{ states('binary_sensor.kuche_balkon_turkontakt') }}"
-          plug_on: "{{ is_state('switch.schalt_mess_steckdose_steckdose','on') }}"
-          latest_close: "{{ states('input_datetime.rollladen_latest_close') }}"
-          plug_open_start: "{{ states('input_datetime.rollladen_ost_plug_open_start') }}"
-          plug_open_end: "{{ states('input_datetime.rollladen_ost_plug_open_end') }}"
+          day_window: "{{ state_attr('sensor.rollladen_ost_target_position','day_window') }}"
+          shade: "{{ state_attr('sensor.rollladen_ost_target_position','shade') }}"
+          door_state: "{{ state_attr('sensor.rollladen_ost_target_position','door_state') }}"
+          plug_on: "{{ state_attr('sensor.rollladen_ost_target_position','plug_on') }}"
+          latest_close: "{{ state_attr('sensor.rollladen_ost_target_position','latest_close') }}"
+          plug_open_start: "{{ state_attr('sensor.rollladen_ost_target_position','plug_open_start') }}"
+          plug_open_end: "{{ state_attr('sensor.rollladen_ost_target_position','plug_open_end') }}"
+
       - name: "Rollladen West Debug"
         unique_id: rollladen_west_debug
         icon: mdi:bug-outline
         state: >-
-          {% set master = is_state('input_boolean.rollladen_automation_enabled','on') %}
-          {% if not master %}
+          {% if not is_state('input_boolean.rollladen_automation_enabled','on') %}
             disabled
           {% else %}
-            {% set day = is_state('binary_sensor.rollladen_day_window','on') %}
-            {% set shade = is_state('input_boolean.beschattung_west','on') %}
-            {% if not day %}
-              0
-            {% elif shade %}
-              33
-            {% else %}
-              100
-            {% endif %}
+            {{ states('sensor.rollladen_west_target_position') }}
           {% endif %}
         attributes:
           reason: >-
-            {% set master = is_state('input_boolean.rollladen_automation_enabled','on') %}
-            {% if not master %} master_disabled
+            {% if not is_state('input_boolean.rollladen_automation_enabled','on') %}
+              master_disabled
             {% else %}
-              {% set day = is_state('binary_sensor.rollladen_day_window','on') %}
-              {% set shade = is_state('input_boolean.beschattung_west','on') %}
-              {% if not day %} outside_day_window
-              {% elif shade %} shading
-              {% else %} default_open
-              {% endif %}
+              {{ state_attr('sensor.rollladen_west_target_position','reason') }}
             {% endif %}
           master_enabled: "{{ is_state('input_boolean.rollladen_automation_enabled','on') }}"
-          day_window: "{{ is_state('binary_sensor.rollladen_day_window','on') }}"
-          shade: "{{ is_state('input_boolean.beschattung_west','on') }}"
+          day_window: "{{ state_attr('sensor.rollladen_west_target_position','day_window') }}"
+          shade: "{{ state_attr('sensor.rollladen_west_target_position','shade') }}"
+
       - name: "Rollladen Nord Debug"
         unique_id: rollladen_nord_debug
         icon: mdi:bug-outline
         state: >-
-          {% set master = is_state('input_boolean.rollladen_automation_enabled','on') %}
-          {% if not master %}
+          {% if not is_state('input_boolean.rollladen_automation_enabled','on') %}
             disabled
           {% else %}
-            {% set day = is_state('binary_sensor.rollladen_day_window','on') %}
-            {{ 100 if day else 0 }}
+            {{ states('sensor.rollladen_nord_target_position') }}
           {% endif %}
         attributes:
           reason: >-
-            {% set master = is_state('input_boolean.rollladen_automation_enabled','on') %}
-            {% if not master %} master_disabled
+            {% if not is_state('input_boolean.rollladen_automation_enabled','on') %}
+              master_disabled
             {% else %}
-              {% if is_state('binary_sensor.rollladen_day_window','on') %} default_open
-              {% else %} outside_day_window
-              {% endif %}
+              {{ state_attr('sensor.rollladen_nord_target_position','reason') }}
             {% endif %}
           master_enabled: "{{ is_state('input_boolean.rollladen_automation_enabled','on') }}"
-          day_window: "{{ is_state('binary_sensor.rollladen_day_window','on') }}"
-
+          day_window: "{{ state_attr('sensor.rollladen_nord_target_position','day_window') }}"

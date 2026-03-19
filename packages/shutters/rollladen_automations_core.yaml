@@ -1,3 +1,5 @@
+# Version: 2.0.0
+# Change note (2026-03-19): Keep automation IDs stable while delegating decisions to centralized target-position sensors.
 ###############################################################################
 # Automations
 ###############################################################################
@@ -87,7 +89,7 @@ automation:
       - platform: state
         entity_id: binary_sensor.rollladen_day_window
     action:
-      # OST: nur Automatik, wenn kein Override; Tür-Failsafe bleibt separat + in apply_ost
+      # OST: nur Automatik, wenn kein Override; bei aktivem Override bleibt nur das Tür-Failsafe wirksam.
       - choose:
           - conditions:
               - condition: state
@@ -96,17 +98,12 @@ automation:
             sequence:
               - service: script.rollladen_apply_ost
         default:
-          # Override aktiv: nur Tür-Failsafe erzwingen (falls offen/unknown/unavailable)
-          - variables:
-              door_state: "{{ states('binary_sensor.kuche_balkon_turkontakt') }}"
-              door_failsafe: "{{ door_state in ['on','unknown','unavailable'] }}"
-          - choose:
-              - conditions: "{{ door_failsafe }}"
-                sequence:
-                  - service: script.rollladen_set_position
-                    data:
-                      target_cover: cover.rollladen_ost
-                      position: 100
+          - condition: template
+            value_template: "{{ (state_attr('sensor.rollladen_ost_target_position','reason') | default('', true) | trim) == 'door_failsafe' }}"
+          - service: script.rollladen_set_position
+            data:
+              target_cover: cover.rollladen_ost
+              position: "{{ states('sensor.rollladen_ost_target_position') | int(100) }}"
 
       # WEST: nur wenn kein Override
       - choose:
@@ -121,14 +118,8 @@ automation:
       - service: script.rollladen_apply_nord
 
   ###########################################################################
-
-  ###########################################################################
   # A1) Ost-Abend-Override: Steckdose erzwingt "offen" außerhalb Day-Window,
-  #     jedoch spätestens bis 23:00 (wird im Apply-Script begrenzt).
-  #
-  # Trigger:
-  # - Steckdose schaltet (sofortige Reaktion)
-  # - 23:00 (garantiertes "Zurück" auf Standardlogik)
+  #     jedoch spätestens bis Latest-Close-Zeit.
   ###########################################################################
   - alias: "Rollladen Ost: Steckdosen-Override"
     id: rollladen_ost_evening_override_plug
@@ -157,7 +148,9 @@ automation:
         state: "off"
     action:
       - service: script.rollladen_apply_ost
-  # B) Beschattung: Sensor-Trigger (dein Beschattungssensor kapselt Sun/Lux/Azimuth)
+
+  ###########################################################################
+  # B) Beschattung: Sensor-Trigger
   ###########################################################################
   - alias: "Rollladen Ost: Beschattung"
     id: rollladen_ost_beschattung
@@ -166,16 +159,15 @@ automation:
       - platform: state
         entity_id: input_boolean.beschattung_ost
     action:
-      - variables:
-          door_state: "{{ states('binary_sensor.kuche_balkon_turkontakt') }}"
-          door_failsafe: "{{ door_state in ['on','unknown','unavailable'] }}"
       - choose:
-          - conditions: "{{ door_failsafe }}"
+          - conditions:
+              - condition: template
+                value_template: "{{ (state_attr('sensor.rollladen_ost_target_position','reason') | default('', true) | trim) == 'door_failsafe' }}"
             sequence:
               - service: script.rollladen_set_position
                 data:
                   target_cover: cover.rollladen_ost
-                  position: 100
+                  position: "{{ states('sensor.rollladen_ost_target_position') | int(100) }}"
           - conditions:
               - condition: state
                 entity_id: input_boolean.rollladen_override_ost
@@ -206,16 +198,15 @@ automation:
       - platform: state
         entity_id: binary_sensor.kuche_balkon_turkontakt
     action:
-      - variables:
-          door_state: "{{ states('binary_sensor.kuche_balkon_turkontakt') }}"
-          door_failsafe: "{{ door_state in ['on','unknown','unavailable'] }}"
       - choose:
-          - conditions: "{{ door_failsafe }}"
+          - conditions:
+              - condition: template
+                value_template: "{{ (state_attr('sensor.rollladen_ost_target_position','reason') | default('', true) | trim) == 'door_failsafe' }}"
             sequence:
               - service: script.rollladen_set_position
                 data:
                   target_cover: cover.rollladen_ost
-                  position: 100
+                  position: "{{ states('sensor.rollladen_ost_target_position') | int(100) }}"
         default:
           - condition: state
             entity_id: input_boolean.rollladen_override_ost
@@ -243,16 +234,12 @@ automation:
             sequence:
               - service: script.rollladen_apply_ost
         default:
-          - variables:
-              door_state: "{{ states('binary_sensor.kuche_balkon_turkontakt') }}"
-              door_failsafe: "{{ door_state in ['on','unknown','unavailable'] }}"
-          - choose:
-              - conditions: "{{ door_failsafe }}"
-                sequence:
-                  - service: script.rollladen_set_position
-                    data:
-                      target_cover: cover.rollladen_ost
-                      position: 100
+          - condition: template
+            value_template: "{{ (state_attr('sensor.rollladen_ost_target_position','reason') | default('', true) | trim) == 'door_failsafe' }}"
+          - service: script.rollladen_set_position
+            data:
+              target_cover: cover.rollladen_ost
+              position: "{{ states('sensor.rollladen_ost_target_position') | int(100) }}"
 
       # WEST
       - choose:
