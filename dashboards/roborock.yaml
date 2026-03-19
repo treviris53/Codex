@@ -9,6 +9,13 @@ views:
       - type: grid
         column_span: 1
         cards:
+          - type: markdown
+            content: |
+              **Gueltige Job-IDs**
+
+              `duo_wohn_flur`, `schlaf_saugen`, `wohn_standard`, `wohn_saugen`,
+              `schlaf_standard`, `flur_standard`, `duo_saug_dann_wisch`,
+              `pet_zone_1`, `pet_zone_2`
           - type: grid
             columns: 2
             square: false
@@ -18,65 +25,65 @@ views:
                 icon: mdi:bed-king-outline
                 tap_action:
                   action: perform-action
-                  perform_action: button.press
-                  target:
-                    entity_id: button.saros_20_set_saugen_schlafzimmer
+                  perform_action: script.roborock_run_named_program
+                  data:
+                    program_id: schlaf_saugen
               - type: button
                 name: Schlaf vac+mop
                 icon: mdi:bed-king
                 tap_action:
                   action: perform-action
-                  perform_action: button.press
-                  target:
-                    entity_id: button.saros_20_set_schlaf_vac_mop
+                  perform_action: script.roborock_run_named_program
+                  data:
+                    program_id: schlaf_vac_mop
               - type: button
                 name: Flur vac+mop
                 icon: mdi:door
                 tap_action:
                   action: perform-action
-                  perform_action: button.press
-                  target:
-                    entity_id: button.saros_20_set_flur_vac_mop
+                  perform_action: script.roborock_run_named_program
+                  data:
+                    program_id: flur_vac_mop
               - type: button
                 name: Flur saug/wisch
                 icon: mdi:door
                 tap_action:
                   action: perform-action
-                  perform_action: button.press
-                  target:
-                    entity_id: button.saros_20_set_flur_saug_wisch
+                  perform_action: script.roborock_run_named_program
+                  data:
+                    program_id: flur_saug_wisch
               - type: button
                 name: Wohn saugen
                 icon: mdi:sofa-outline
                 tap_action:
                   action: perform-action
-                  perform_action: button.press
-                  target:
-                    entity_id: button.saros_20_set_wohn_saugen
+                  perform_action: script.roborock_run_named_program
+                  data:
+                    program_id: wohn_saugen
               - type: button
                 name: Wohn saug/wisch
                 icon: mdi:sofa
                 tap_action:
                   action: perform-action
-                  perform_action: button.press
-                  target:
-                    entity_id: button.saros_20_set_wohn_saug_wisch
+                  perform_action: script.roborock_run_named_program
+                  data:
+                    program_id: wohn_saug_wisch
               - type: button
                 name: Alles saugen/wischen
                 icon: mdi:robot-vacuum
                 tap_action:
                   action: perform-action
-                  perform_action: button.press
-                  target:
-                    entity_id: button.saros_20_set_saugen_dann_wischen
+                  perform_action: script.roborock_run_named_program
+                  data:
+                    program_id: alles_saugen_dann_wischen
               - type: button
                 name: Haustierbedarf
                 icon: mdi:paw
                 tap_action:
                   action: perform-action
-                  perform_action: button.press
-                  target:
-                    entity_id: button.saros_20_set_reinigung_von_haustierbedarf
+                  perform_action: script.roborock_run_named_program
+                  data:
+                    program_id: haustierbedarf_1
       - type: grid
         cards:
           - type: entities
@@ -87,10 +94,18 @@ views:
                 name: Status
               - entity: sensor.saros_20_set_staubsauger_fehler
                 name: Fehlertext
+              - entity: binary_sensor.roborock_program_ready
+                name: Startbereit
+              - entity: binary_sensor.roborock_program_blocked
+                name: Blockiert
+              - entity: input_boolean.roborock_busy
+                name: Busy
+              - entity: input_datetime.roborock_busy_since
+                name: Busy seit
               - type: attribute
                 entity: script.roborock_execute_job_chain
                 attribute: last_triggered
-                name: Letzter Script-Start
+                name: Letzter Job-Start
               - entity: input_text.roborock_last_slot
                 name: Letzter Slot
               - entity: input_text.roborock_last_job
@@ -111,16 +126,14 @@ views:
             title: Wartung
             show_header_toggle: false
             entities:
-              - entity: >-
-                  button.saros_20_set_hauptbursten_verbrauchsmaterial_zurucksetzen
-                name: Hauptbürste zurücksetzen
-              - entity: >-
-                  button.saros_20_set_seitenbursten_verbrauchsmaterial_zurucksetzen
-                name: Seitenbürste zurücksetzen
+              - entity: button.saros_20_set_hauptbursten_verbrauchsmaterial_zurucksetzen
+                name: Hauptbuerste zuruecksetzen
+              - entity: button.saros_20_set_seitenbursten_verbrauchsmaterial_zurucksetzen
+                name: Seitenbuerste zuruecksetzen
               - entity: button.saros_20_set_luftfilter_verbrauchsmaterial_zurucksetzen
-                name: Luftfilter zurücksetzen
+                name: Luftfilter zuruecksetzen
               - entity: button.saros_20_set_sensor_verbrauchsmaterial_zurucksetzen
-                name: Sensoren zurücksetzen
+                name: Sensoren zuruecksetzen
       - type: grid
         column_span: 3
         cards:
@@ -157,13 +170,13 @@ views:
                 unit: min
                 multiplier: 1
                 precision: 0
-              - label: Hauptbürste
+              - label: Hauptbuerste
                 entity: sensor.saros_20_set_verbleibende_zeit_der_hauptburste
                 icon: mdi:brush
                 unit: h
                 multiplier: 1
                 precision: 0
-              - label: Seitenbürste
+              - label: Seitenbuerste
                 entity: sensor.saros_20_set_verbleibende_zeit_der_seitenburste
                 icon: mdi:brush-variant
                 unit: h
@@ -181,7 +194,7 @@ views:
                 unit: h
                 multiplier: 1
                 precision: 0
-              - label: Schmutzfänger Dock
+              - label: Schmutzfaenger Dock
                 entity: sensor.saros_20_set_dock_schmutzfanger_verbleibend
                 icon: mdi:filter-variant
                 unit: h
@@ -204,7 +217,7 @@ views:
                 name: Zeitplan aktiv
             grid_options:
               columns: full
-              rows: auto
+              rows: auto
           - type: vertical-stack
             cards:
               - type: heading

@@ -1,24 +1,30 @@
 # ======================================================================
-# Roborock Saros 20 – Core / Program Executor
+# Roborock Saros 20 - Core / Program Executor
 # File: config/packages/roborock/roborock_core.yaml
-# Version: 1.0.0
-# Date: 2026-03-13
+# Version: 3.0.1
+# Date: 2026-03-19
 # Change note:
-# - Initial Saros-20 package based on program-button orchestration
-# - Replaces segment/wipe-day logic with job execution via button entities
+# - Added missing busy helpers to remove hidden package dependencies
+# - Normalized program/job identifiers to consistent snake_case keys
+# - Added safe cleanup script so busy lock is cleared on all known failures
+# - Added safe manual program launcher for dashboard use
+# - Busy timestamp is now written only on true busy-lock acquisition
 # ======================================================================
-# Version: 2.0.0
-# Date: 2026-03-13
-# Change note:
-# - BREAKING: Scheduler logic changed from 3 global time slots to 3 weekday-specific slots per weekday.
-# - New model: Each weekday/slot can execute up to 4 symbolic jobs.
-# - Jobs are mapped in YAML to one or more Saros 20 button-programs.
-# - Fixed job mapping remains in YAML; only weekday/time/slot/job assignments are edited in helpers/dashboard.
 
 input_boolean:
   roborock_schedule_enabled:
     name: Roborock Zeitplan aktiv
     icon: mdi:calendar-clock
+
+  roborock_busy:
+    name: Roborock Busy
+    icon: mdi:robot-vacuum-alert
+
+input_datetime:
+  roborock_busy_since:
+    name: Roborock Busy seit
+    has_date: true
+    has_time: true
 
 input_text:
   roborock_last_slot:
@@ -67,7 +73,7 @@ template:
 automation:
   - id: roborock_busy_reset_on_start
     alias: Roborock Busy Reset bei HA Restart
-    description: "Setzt den Busy-Lock nach HA-Start zurück, damit kein hängender Lauf blockiert."
+    description: Setzt den Busy-Lock nach HA-Start zurueck.
     triggers:
       - trigger: homeassistant
         event: start
@@ -76,24 +82,85 @@ automation:
       - action: input_boolean.turn_off
         target:
           entity_id: input_boolean.roborock_busy
-      - action: input_datetime.set_datetime
+      - action: input_text.set_value
         target:
-          entity_id: input_datetime.roborock_busy_since
+          entity_id: input_text.roborock_current_program
         data:
-          datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"
+          value: ""
     mode: single
 
 script:
+  roborock_finalize_execution:
+    alias: Roborock - Execution Cleanup
+    mode: parallel
+    fields:
+      error_message:
+        description: Fehlertext fuer Diagnose
+        required: false
+        selector:
+          text:
+      log_message:
+        description: Logbook-Nachricht
+        required: false
+        selector:
+          text:
+    sequence:
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: "{{ error_message is defined and error_message | trim != '' }}"
+            sequence:
+              - action: input_text.set_value
+                target:
+                  entity_id: input_text.roborock_last_error
+                data:
+                  value: "{{ error_message }}"
+      - action: input_text.set_value
+        target:
+          entity_id: input_text.roborock_current_program
+        data:
+          value: ""
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.roborock_busy
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: "{{ log_message is defined and log_message | trim != '' }}"
+            sequence:
+              - action: logbook.log
+                data:
+                  name: Roborock Scheduler
+                  message: "{{ log_message }}"
+
+  roborock_run_named_program:
+    alias: Roborock - Sicheres Einzelprogramm starten
+    mode: queued
+    max: 10
+    fields:
+      program_id:
+        description: Symbolische Programm-ID
+        required: true
+        selector:
+          text:
+    sequence:
+      - action: script.roborock_execute_program_job
+        data:
+          slot_name: "manual_program"
+          source: "dashboard"
+          program_sequence:
+            - "{{ program_id }}"
+
   roborock_execute_program_job:
-    alias: Roborock – Program Sequence Executor
+    alias: Roborock - Program Sequence Executor
     description: >
-      Führt eine CSV- oder List-Sequenz symbolischer Programme nacheinander aus.
+      Fuehrt eine CSV- oder List-Sequenz symbolischer Programme nacheinander aus.
       Programmmapping bleibt in diesem Script fest im YAML.
     mode: queued
     max: 10
     fields:
       slot_name:
-        description: Lesbarer Slotname für Diagnose
+        description: Lesbarer Slotname fuer Diagnose
         required: false
         selector:
           text:
@@ -112,17 +179,16 @@ script:
           source_label: "{{ source | default('manual') }}"
           slot_label: "{{ slot_name | default('manual') }}"
           raw_sequence: "{{ program_sequence }}"
-          # Festes Programmmapping Saros 20 -> HA Button Entities
           program_map:
             wohn_saugen: button.saros_20_set_wohn_saugen
             wohn_saug_wisch: button.saros_20_set_wohn_saug_wisch
             schlaf_saugen: button.saros_20_set_saugen_schlafzimmer
-            schlaf_saugen_wischen: button.saros_20_set_schlaf_saug_wisch
+            schlaf_saug_wisch: button.saros_20_set_schlaf_saug_wisch
             schlaf_vac_mop: button.saros_20_set_schlaf_vac_mop
-            Alles_saugen_wischen: button.saros_20_set_saugen_dann_wischen
-            haustier: button.saros_20_set_reinigung_von_haustierbedarf
+            alles_saugen_dann_wischen: button.saros_20_set_saugen_dann_wischen
+            haustierbedarf_1: button.saros_20_set_reinigung_von_haustierbedarf
             haustierbedarf_2: button.saros_20_set_reinigung_von_haustierbedarf2
-            flur_saugen_wischen: button.saros_20_set_flur_saug_wisch
+            flur_saug_wisch: button.saros_20_set_flur_saug_wisch
             flur_vac_mop: button.saros_20_set_flur_vac_mop
           program_tokens: >-
             {% if raw_sequence is string %}
@@ -180,12 +246,35 @@ script:
                 entity_id: binary_sensor.roborock_program_blocked
                 state: "on"
             sequence:
+              - action: script.roborock_finalize_execution
+                data:
+                  error_message: "Start blockiert: {{ states('sensor.saros_20_set_status') }}"
+                  log_message: "Programmfolge nicht gestartet ({{ source_label }} / {{ slot_label }}): Blockiert durch Status {{ states('sensor.saros_20_set_status') }}"
+              - stop: Robot blocked at start.
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.roborock_busy
+                state: "on"
+            sequence:
               - action: input_text.set_value
                 target:
                   entity_id: input_text.roborock_last_error
                 data:
-                  value: "Start blockiert: {{ states('sensor.saros_20_set_status') }}"
-              - stop: "Robot blocked at start."
+                  value: "Start blockiert: Busy-Lock bereits aktiv"
+              - action: logbook.log
+                data:
+                  name: Roborock Scheduler
+                  message: "Programmfolge nicht gestartet ({{ source_label }} / {{ slot_label }}): Busy-Lock bereits aktiv"
+              - stop: Busy lock already active.
+          - conditions:
+              - condition: template
+                value_template: "{{ program_tokens | length == 0 }}"
+            sequence:
+              - action: script.roborock_finalize_execution
+                data:
+                  error_message: "Keine Programme uebergeben"
+                  log_message: "Programmfolge nicht gestartet ({{ source_label }} / {{ slot_label }}): Keine Programme uebergeben"
+              - stop: No programs configured.
       - action: input_boolean.turn_on
         target:
           entity_id: input_boolean.roborock_busy
@@ -220,12 +309,11 @@ script:
                     - condition: template
                       value_template: "{{ current_button is none }}"
                   sequence:
-                    - action: input_text.set_value
-                      target:
-                        entity_id: input_text.roborock_last_error
+                    - action: script.roborock_finalize_execution
                       data:
-                        value: "Unbekanntes Programm: {{ current_program_id }}"
-                    - stop: "Unknown program identifier."
+                        error_message: "Unbekanntes Programm: {{ current_program_id }}"
+                        log_message: "Programmfolge abgebrochen ({{ source_label }} / {{ slot_label }}): Unbekanntes Programm {{ current_program_id }}"
+                    - stop: Unknown program identifier.
             - action: input_text.set_value
               target:
                 entity_id: input_text.roborock_current_program
@@ -233,49 +321,86 @@ script:
                 value: "{{ current_program_id }}"
             - wait_template: "{{ states('sensor.saros_20_set_status') in ready_states }}"
               timeout: "01:00:00"
-              continue_on_timeout: false
+              continue_on_timeout: true
+            - choose:
+                - conditions:
+                    - condition: template
+                      value_template: "{{ not wait.completed }}"
+                  sequence:
+                    - action: script.roborock_finalize_execution
+                      data:
+                        error_message: "Timeout vor Start von {{ current_program_id }}: Robot nicht bereit"
+                        log_message: "Programmfolge abgebrochen ({{ source_label }} / {{ slot_label }}): Robot vor {{ current_program_id }} nicht bereit"
+                    - stop: Timeout waiting for ready state.
+                - conditions:
+                    - condition: template
+                      value_template: "{{ states('sensor.saros_20_set_status') in blocked_states }}"
+                  sequence:
+                    - action: script.roborock_finalize_execution
+                      data:
+                        error_message: "Blockierter Status vor {{ current_program_id }}: {{ states('sensor.saros_20_set_status') }}"
+                        log_message: "Programmfolge abgebrochen ({{ source_label }} / {{ slot_label }}): Blockierter Status vor {{ current_program_id }}"
+                    - stop: Robot entered blocked state before start.
             - action: button.press
               target:
                 entity_id: "{{ current_button }}"
             - wait_template: "{{ states('sensor.saros_20_set_status') in active_states }}"
               timeout: "00:05:00"
-              continue_on_timeout: false
-            - wait_template: "{{ states('sensor.saros_20_set_status') in ready_states }}"
-              timeout: "04:00:00"
-              continue_on_timeout: false
+              continue_on_timeout: true
             - choose:
                 - conditions:
                     - condition: template
                       value_template: "{{ states('sensor.saros_20_set_status') in blocked_states }}"
                   sequence:
-                    - action: input_text.set_value
-                      target:
-                        entity_id: input_text.roborock_last_error
+                    - action: script.roborock_finalize_execution
                       data:
-                        value: "Fehler nach {{ current_program_id }}: {{ states('sensor.saros_20_set_status') }}"
-                    - stop: "Robot entered blocked state."
-      - action: input_text.set_value
-        target:
-          entity_id: input_text.roborock_current_program
+                        error_message: "Fehler nach Start von {{ current_program_id }}: {{ states('sensor.saros_20_set_status') }}"
+                        log_message: "Programmfolge abgebrochen ({{ source_label }} / {{ slot_label }}): Fehler nach Start von {{ current_program_id }}"
+                    - stop: Robot entered blocked state after start.
+                - conditions:
+                    - condition: template
+                      value_template: "{{ not wait.completed }}"
+                  sequence:
+                    - action: script.roborock_finalize_execution
+                      data:
+                        error_message: "Start-Timeout fuer {{ current_program_id }}"
+                        log_message: "Programmfolge abgebrochen ({{ source_label }} / {{ slot_label }}): {{ current_program_id }} wurde nicht aktiv"
+                    - stop: Program did not become active.
+            - wait_template: "{{ states('sensor.saros_20_set_status') in ready_states }}"
+              timeout: "04:00:00"
+              continue_on_timeout: true
+            - choose:
+                - conditions:
+                    - condition: template
+                      value_template: "{{ states('sensor.saros_20_set_status') in blocked_states }}"
+                  sequence:
+                    - action: script.roborock_finalize_execution
+                      data:
+                        error_message: "Fehler nach {{ current_program_id }}: {{ states('sensor.saros_20_set_status') }}"
+                        log_message: "Programmfolge abgebrochen ({{ source_label }} / {{ slot_label }}): Fehler nach {{ current_program_id }}"
+                    - stop: Robot entered blocked state during program.
+                - conditions:
+                    - condition: template
+                      value_template: "{{ not wait.completed }}"
+                  sequence:
+                    - action: script.roborock_finalize_execution
+                      data:
+                        error_message: "Fertig-Timeout fuer {{ current_program_id }}"
+                        log_message: "Programmfolge abgebrochen ({{ source_label }} / {{ slot_label }}): {{ current_program_id }} wurde nicht rechtzeitig fertig"
+                    - stop: Program did not finish in time.
+      - action: script.roborock_finalize_execution
         data:
-          value: ""
-      - action: input_boolean.turn_off
-        target:
-          entity_id: input_boolean.roborock_busy
-      - action: logbook.log
-        data:
-          name: Roborock Scheduler
-          message: "Program sequence finished ({{ source_label }} / {{ slot_label }}): {{ program_tokens | join(',') }}"
+          log_message: "Programmfolge beendet ({{ source_label }} / {{ slot_label }}): {{ program_tokens | join(',') }}"
 
   roborock_execute_job_chain:
-    alias: Roborock – Job Chain Executor
+    alias: Roborock - Job Chain Executor
     description: >
-      Führt bis zu 4 symbolische Jobs aus. Jeder Job expandiert auf eine oder mehrere Saros-Programme.
+      Fuehrt bis zu 4 symbolische Jobs aus. Jeder Job expandiert auf eine oder mehrere Saros-Programme.
     mode: queued
     max: 10
     fields:
       slot_name:
-        description: Lesbarer Slotname, z. B. mo_slot_1
+        description: Lesbarer Slotname, z. B. mon_1
         required: true
         selector:
           text:
@@ -301,7 +426,6 @@ script:
               {{ raw_jobs | list }}
             {% endif %}
           limited_job_tokens: "{{ job_tokens[:4] }}"
-          # Festes Job-Mapping -> Sequenz symbolischer Programme
           job_map:
             flur_standard:
               - flur_vac_mop
@@ -312,12 +436,12 @@ script:
             schlaf_standard:
               - schlaf_vac_mop
             schlaf_saugen:
-              - saugen_schlafzimmer
+              - schlaf_saugen
             duo_wohn_flur:
               - flur_vac_mop
               - wohn_saugen
             duo_saug_dann_wisch:
-              - saugen_dann_wischen
+              - alles_saugen_dann_wischen
             pet_zone_1:
               - haustierbedarf_1
             pet_zone_2:
@@ -327,8 +451,8 @@ script:
             {% for job in limited_job_tokens %}
               {% set mapped = job_map.get(job) %}
               {% if mapped is iterable and mapped is not string %}
-                {% for p in mapped %}
-                  {% set ns.items = ns.items + [p] %}
+                {% for program_id in mapped %}
+                  {% set ns.items = ns.items + [program_id] %}
                 {% endfor %}
               {% endif %}
             {% endfor %}
@@ -341,8 +465,8 @@ script:
               - action: logbook.log
                 data:
                   name: Roborock Scheduler
-                  message: "Kein Job für {{ slot_name }} definiert."
-              - stop: "No jobs configured."
+                  message: "Kein Job fuer {{ slot_name }} definiert."
+              - stop: No jobs configured.
       - action: input_text.set_value
         target:
           entity_id: input_text.roborock_last_job
@@ -357,10 +481,15 @@ script:
                 target:
                   entity_id: input_text.roborock_last_error
                 data:
-                  value: "Keine gültigen Programme aus Jobs: {{ limited_job_tokens | join(',') }}"
-              - stop: "No valid programs expanded from jobs."
+                  value: "Keine gueltigen Programme aus Jobs: {{ limited_job_tokens | join(',') }}"
+              - action: logbook.log
+                data:
+                  name: Roborock Scheduler
+                  message: "Jobfolge ohne gueltige Programme ({{ source_label }} / {{ slot_name }}): {{ limited_job_tokens | join(',') }}"
+              - stop: No valid programs expanded from jobs.
       - action: script.roborock_execute_program_job
         data:
           slot_name: "{{ slot_name }}"
           source: "{{ source_label }}"
           program_sequence: "{{ expanded_programs }}"
+
