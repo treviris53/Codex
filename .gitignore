@@ -4,6 +4,7 @@
 deps/
 tts/
 backup/
+roborock_revised/
 *.bak
 *.log
 
