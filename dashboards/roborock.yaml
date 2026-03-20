@@ -11,11 +11,18 @@ views:
         cards:
           - type: markdown
             content: |
-              **Gueltige Job-IDs**
+              **Legacy Job-Aliase**
 
-              `schlaf_saug`, `schlaf_vac_mop`, `schlaf_saug_wisch`, `flur_saug`,
-              `flur_vac_mop`, `flur_saug_wisch`, `wohn_saug`, 'wohn_vac_mop',
-              `wohn_saug_wisch`, `haustier`
+              `schlaf_s`, `schlaf_vm`, `schlaf_sw`, `flur_s`,
+              `flur_vm`, `flur_sw`, `wohn_s`, `wohn_vm`,
+              `wohn_sw`, `haustier`
+
+              **Kanonische Programm-IDs**
+
+              `schlaf_saug`, `schlaf_vac_mop`, `schlaf_saug_wisch`,
+              `flur_saug`, `flur_vac_mop`, `flur_saug_wisch`,
+              `wohn_saug`, `wohn_vac_mop`, `wohn_saug_wisch`,
+              `haustier`
           - type: grid
             columns: 2
             square: false
@@ -27,7 +34,7 @@ views:
                   action: perform-action
                   perform_action: script.roborock_run_named_program
                   data:
-                    program_id: schlaf_saugen
+                    program_id: schlaf_saug
               - type: button
                 name: Schlaf vac+mop
                 icon: mdi:bed-king
@@ -59,7 +66,7 @@ views:
                   action: perform-action
                   perform_action: script.roborock_run_named_program
                   data:
-                    program_id: wohn_saugen
+                    program_id: wohn_saug
               - type: button
                 name: Wohn saug/wisch
                 icon: mdi:sofa
@@ -69,21 +76,13 @@ views:
                   data:
                     program_id: wohn_saug_wisch
               - type: button
-                name: Alles saugen/wischen
-                icon: mdi:robot-vacuum
-                tap_action:
-                  action: perform-action
-                  perform_action: script.roborock_run_named_program
-                  data:
-                    program_id: alles_saugen_dann_wischen
-              - type: button
                 name: Haustierbedarf
                 icon: mdi:paw
                 tap_action:
                   action: perform-action
                   perform_action: script.roborock_run_named_program
                   data:
-                    program_id: haustierbedarf_1
+                    program_id: haustier
       - type: grid
         cards:
           - type: entities

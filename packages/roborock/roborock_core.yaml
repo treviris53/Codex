@@ -427,25 +427,26 @@ script:
             {% endif %}
           limited_job_tokens: "{{ job_tokens[:4] }}"
           job_map:
-            flur_standard:
+            flur_vm:
               - flur_vac_mop
-            wohn_standard:
+            flur_s:
+              - flur_saug
+            flur_sw:
+              - flur_saug_wisch
+            wohn_sw:
               - wohn_saug_wisch
-            wohn_saugen:
-              - wohn_saugen
-            schlaf_standard:
+            wohn_vm:
+              - wohn_vac_mop         
+            wohn_s:
+              - wohn_saug
+            schlaf_s:
+              - schlaf_saug
+            schlaf_sw:
+              - schlaf_saug_wisch
+            schlaf_vm:
               - schlaf_vac_mop
-            schlaf_saugen:
-              - schlaf_saugen
-            duo_wohn_flur:
-              - flur_vac_mop
-              - wohn_saugen
-            duo_saug_dann_wisch:
-              - alles_saugen_dann_wischen
-            pet_zone_1:
-              - haustierbedarf_1
-            pet_zone_2:
-              - haustierbedarf_2
+            haustier:
+              - haustier
           expanded_programs: >-
             {% set ns = namespace(items=[]) %}
             {% for job in limited_job_tokens %}
