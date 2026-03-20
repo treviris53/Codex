@@ -1,59 +1,50 @@
-# Home Assistant core
-.homeassistant/
-.storage/
-deps/
-tts/
-backup/
-roborock_revised/
-_context/
-*.bak
-*.log
-*.ps1
+# -------------------------------------------------------------------
+# Home Assistant local runtime / machine-local artifacts
+# Keep deployable YAML and scripts in repo, ignore only local state.
+# -------------------------------------------------------------------
 
-# Database
+# Local HA runtime snapshot (read-only reference only)
+_ha_runtime_snapshot/
+ha_runtime_snapshot/
+
+# Home Assistant internal runtime/state
+.storage/
+.ha_run.lock
+.HA_VERSION
+ip_bans.yaml
+home-assistant.log
+home-assistant.log.*
+*.fault
+
+# Local backups / temporary exports
+backup/
+backups/
+backup_deploy/
+*.bak
+*.tar
+*.msix
+
+# Databases
 home-assistant_v2.db
 home-assistant_v2.db-shm
 home-assistant_v2.db-wal
 
-# Backups
-backups/
-*.tar
-
-# Secrets
-secrets.yaml
-
-# SSL / keys
-*.pem
-*.key
-
-# Temporary / cache
+# Cache / Python
 __pycache__/
 *.pyc
 
-# OS / Editor
+# Editor / OS
 .DS_Store
 Thumbs.db
 .vscode/
 
-# Zigbee2MQTT (optional)
-zigbee2mqtt/database.db
-zigbee2mqtt/coordinator_backup.json
-
-# ESPHome build files
+# Optional local integration/runtime dirs that should not be versioned
+deps/
+tts/
+zigbee2mqtt/
 esphome/.esphome/
 
-# Logs
-*.log\
-# Local HA runtime snapshot (read-only reference only)
-_ha_runtime_snapshot/
-ha_runtime_snapshot/
-# Local HA runtime / machine-local artifacts
-_ha_runtime_snapshot/
-ha_runtime_snapshot/
-.storage/
-.ha_run.lock
-.HA_VERSION
-*.fault
-ip_bans.yaml
-backup/
-*.msix
+# Secrets / private material
+secrets.yaml
+*.pem
+*.key
