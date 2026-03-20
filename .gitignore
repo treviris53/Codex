@@ -43,4 +43,17 @@ zigbee2mqtt/coordinator_backup.json
 esphome/.esphome/
 
 # Logs
-*.log
+*.log\
+# Local HA runtime snapshot (read-only reference only)
+_ha_runtime_snapshot/
+ha_runtime_snapshot/
+# Local HA runtime / machine-local artifacts
+_ha_runtime_snapshot/
+ha_runtime_snapshot/
+.storage/
+.ha_run.lock
+.HA_VERSION
+*.fault
+ip_bans.yaml
+backup/
+*.msix
