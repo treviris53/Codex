@@ -57,3 +57,55 @@ For substantial Home Assistant changes, include:
 - outputs / side effects
 - troubleshooting notes
 - validation checklist
+
+
+## Additional Operational Constraints (Repository-Specific)
+
+### 1. Root vs Packages (Strict Placement Rule)
+New runtime logic MUST be added in `config/packages/<domain>/...`.
+
+Root files:
+- automations.yaml
+- scripts.yaml
+- scenes.yaml
+
+are considered **legacy / compatibility layers**.
+
+Rules:
+- Do NOT move existing logic from root to packages unless explicitly requested
+- Root automations may be:
+  - documented
+  - minimally normalized (e.g. descriptions, service-call style)
+- Large-scale migrations require explicit approval
+
+---
+
+### 2. Entity Ownership Conflicts
+If multiple modules write to the same entity/helper:
+
+- DO NOT immediately refactor or merge logic
+- FIRST:
+  - identify the authoritative owner
+  - mark all other writers as **legacy**
+  - document the relationship clearly
+
+- Functional consolidation must be proposed separately and include:
+  - migration plan
+  - rollback safety
+
+---
+
+### 3. Safe Non-Functional Changes (Allowed by Default)
+The following changes are allowed WITHOUT explicit approval,
+as long as runtime behavior does not change:
+
+- adding `description` fields
+- adding ownership / legacy comments
+- converting device-based actions → entity/service calls (1:1 equivalent)
+- formatting improvements and YAML cleanup
+- adding or updating version headers (`# Version: x.y.z`)
+
+Constraints:
+- NO entity_id changes
+- NO behavior changes
+- NO structural refactors across domains
