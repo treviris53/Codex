@@ -1,4 +1,4 @@
-# Version: 1.0.1
+# Version: 1.0.2
 # Root role: Legacy-/Kompatibilitätsebene. Neue Runtime-Logik gehört in config/packages/<domain>/...
 # Hinweis: Root-Automationen bleiben Altbestand; fachliche Konsolidierungen erfolgen separat.
 - id: '1733643487103'
@@ -215,7 +215,7 @@
 - id: '1767968135266'
   alias: Anwesenheit (Personen) -> input_boolean.anwesend
   description: Legacy-Kompatibilitaetswriter fuer input_boolean.anwesend; fachlicher Owner ist das packaged Presence-Modul.
-  enabled: false
+  initial_state: false
   triggers:
   - id: someone_home
     entity_id:
