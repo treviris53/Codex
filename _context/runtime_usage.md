@@ -1,39 +1,26 @@
 # Runtime Data Usage
 
-## Source
-Runtime snapshot is stored in:
-- _ha_runtime_snapshot/
-
-Includes:
-- .storage/core.entity_registry
-- .storage/core.restore_state
+## Scope
+Rules for using `_ha_runtime_snapshot/` and optional `_ha_debug/` data.
 
 ## Purpose
-These files are used for:
+Runtime data may be used for:
 - validating entity existence
-- checking helper values (input_text, input_datetime, etc.)
-- verifying mappings (program_map vs real entities)
+- reading observed helper values
+- verifying mappings against real runtime entities
+- debugging restart or state-transition behavior
 
-## Strict Rules
+## Strict rules
+- Runtime data is read-only.
+- Never modify files in `_ha_runtime_snapshot/`.
+- Never deploy runtime snapshot files back to Home Assistant.
+- Never treat runtime data as the source of truth for configuration.
 
-- Runtime data is READ-ONLY
-- Never modify files in _ha_runtime_snapshot/
-- Never deploy these files back to Home Assistant
-- Never treat them as source of truth for configuration
+## Source of truth
+- YAML in `packages/`, `dashboards/`, and maintained config files is authoritative.
+- Runtime snapshot is observational only.
 
-## Source of Truth
-
-- YAML in packages/ and dashboards/ = authoritative configuration
-- runtime snapshot = observational data only
-
-## Usage Pattern
-
-When validating:
-- entity must exist in entity_registry
-- helper values may be read from restore_state
-- mappings must be verified against runtime entities
-
-Do NOT:
-- generate YAML from runtime snapshot
-- sync snapshot back to HA
-- overwrite config with runtime data
+## Debug telemetry
+- `_ha_debug/` is optional and read-only.
+- Prefer targeted captures over large indiscriminate dumps.
+- Never convert debug telemetry into configuration.

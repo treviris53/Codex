@@ -6,6 +6,7 @@
 # Local HA runtime snapshot (read-only reference only)
 _ha_runtime_snapshot/
 ha_runtime_snapshot/
+_ha_debug/
 
 # Home Assistant internal runtime/state
 .storage/
@@ -32,6 +33,7 @@ home-assistant_v2.db-wal
 # Cache / Python
 __pycache__/
 *.pyc
+.venv/
 
 # Editor / OS
 .DS_Store

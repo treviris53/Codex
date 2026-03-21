@@ -2,11 +2,21 @@
 
 ## Scope
 This workspace contains Home Assistant configuration and supporting files.
-Primary working directory: `D:\codex`
+Primary working directory: `D:\Codex`
+
+## Context files
+- Treat Markdown files under `_context/` as project guidance for this workspace.
+- If any `_context/` file conflicts with this `AGENTS.md`, follow `AGENTS.md`.
+- Before making code or configuration changes, read `_context/project_rules.md`.
+- Before changing Home Assistant architecture, packages, scripts, automations, or dashboards, read `_context/architecture.md`.
+- Before using `_ha_runtime_snapshot/` for validation or debugging, read `_context/runtime_usage.md`.
+- Before deployment work, read `_context/deployment.md`.
+- When touching scheduler mappings, helper defaults, or dashboard/program consistency, check `_context/lessons_learned.md`.
+- When touching Roborock packages, scripts, helpers, automations, or dashboards, read `_context/modules/roborock.md`.
 
 ## Required behavior
 - Never rename existing `entity_id` values.
-- Prefer Home Assistant packages under `config/packages/`.
+- Prefer Home Assistant packages under `packages/`.
 - Keep YAML explicit, readable, and maintainable.
 - Prefer event-driven automations over polling.
 - Use `alias` and `description` where supported.
@@ -17,7 +27,7 @@ Primary working directory: `D:\codex`
 - When changing behavior, add a short migration note.
 
 ## Home Assistant package conventions
-- Use paths like `config/packages/<domain>/<feature>.yaml`.
+- Use paths like `packages/<domain>/<feature>.yaml`.
 - Keep packages cohesive and production-ready.
 - Add a semantic version header comment to new YAML files:
   `# Version: XX.YY.ZZ`
