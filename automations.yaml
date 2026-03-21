@@ -1,4 +1,4 @@
-# Version: 1.0.0
+# Version: 1.0.1
 # Root role: Legacy-/Kompatibilitätsebene. Neue Runtime-Logik gehört in config/packages/<domain>/...
 # Hinweis: Root-Automationen bleiben Altbestand; fachliche Konsolidierungen erfolgen separat.
 - id: '1733643487103'
@@ -210,10 +210,12 @@
         action: light.turn_off
   mode: single
 # Legacy writer: input_boolean.anwesend wird autoritativ im Presence-Package verwaltet;
-# diese Root-Automation bleibt als Kompatibilitaets-/Altbestands-Writer erhalten.
+# diese Root-Automation bleibt als deaktivierter Kompatibilitaets-/Altbestands-Writer erhalten.
+# Deaktiviert in Phase 5 - Ownership liegt vollstaendig im Presence-Package
 - id: '1767968135266'
   alias: Anwesenheit (Personen) -> input_boolean.anwesend
   description: Legacy-Kompatibilitaetswriter fuer input_boolean.anwesend; fachlicher Owner ist das packaged Presence-Modul.
+  enabled: false
   triggers:
   - id: someone_home
     entity_id:
