@@ -91,6 +91,8 @@ views:
             entities:
               - entity: sensor.saros_20_set_status
                 name: Status
+              - entity: sensor.saros_20_set_batterie
+                name: Batterie
               - entity: sensor.saros_20_set_staubsauger_fehler
                 name: Fehlertext
               - entity: binary_sensor.roborock_program_ready
@@ -482,3 +484,4 @@ views:
             grid_options:
               columns: full
               rows: auto
+

@@ -130,6 +130,19 @@ script.execute_program_job
 ↓
 Core logic (mapping, validation, lifecycle)
 
+---
+
+## 9. Runtime Snapshot
+
+Local snapshot:
+- _ha_runtime_snapshot/
+
+Updated via script (read-only sync from HA)
+
+Used only for:
+- validation
+- debugging
+
 
 ### Rules
 - No direct hardware calls outside core

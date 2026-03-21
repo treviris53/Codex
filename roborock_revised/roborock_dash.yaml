@@ -217,7 +217,7 @@ views:
                 name: Zeitplan aktiv
             grid_options:
               columns: full
-              rows: auto
+              rows: auto
           - type: vertical-stack
             cards:
               - type: heading

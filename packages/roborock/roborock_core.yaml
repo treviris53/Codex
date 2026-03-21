@@ -436,7 +436,7 @@ script:
             wohn_sw:
               - wohn_saug_wisch
             wohn_vm:
-              - wohn_vac_mop         
+              - wohn_vac_mop
             wohn_s:
               - wohn_saug
             schlaf_s:
@@ -493,4 +493,3 @@ script:
           slot_name: "{{ slot_name }}"
           source: "{{ source_label }}"
           program_sequence: "{{ expanded_programs }}"
-
