@@ -23,6 +23,9 @@ template:
       - name: "Heizung Sollprofil"
         unique_id: heizung_sollprofil
         icon: mdi:thermostat-auto
+        # Fachliche Soll-Entscheidung fuer den aktuellen Tag.
+        # Dieser Sensor kann sich frueher aendern als die reale Anwendung auf die Climates.
+        # Bei der traegen Fussbodenheizung ist das beabsichtigt: die operative Anwendung erfolgt bewusst zeitverzoegert.
         state: >-
           {% set urlaub = is_state('input_boolean.heizung_urlaub','on') %}
           {% set anwesend = is_state('binary_sensor.anwesend_stabil','on') %}

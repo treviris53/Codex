@@ -1,6 +1,21 @@
+# Heating Control Model
+# - Systemziel: traege Fussbodenheizung, daher bewusst keine aggressive Echtzeit-Nachregelung.
+# - Wetter-, Praesenz- und Saisonparameter dienen primaer der Tagesentscheidung, nicht der sofortigen Umschaltung.
+# - Das Sollprofil beschreibt die fachliche Empfehlung.
+# - Die operative Anwendung auf die Thermostate erfolgt planmaessig einmal taeglich um 04:03.
+# - 00:01 dient nur als Re-Apply-/Mitternachts-Korrektur, falls Geraete Defaultwerte wiederherstellen.
+# - Sofortige Anwendungen bleiben nur fuer explizite Sonderfaelle erhalten:
+#   Automatik EIN, Urlaub aendert sich, HA-Start, Override-Ende.
+# - Diese Delays sind gewollte Systemhysterese und kein Bug.
 automation:
   - id: heizung_sollprofil_sync
     alias: 'Heizung: Sollprofil -> Szene anwenden'
+    description: >
+      Wendet das berechnete Heizprofil bewusst nicht als Echtzeitregelung an.
+      Fuer die traege Fussbodenheizung ist 04:03 der fachliche Hauptzeitpunkt
+      zur Tagesvorgabe. 00:01 ist ein technischer Re-Apply nach Mitternacht.
+      Weitere Anwendungen passieren nur bei definierten Sonderfaellen
+      (HA-Start, Automatik EIN, Urlaub, Override-Ende).
     mode: restart
     trigger:
       # Re-Apply kurz nach Mitternacht (HmIP kann um 00:00 auf Defaultwerte zurückfallen)
