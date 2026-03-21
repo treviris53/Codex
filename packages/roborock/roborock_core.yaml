@@ -1,8 +1,8 @@
 # ======================================================================
 # Roborock Saros 20 - Core / Program Executor
 # File: config/packages/roborock/roborock_core.yaml
-# Version: 3.0.1
-# Date: 2026-03-19
+# Version: 3.0.2
+# Date: 2026-03-21
 # Change note:
 # - Added missing busy helpers to remove hidden package dependencies
 # - Normalized program/job identifiers to consistent snake_case keys
@@ -10,6 +10,7 @@
 # - Added safe manual program launcher for dashboard use
 # - Busy timestamp is now written only on true busy-lock acquisition
 # - Added last_start_before variable todetect program start and avoid race conditions
+# - Added ready-state stabilization before follow-up program starts
 # ======================================================================
 
 input_boolean:
@@ -320,28 +321,44 @@ script:
                 entity_id: input_text.roborock_current_program
               data:
                 value: "{{ current_program_id }}"
-            - wait_template: "{{ states('sensor.saros_20_set_status') in ready_states }}"
-              timeout: "01:00:00"
-              continue_on_timeout: true
-            - choose:
-                - conditions:
-                    - condition: template
-                      value_template: "{{ not wait.completed }}"
-                  sequence:
-                    - action: script.roborock_finalize_execution
-                      data:
-                        error_message: "Timeout vor Start von {{ current_program_id }}: Robot nicht bereit"
-                        log_message: "Programmfolge abgebrochen ({{ source_label }} / {{ slot_label }}): Robot vor {{ current_program_id }} nicht bereit"
-                    - stop: Timeout waiting for ready state.
-                - conditions:
-                    - condition: template
-                      value_template: "{{ states('sensor.saros_20_set_status') in blocked_states }}"
-                  sequence:
-                    - action: script.roborock_finalize_execution
-                      data:
-                        error_message: "Blockierter Status vor {{ current_program_id }}: {{ states('sensor.saros_20_set_status') }}"
-                        log_message: "Programmfolge abgebrochen ({{ source_label }} / {{ slot_label }}): Blockierter Status vor {{ current_program_id }}"
-                    - stop: Robot entered blocked state before start.
+            - repeat:
+                sequence:
+                  - wait_template: "{{ states('sensor.saros_20_set_status') in ready_states }}"
+                    timeout: "01:00:00"
+                    continue_on_timeout: true
+                  - choose:
+                      - conditions:
+                          - condition: template
+                            value_template: "{{ not wait.completed }}"
+                        sequence:
+                          - action: script.roborock_finalize_execution
+                            data:
+                              error_message: "Timeout vor Start von {{ current_program_id }}: Robot nicht bereit"
+                              log_message: "Programmfolge abgebrochen ({{ source_label }} / {{ slot_label }}): Robot vor {{ current_program_id }} nicht bereit"
+                          - stop: Timeout waiting for ready state.
+                      - conditions:
+                          - condition: template
+                            value_template: "{{ states('sensor.saros_20_set_status') in blocked_states }}"
+                        sequence:
+                          - action: script.roborock_finalize_execution
+                            data:
+                              error_message: "Blockierter Status vor {{ current_program_id }}: {{ states('sensor.saros_20_set_status') }}"
+                              log_message: "Programmfolge abgebrochen ({{ source_label }} / {{ slot_label }}): Blockierter Status vor {{ current_program_id }}"
+                          - stop: Robot entered blocked state before start.
+                  - delay: "00:00:20"
+                  - choose:
+                      - conditions:
+                          - condition: template
+                            value_template: "{{ states('sensor.saros_20_set_status') in blocked_states }}"
+                        sequence:
+                          - action: script.roborock_finalize_execution
+                            data:
+                              error_message: "Blockierter Status waehrend Startfreigabe von {{ current_program_id }}: {{ states('sensor.saros_20_set_status') }}"
+                              log_message: "Programmfolge abgebrochen ({{ source_label }} / {{ slot_label }}): Blockierter Status waehrend Startfreigabe von {{ current_program_id }}"
+                          - stop: Robot entered blocked state during ready stabilization.
+                until:
+                  - condition: template
+                    value_template: "{{ states('sensor.saros_20_set_status') in ready_states }}"
             - variables:
                 last_start_before: "{{ states('sensor.saros_20_set_letzter_reinigungsbeginn') }}"
             - action: button.press

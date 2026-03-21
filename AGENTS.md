@@ -4,6 +4,13 @@
 This workspace contains Home Assistant configuration and supporting files.
 Primary working directory: `D:\Codex`
 
+## Local tools
+- Do not assume `python`, `py`, or `yamllint` are on `PATH` in a new thread.
+- Preferred Python interpreter: `D:\Codex\.venv\Scripts\python.exe`
+- Preferred yamllint command: `D:\Codex\.venv\Scripts\yamllint.cmd`
+- If needed, the packaged yamllint binary also exists at `D:\Codex\.venv\_python_home\Scripts\yamllint.exe`
+- Run commands from `D:\Codex` so `.yamllint` at the workspace root is picked up automatically.
+
 ## Context files
 - Treat Markdown files under `_context/` as project guidance for this workspace.
 - If any `_context/` file conflicts with this `AGENTS.md`, follow `AGENTS.md`.
