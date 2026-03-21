@@ -1,3 +1,6 @@
+# Version: 1.0.0
+# Ownership: Dieses Package steuert die automatischen Heizprofile zur Laufzeit.
+# Root-Szenen in scenes.yaml bleiben Legacy-/Kompatibilitaetsbestand und werden hier nicht konsolidiert.
 script:
   heizung_profil_anwenden_pkg:
     alias: 'Heizung: Profil anwenden (über Szenen)'

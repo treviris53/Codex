@@ -1,5 +1,7 @@
-# Version: 1.0.0
+# Version: 1.0.1
 # Change: derive input_boolean.anwesend automatically from person entities with guardrails (2026-01-19)
+# Ownership: Dieses Package ist der autoritative Runtime-Owner von input_boolean.anwesend;
+# Legacy-Writer in automations.yaml bleiben nur zur Kompatibilitaet bestehen.
 
 input_boolean:
   anwesend_auto_enabled:

@@ -1,3 +1,6 @@
+# Version: 1.0.0
+# Ownership: Diese Automation arbitriert die Beschattungs-Entscheidung auf genau
+# einen Output-Boolean; die Rollladen-Automationen konsumieren nur diese Outputs.
 ########################################
 # 3) Automation: setzt ausschließlich die beiden Output-Booleans
 ########################################

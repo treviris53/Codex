@@ -1,6 +1,9 @@
+# Version: 1.0.0
+# Root role: Legacy-/Kompatibilitätsebene. Neue Runtime-Logik gehört in config/packages/<domain>/...
+# Hinweis: Root-Automationen bleiben Altbestand; fachliche Konsolidierungen erfolgen separat.
 - id: '1733643487103'
   alias: Zone Notification
-  description: ''
+  description: Legacy-Root-Automation fuer die Leaving-Zone-Benachrichtigung per Blueprint.
   use_blueprint:
     path: homeassistant/notify_leaving_zone.yaml
     input:
@@ -9,7 +12,7 @@
       notify_device: d6839733ad15ab7d1c27725c9c48588a
 - id: '1766094325336'
   alias: Kueche Remote Tradfri (beide+einzeln)
-  description: ''
+  description: Legacy-Root-Automation fuer die Tradfri-Remote in der Kueche mit Direktsteuerung der Ziellichter.
   triggers:
   - domain: mqtt
     device_id: 0ab23a8de170309c9f75f70d68c5116f
@@ -90,6 +93,7 @@
   mode: restart
 - id: '1766134459458'
   alias: Licht Fernseher automatisch (TV + Dunkelheit)
+  description: Schaltet das Fernseherlicht bei aktivem TV und Dunkelheit ein und setzt nach TV-Aus eine kurze Sperre.
   triggers:
   - entity_id:
     - media_player.samsung_8_tv_55
@@ -185,16 +189,13 @@
       - condition: time
         after: '14:00:00'
         before: '22:00:00'
-      - condition: device
-        type: is_off
-        device_id: c37399c911b36d9b8c172da745ac8284
-        entity_id: ad8d05726d50b21c1dd69e85ded20553
-        domain: light
+      - condition: state
+        entity_id: light.vitrinenlicht
+        state: 'off'
       sequence:
-      - type: turn_on
-        device_id: c37399c911b36d9b8c172da745ac8284
-        entity_id: ad8d05726d50b21c1dd69e85ded20553
-        domain: light
+      - target:
+          entity_id: light.vitrinenlicht
+        action: light.turn_on
     - conditions:
       - condition: trigger
         id:
@@ -204,15 +205,15 @@
         entity_id: light.vitrinenlicht
         state: 'on'
       sequence:
-      - type: turn_off
-        device_id: c37399c911b36d9b8c172da745ac8284
-        entity_id: ad8d05726d50b21c1dd69e85ded20553
-        domain: light
+      - target:
+          entity_id: light.vitrinenlicht
+        action: light.turn_off
   mode: single
+# Legacy writer: input_boolean.anwesend wird autoritativ im Presence-Package verwaltet;
+# diese Root-Automation bleibt als Kompatibilitaets-/Altbestands-Writer erhalten.
 - id: '1767968135266'
   alias: Anwesenheit (Personen) -> input_boolean.anwesend
-  description: Sofort an, wenn jemand home ist; erst nach 30 Minuten aus, wenn beide
-    not_home sind.
+  description: Legacy-Kompatibilitaetswriter fuer input_boolean.anwesend; fachlicher Owner ist das packaged Presence-Modul.
   triggers:
   - id: someone_home
     entity_id:

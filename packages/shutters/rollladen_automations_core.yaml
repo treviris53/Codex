@@ -1,5 +1,8 @@
-# Version: 2.0.0
+# Version: 2.0.1
 # Change note (2026-03-19): Keep automation IDs stable while delegating decisions to centralized target-position sensors.
+# Ownership: Beschattungsentscheidungen entstehen in den Beschattungs-Templates,
+# werden ueber beschattung_outputs.yaml auf input_boolean.beschattung_* arbitriert
+# und hier nur noch auf die Rollladen-Outputs angewendet.
 ###############################################################################
 # Automations
 ###############################################################################

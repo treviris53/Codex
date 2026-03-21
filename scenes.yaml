@@ -1,3 +1,7 @@
+# Version: 1.0.0
+# Root role: Legacy-/Kompatibilitaetsebene. Neue Runtime-Logik gehoert in config/packages/<domain>/...
+# Hinweis: Heizungs-Szenenverantwortung ist derzeit aufgeteilt:
+# Root-Szenen bleiben Legacy-/manueller Altbestand, packages/heating/* traegt die Runtime-Profile.
 - id: '1733645078269'
   name: Bäder 23°
   entities:

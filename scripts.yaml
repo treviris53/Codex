@@ -1,1 +1,4 @@
+# Version: 1.0.0
+# Root role: Legacy-/Kompatibilitaetsebene. Neue Runtime-Logik gehoert in config/packages/<domain>/...
+# Hinweis: Diese Datei ist aktuell ungenutzt und bleibt als Legacy-Sammelstelle leer.
 {}
