@@ -9,6 +9,7 @@
 # - Added safe cleanup script so busy lock is cleared on all known failures
 # - Added safe manual program launcher for dashboard use
 # - Busy timestamp is now written only on true busy-lock acquisition
+# - Added last_start_before variable todetect program start and avoid race conditions
 # ======================================================================
 
 input_boolean:
@@ -341,10 +342,18 @@ script:
                         error_message: "Blockierter Status vor {{ current_program_id }}: {{ states('sensor.saros_20_set_status') }}"
                         log_message: "Programmfolge abgebrochen ({{ source_label }} / {{ slot_label }}): Blockierter Status vor {{ current_program_id }}"
                     - stop: Robot entered blocked state before start.
+            - variables:
+                last_start_before: "{{ states('sensor.saros_20_set_letzter_reinigungsbeginn') }}"
             - action: button.press
               target:
                 entity_id: "{{ current_button }}"
-            - wait_template: "{{ states('sensor.saros_20_set_status') in active_states }}"
+
+            - delay: "00:00:15"
+            - wait_template: >
+                {{
+                  states('sensor.saros_20_set_status') in active_states
+                  or states('sensor.saros_20_set_letzter_reinigungsbeginn') != last_start_before
+                }}
               timeout: "00:05:00"
               continue_on_timeout: true
             - choose:
