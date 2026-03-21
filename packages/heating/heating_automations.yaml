@@ -1,187 +1,186 @@
 automation:
-- id: heizung_sollprofil_sync
-  alias: 'Heizung: Sollprofil -> Szene anwenden'
-  mode: restart
-  trigger:
-    # Re-Apply kurz nach Mitternacht (HmIP kann um 00:00 auf Defaultwerte zurückfallen)
-    - platform: time
-      at: "00:01:00"
-    - platform: time
-      at: "04:03:00"
-    - platform: state
-      entity_id: binary_sensor.anwesend_stabil
-    - platform: state
-      entity_id: input_boolean.heizung_urlaub
-    - platform: homeassistant
-      event: start
-  condition:
-    - condition: state
-      entity_id: input_boolean.heizung_automatik
-      state: 'on'
-    - condition: state
-      entity_id: input_boolean.heizung_override
-      state: 'off'
-    - condition: template
-      value_template: "{{ states('sensor.heizung_sollprofil') in ['eco_17','eco_19','komfort_21'] }}"
-  action:
-    # Nach HA-Start kurz warten, bis alle Sensoren/States stabil sind
-    - choose:
-        - conditions:
-            - condition: template
-              value_template: "{{ trigger.platform == 'homeassistant' }}"
-          sequence:
-            - delay: "00:05:00"
-    - service: script.heizung_profil_anwenden_pkg
-      data:
-        profil: "{{ states('sensor.heizung_sollprofil') }}"
+  - id: heizung_sollprofil_sync
+    alias: 'Heizung: Sollprofil -> Szene anwenden'
+    mode: restart
+    trigger:
+      # Re-Apply kurz nach Mitternacht (HmIP kann um 00:00 auf Defaultwerte zurückfallen)
+      - platform: time
+        at: "00:01:00"
+      - platform: time
+        at: "04:03:00"
+      - platform: state
+        entity_id: binary_sensor.anwesend_stabil
+      - platform: state
+        entity_id: input_boolean.heizung_urlaub
+      - platform: homeassistant
+        event: start
+    condition:
+      - condition: state
+        entity_id: input_boolean.heizung_automatik
+        state: 'on'
+      - condition: state
+        entity_id: input_boolean.heizung_override
+        state: 'off'
+      - condition: template
+        value_template: "{{ states('sensor.heizung_sollprofil') in ['eco_17','eco_19','komfort_21'] }}"
+    action:
+      # Nach HA-Start kurz warten, bis alle Sensoren/States stabil sind
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: "{{ trigger.platform == 'homeassistant' }}"
+            sequence:
+              - delay: "00:05:00"
+      - service: script.heizung_profil_anwenden_pkg
+        data:
+          profil: "{{ states('sensor.heizung_sollprofil') }}"
 
-- id: heizung_automatik_einschalten_sync
-  alias: 'Heizung: Beim Einschalten der Automatik Sollprofil anwenden'
-  mode: restart
-  trigger:
-    - platform: state
-      entity_id: input_boolean.heizung_automatik
-      to: 'on'
-  action:
-    - condition: state
-      entity_id: input_boolean.heizung_override
-      state: 'off'
-    - service: script.heizung_profil_anwenden_pkg
-      data:
-        profil: "{{ states('sensor.heizung_sollprofil') }}"
+  - id: heizung_automatik_einschalten_sync
+    alias: 'Heizung: Beim Einschalten der Automatik Sollprofil anwenden'
+    mode: restart
+    trigger:
+      - platform: state
+        entity_id: input_boolean.heizung_automatik
+        to: 'on'
+    action:
+      - condition: state
+        entity_id: input_boolean.heizung_override
+        state: 'off'
+      - service: script.heizung_profil_anwenden_pkg
+        data:
+          profil: "{{ states('sensor.heizung_sollprofil') }}"
 
   ###########################################################################
   # Phase-5: Manual Override (Auto-Detect)
   # - Erkennt manuelle Änderungen an den Heizungs-Climates und pausiert
   #   die Profil-Automatik für 2h (Timer), ohne Setpoints aktiv zu ändern.
   ###########################################################################
-- id: heizung_override_timer_start
-  alias: "Heizung Override: Timer starten"
-  mode: restart
-  trigger:
-    - platform: state
-      entity_id: input_boolean.heizung_override
-      to: "on"
-  action:
-    - service: timer.start
-      target:
-        entity_id: timer.heizung_override
-
-- id: heizung_override_timer_cancel
-  alias: "Heizung Override: OFF -> Timer stoppen"
-  mode: restart
-  trigger:
-    - platform: state
-      entity_id: input_boolean.heizung_override
-      to: "off"
-  action:
-    - service: timer.cancel
-      target:
-        entity_id: timer.heizung_override
-
-- id: heizung_override_timer_finished
-  alias: "Heizung Override: Ablauf -> Sollprofil anwenden"
-  mode: restart
-  trigger:
-    - platform: event
-      event_type: timer.finished
-      event_data:
-        entity_id: timer.heizung_override
-  condition:
-    - condition: state
-      entity_id: input_boolean.heizung_automatik
-      state: "on"
-  action:
-    - service: input_boolean.turn_off
-      target:
+  - id: heizung_override_timer_start
+    alias: "Heizung Override: Timer starten"
+    mode: restart
+    trigger:
+      - platform: state
         entity_id: input_boolean.heizung_override
-    - service: script.heizung_profil_anwenden_pkg
-      data:
-        profil: "{{ states('sensor.heizung_sollprofil') }}"
+        to: "on"
+    action:
+      - service: timer.start
+        target:
+          entity_id: timer.heizung_override
 
-- id: heizung_override_auto_detect
-  alias: "Heizung: Manuelle Bedienung erkannt -> Override"
-  mode: restart
-  trigger:
-    - platform: state
-      entity_id:
-        - climate.flur_wandthermostat
-        - climate.gaste_wandthermostat
-        - climate.gastebad_wandthermostat
-        - climate.kuche_wandthermostat
-        - climate.schlazi_wandthermostat
-        - climate.wohnzimmer_wandthermostat
-        - climate.bad_wandthermostat
-        - climate.wohnraum_flur_int0000004
-      attribute: temperature
-      for: "00:00:05"
-    - platform: state
-      entity_id:
-        - climate.flur_wandthermostat
-        - climate.gaste_wandthermostat
-        - climate.gastebad_wandthermostat
-        - climate.kuche_wandthermostat
-        - climate.schlazi_wandthermostat
-        - climate.wohnzimmer_wandthermostat
-      attribute: preset_mode
-      for: "00:00:05"
-    - platform: state
-      entity_id:
-        - climate.flur_wandthermostat
-        - climate.gaste_wandthermostat
-        - climate.gastebad_wandthermostat
-        - climate.kuche_wandthermostat
-        - climate.schlazi_wandthermostat
-        - climate.wohnzimmer_wandthermostat
-      for: "00:00:05"
-  condition:
-    - condition: state
-      entity_id: input_boolean.heizung_automatik
-      state: "on"
-    - condition: state
-      entity_id: input_boolean.heizung_override
-      state: "off"
-    - condition: template
-      value_template: >-
-        {% set last = as_timestamp(states('input_datetime.heizung_last_applied'), default=0) | float(0) %}
-        {% set age = (now().timestamp() - last) if last > 0 else 999999 %}
-        {% set fromv = (trigger.from_state.attributes.get(trigger.attribute) if trigger.attribute else trigger.from_state.state) if trigger.from_state else none %}
-        {% set tov = (trigger.to_state.attributes.get(trigger.attribute) if trigger.attribute else trigger.to_state.state) if trigger.to_state else none %}
-        {{ (tov is not none) and (fromv is not none) and (tov != fromv) and (age > 120) }}
-  action:
-    - service: input_boolean.turn_on
-      target:
+  - id: heizung_override_timer_cancel
+    alias: "Heizung Override: OFF -> Timer stoppen"
+    mode: restart
+    trigger:
+      - platform: state
         entity_id: input_boolean.heizung_override
+        to: "off"
+    action:
+      - service: timer.cancel
+        target:
+          entity_id: timer.heizung_override
 
+  - id: heizung_override_timer_finished
+    alias: "Heizung Override: Ablauf -> Sollprofil anwenden"
+    mode: restart
+    trigger:
+      - platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.heizung_override
+    condition:
+      - condition: state
+        entity_id: input_boolean.heizung_automatik
+        state: "on"
+    action:
+      - service: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.heizung_override
+      - service: script.heizung_profil_anwenden_pkg
+        data:
+          profil: "{{ states('sensor.heizung_sollprofil') }}"
 
-# Phase-5: Reconcile Override nach Neustart (Timer wird nicht zuverlässig restauriert)
-- id: heizung_override_startup_reconcile
-  alias: "Heizung Override: Reconcile beim Start"
-  mode: single
-  trigger:
-    - platform: homeassistant
-      event: start
-  action:
-    - delay: "00:00:30"
-    - choose:
-        - conditions:
-            - condition: state
-              entity_id: input_boolean.heizung_override
-              state: "on"
-            - condition: template
-              value_template: "{{ states('timer.heizung_override') != 'active' }}"
-          sequence:
-            - service: timer.start
-              target:
-                entity_id: timer.heizung_override
-    - choose:
-        - conditions:
-            - condition: state
-              entity_id: input_boolean.heizung_override
-              state: "off"
-            - condition: template
-              value_template: "{{ states('timer.heizung_override') == 'active' }}"
-          sequence:
-            - service: timer.cancel
-              target:
-                entity_id: timer.heizung_override
+  - id: heizung_override_auto_detect
+    alias: "Heizung: Manuelle Bedienung erkannt -> Override"
+    mode: restart
+    trigger:
+      - platform: state
+        entity_id:
+          - climate.flur_wandthermostat
+          - climate.gaste_wandthermostat
+          - climate.gastebad_wandthermostat
+          - climate.kuche_wandthermostat
+          - climate.schlazi_wandthermostat
+          - climate.wohnzimmer_wandthermostat
+          - climate.bad_wandthermostat
+          - climate.wohnraum_flur_int0000004
+        attribute: temperature
+        for: "00:00:05"
+      - platform: state
+        entity_id:
+          - climate.flur_wandthermostat
+          - climate.gaste_wandthermostat
+          - climate.gastebad_wandthermostat
+          - climate.kuche_wandthermostat
+          - climate.schlazi_wandthermostat
+          - climate.wohnzimmer_wandthermostat
+        attribute: preset_mode
+        for: "00:00:05"
+      - platform: state
+        entity_id:
+          - climate.flur_wandthermostat
+          - climate.gaste_wandthermostat
+          - climate.gastebad_wandthermostat
+          - climate.kuche_wandthermostat
+          - climate.schlazi_wandthermostat
+          - climate.wohnzimmer_wandthermostat
+        for: "00:00:05"
+    condition:
+      - condition: state
+        entity_id: input_boolean.heizung_automatik
+        state: "on"
+      - condition: state
+        entity_id: input_boolean.heizung_override
+        state: "off"
+      - condition: template
+        value_template: >-
+          {% set last = as_timestamp(states('input_datetime.heizung_last_applied'), default=0) | float(0) %}
+          {% set age = (now().timestamp() - last) if last > 0 else 999999 %}
+          {% set fromv = (trigger.from_state.attributes.get(trigger.attribute) if trigger.attribute else trigger.from_state.state) if trigger.from_state else none %}
+          {% set tov = (trigger.to_state.attributes.get(trigger.attribute) if trigger.attribute else trigger.to_state.state) if trigger.to_state else none %}
+          {{ (tov is not none) and (fromv is not none) and (tov != fromv) and (age > 120) }}
+    action:
+      - service: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.heizung_override
+
+  # Phase-5: Reconcile Override nach Neustart (Timer wird nicht zuverlässig restauriert)
+  - id: heizung_override_startup_reconcile
+    alias: "Heizung Override: Reconcile beim Start"
+    mode: single
+    trigger:
+      - platform: homeassistant
+        event: start
+    action:
+      - delay: "00:00:30"
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.heizung_override
+                state: "on"
+              - condition: template
+                value_template: "{{ states('timer.heizung_override') != 'active' }}"
+            sequence:
+              - service: timer.start
+                target:
+                  entity_id: timer.heizung_override
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.heizung_override
+                state: "off"
+              - condition: template
+                value_template: "{{ states('timer.heizung_override') == 'active' }}"
+            sequence:
+              - service: timer.cancel
+                target:
+                  entity_id: timer.heizung_override
