@@ -1,3 +1,9 @@
+# Version: 1.0.0
+# Ownership: Diese Datei erkennt nur manuelle Fahrten und setzt die
+# Override-Booleans. Die automatische Rueckkehr laeuft getrennt ueber
+# rollladen_automations_override.yaml; Core-/Apply-Logik konsumiert den
+# Override nur.
+# Current design: Fuer Nord existiert hier bewusst kein manueller Override-Pfad.
 automation:
   - alias: "Rollladen Ost: Manuelle Bedienung erkannt -> Override"
     id: rollladen_ost_manual_detect_override

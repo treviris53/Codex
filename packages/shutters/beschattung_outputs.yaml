@@ -1,6 +1,7 @@
-# Version: 1.0.0
-# Ownership: Diese Automation arbitriert die Beschattungs-Entscheidung auf genau
-# einen Output-Boolean; die Rollladen-Automationen konsumieren nur diese Outputs.
+# Version: 1.0.1
+# Ownership: Diese Automation bildet die Beschattungsentscheidung aus
+# beschattung_templates.yaml auf die Signalebene input_boolean.beschattung_* ab;
+# die Rollladen-Automationen konsumieren nur diese Outputs.
 ########################################
 # 3) Automation: setzt ausschließlich die beiden Output-Booleans
 ########################################
@@ -22,6 +23,9 @@ automation:
 
     action:
       - variables:
+          # Geometrisch/fachlich garantierter Ausschluss: Die Ost-/West-
+          # Sonnenwinkelbereiche überlappen nicht. Diese Abbildung auf genau
+          # einen Output-Boolean ist daher keine Priorisierungslogik.
           target_on: >-
             {% if is_state('binary_sensor.beschattung_west_aktiv', 'on') %}
               input_boolean.beschattung_west

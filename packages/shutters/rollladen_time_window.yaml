@@ -1,5 +1,8 @@
-# Version: 2.0.0
+# Version: 2.0.1
 # Change note (2026-03-19): Centralize rolladen target-position logic in one place and let scripts/debug derive from it.
+# Ownership: Diese Datei ist die autoritative Zielpositions- und
+# Zeitfenster-Ebene. Core-Automationen triggern nur Apply-Skripte; die Skripte
+# lesen ausschliesslich diese Sensoren und treffen selbst keine Fahrentscheidung.
 ###############################################################################
 # Zeitfensterberechnung + zentrale Zielpositionslogik
 ###############################################################################
@@ -77,6 +80,7 @@ template:
       - platform: time
         at: input_datetime.rollladen_ost_plug_open_end
     sensor:
+      # OST/WEST konsumieren nur die signalisierten Beschattungs-Outputs.
       - name: Rollladen Ost Target Position
         unique_id: rollladen_ost_target_position
         unit_of_measurement: "%"
@@ -182,6 +186,8 @@ template:
           day_window: "{{ is_state('binary_sensor.rollladen_day_window','on') }}"
           shade: "{{ is_state('input_boolean.beschattung_west','on') }}"
 
+      # NORD ist bewusst asymmetrisch zum Ost/West-Pfad und folgt aktuell nur
+      # dem Day-Window; kein Beschattungs- oder manueller Override-Sonderpfad.
       - name: Rollladen Nord Target Position
         unique_id: rollladen_nord_target_position
         unit_of_measurement: "%"

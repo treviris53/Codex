@@ -1,3 +1,7 @@
+# Version: 1.0.0
+# Ownership: Diese Templates treffen die fachliche Beschattungsentscheidung.
+# Nachgelagerte Dateien konsumieren nur die resultierenden Binary-Sensoren bzw.
+# die daraus abgeleiteten Output-Booleans und duplizieren die Entscheidung nicht.
 ########################################
 # 2) Template Sensoren: Live-Werte + Diffs
 ########################################

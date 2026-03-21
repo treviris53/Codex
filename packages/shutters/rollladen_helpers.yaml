@@ -1,3 +1,6 @@
+# Version: 1.0.0
+# Ownership: Benutzer-nahe Zeitfenster-/Offset-Helper leben hier; Runtime-Flags
+# bleiben explizit getrennt. Ausfuehrungslogik liegt nicht in dieser Datei.
 ###############################################################################
 # Helpers
 ###############################################################################
@@ -8,30 +11,37 @@ input_datetime:
     icon: mdi:clock-outline
     has_date: false
     has_time: true
-#    initial: '06:00:00'
+    # Restore-State bewusst erhalten; daher kein aktives initial:.
+    #    initial: '06:00:00'
   rollladen_latest_open:
     name: Rollladen Späteste Öffnung
     icon: mdi:clock-outline
     has_date: false
     has_time: true
-#    initial: '08:00:00'
+    # Restore-State bewusst erhalten; daher kein aktives initial:.
+    #    initial: '08:00:00'
   rollladen_latest_close:
     name: Rollladen Spätestes Schließen
     icon: mdi:clock-outline
     has_date: false
     has_time: true
-#    initial: '23:00:00'
+    # Restore-State bewusst erhalten; daher kein aktives initial:.
+    #    initial: '23:00:00'
   rollladen_ost_plug_open_start:
     name: Rollladen Ost Steckdosen-Öffnung Start
     icon: mdi:clock-start
     has_date: false
     has_time: true
+    # Legacy-/Kompatibilitaets-Default: aktuell nur dokumentiert und bewusst
+    # nicht entfernt, weil ein risikofreier Ersatzpfad hier nicht belegt ist.
     initial: '05:00:00'
   rollladen_ost_plug_open_end:
     name: Rollladen Ost Steckdosen-Öffnung Ende
     icon: mdi:clock-end
     has_date: false
     has_time: true
+    # Legacy-/Kompatibilitaets-Default: aktuell nur dokumentiert und bewusst
+    # nicht entfernt, weil ein risikofreier Ersatzpfad hier nicht belegt ist.
     initial: '09:00:00'
 
   rollladen_last_auto_ost:
@@ -95,6 +105,8 @@ input_number:
     mode: box
 
 input_boolean:
+  # Ownership: rollladen_override_* sind manuelle Signal-Helper; der Core
+  # respektiert diese Flags, setzt sie aber nicht als Bedienentscheidung.
   rollladen_automation_enabled:
     name: Rollladen Automatik aktiv
     icon: mdi:power
@@ -112,6 +124,8 @@ input_boolean:
     name: Rollladen Startschutz aktiv
     icon: mdi:timer-sand
 timer:
+  # Ownership: Timer bilden nur die Laufzeit der manuellen Overrides ab;
+  # Lifecycle/Auto-Reapply liegt in rollladen_automations_override.yaml.
   rollladen_override_ost:
     name: Rollladen Override Ost
     icon: mdi:timer-outline

@@ -1,8 +1,8 @@
-# Version: 2.0.1
+# Version: 2.0.2
 # Change note (2026-03-19): Keep automation IDs stable while delegating decisions to centralized target-position sensors.
 # Ownership: Beschattungsentscheidungen entstehen in den Beschattungs-Templates,
 # werden ueber beschattung_outputs.yaml auf input_boolean.beschattung_* arbitriert
-# und hier nur noch auf die Rollladen-Outputs angewendet.
+# und hier nur noch ueber Apply-/Set-Skripte auf die Rollladen-Outputs angewendet.
 ###############################################################################
 # Automations
 ###############################################################################
@@ -29,6 +29,9 @@ automation:
       - platform: homeassistant
         event: start
     action:
+      # Ownership: Stellt nur die Laufzeit-Konsistenz zwischen manuellen
+      # Override-Boolean und Override-Timer wieder her; die manuelle
+      # Override-Entscheidung selbst entsteht ausserhalb dieser Datei.
       # Warte bis der Boot-Guard wieder aus ist (State-Restore + Add-ons)
       - wait_template: "{{ is_state('input_boolean.rollladen_boot_guard','off') }}"
         timeout: "00:02:00"
@@ -92,7 +95,8 @@ automation:
       - platform: state
         entity_id: binary_sensor.rollladen_day_window
     action:
-      # OST: nur Automatik, wenn kein Override; bei aktivem Override bleibt nur das Tür-Failsafe wirksam.
+      # OST: automatischer Reapply-Pfad; manueller Override blockiert Apply.
+      # Bei aktivem Override bleibt nur das Tuer-Failsafe als Sicherheitslogik.
       - choose:
           - conditions:
               - condition: state
@@ -108,7 +112,7 @@ automation:
               target_cover: cover.rollladen_ost
               position: "{{ states('sensor.rollladen_ost_target_position') | int(100) }}"
 
-      # WEST: nur wenn kein Override
+      # WEST: automatischer Reapply-Pfad; manueller Override blockiert Apply.
       - choose:
           - conditions:
               - condition: state
@@ -117,7 +121,7 @@ automation:
             sequence:
               - service: script.rollladen_apply_west
 
-      # NORD: immer
+      # NORD: bewusst ohne manuellen Override-Pfad; aktuelles Design.
       - service: script.rollladen_apply_nord
 
   ###########################################################################
@@ -228,7 +232,7 @@ automation:
       - platform: homeassistant
         event: start
     action:
-      # OST
+      # OST: automatischer Reapply-Pfad; manueller Override blockiert Apply.
       - choose:
           - conditions:
               - condition: state
@@ -244,7 +248,7 @@ automation:
               target_cover: cover.rollladen_ost
               position: "{{ states('sensor.rollladen_ost_target_position') | int(100) }}"
 
-      # WEST
+      # WEST: automatischer Reapply-Pfad; manueller Override blockiert Apply.
       - choose:
           - conditions:
               - condition: state
@@ -253,5 +257,5 @@ automation:
             sequence:
               - service: script.rollladen_apply_west
 
-      # NORD
+      # NORD: bewusst ohne manuellen Override-Pfad; aktuelles Design.
       - service: script.rollladen_apply_nord

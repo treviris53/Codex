@@ -1,5 +1,8 @@
-# Version: 2.0.0
+# Version: 2.0.1
 # Change note (2026-03-19): Keep script IDs stable while deriving positions from centralized target sensors.
+# Ownership: Diese Skripte sind die Ausfuehrungsebene. rollladen_apply_* liest
+# nur die Zielpositionssensoren aus rollladen_time_window.yaml; die
+# Fahrentscheidung entsteht nicht in diesem File.
 script:
   rollladen_set_position:
     alias: "Rollladen: Position setzen"
@@ -19,7 +22,7 @@ script:
       - condition: state
         entity_id: input_boolean.rollladen_boot_guard
         state: "off"
-      # Phase-5: Automatik-Aktion markieren (für automatische Manuell-Erkennung)
+      # Markiert nur Automatik-Fahrten fuer die getrennte manuelle Erkennung.
       - choose:
           - conditions: "{{ target_cover == 'cover.rollladen_ost' }}"
             sequence:
@@ -100,6 +103,8 @@ script:
     icon: mdi:calculator-variant
     mode: restart
     sequence:
+      # NORD bleibt bewusst asymmetrisch: eigenes Apply, aber kein manueller
+      # Override-Boolean-Pfad in den Automationen.
       - condition: state
         entity_id: input_boolean.rollladen_automation_enabled
         state: "on"
