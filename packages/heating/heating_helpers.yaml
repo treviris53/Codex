@@ -46,7 +46,7 @@ input_select:
       - eco_17
       - eco_19
       - komfort_21
-    initial: unbekannt
+    #initial: unbekannt
     icon: mdi:home-thermometer
 input_datetime:
   heizung_last_applied:
