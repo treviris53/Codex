@@ -1,7 +1,9 @@
-# Version: 1.0.0
+# Version: 1.0.1
 # Root role: Legacy-/Kompatibilitaetsebene. Neue Runtime-Logik gehoert in config/packages/<domain>/...
-# Hinweis: Heizungs-Szenenverantwortung ist derzeit aufgeteilt:
-# Root-Szenen bleiben Legacy-/manueller Altbestand, packages/heating/* traegt die Runtime-Profile.
+# Hinweis: Heizungs-Szenenverantwortung ist fachlich getrennt:
+# - packages/heating/* ist der autoritative Runtime-Pfad fuer die automatische 3-Profil-Heizregelung.
+# - Root-Szenen bleiben manueller/Legacy-/Kompatibilitaetsbestand.
+# - Das betrifft auch climate.gastebad_wandthermostat: automatische Standardprofile kommen aus packages/heating/*.
 - id: '1733645078269'
   name: Bäder 23°
   entities:
@@ -36,6 +38,9 @@
     climate.gastebad_wandthermostat:
       entity_only: true
   icon: mdi:bathtub
+# Manuelle Zusatzszene:
+# - bewusst separat nutzbar fuer temporaer hoeheres Niveau
+# - nicht Teil der automatischen 3-Profil-Regelung
 - id: '1768152452632'
   name: Heizung 22°
   entities:

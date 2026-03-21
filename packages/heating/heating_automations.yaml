@@ -1,3 +1,4 @@
+# Version: 1.0.1
 # Heating Control Model
 # - Systemziel: traege Fussbodenheizung, daher bewusst keine aggressive Echtzeit-Nachregelung.
 # - Wetter-, Praesenz- und Saisonparameter dienen primaer der Tagesentscheidung, nicht der sofortigen Umschaltung.
@@ -118,6 +119,9 @@ automation:
     alias: "Heizung: Manuelle Bedienung erkannt -> Override"
     mode: restart
     trigger:
+      # climate.wohnraum_flur_int0000004 ist eine extern angelegte HmIP-Heizungsgruppe
+      # und fachlich kein autoritativer Heating-Pfad in Home Assistant.
+      # Sie bleibt hier unveraendert nur als beobachteter Legacy-/Kompatibilitaetspfad bestehen.
       - platform: state
         entity_id:
           - climate.flur_wandthermostat

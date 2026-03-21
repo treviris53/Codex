@@ -1,3 +1,7 @@
+# Version: 1.0.1
+# Ownership: Diese Szenen sind der autoritative Runtime-Pfad der automatischen 3-Profil-Heizregelung.
+# Root-Szenen in scenes.yaml bleiben manuelle/Legacy-Pfade und werden hier bewusst nicht ersetzt.
+# Das gilt auch fuer climate.gastebad_wandthermostat innerhalb der automatischen Standardregelung.
 scene:
 - id: heizung_21deg
   name: Heizung 21°
