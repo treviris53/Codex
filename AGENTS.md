@@ -20,6 +20,8 @@ Primary working directory: `D:\Codex`
 - Before deployment work, read `_context/deployment.md`.
 - When touching scheduler mappings, helper defaults, or dashboard/program consistency, check `_context/lessons_learned.md`.
 - When touching Roborock packages, scripts, helpers, automations, or dashboards, read `_context/modules/roborock.md`.
+- When touching Heating packages, scripts, helpers, automations, scenes, or dashboards, read `_context/modules/heating.md`.
+- When touching Shutters / Beschattung packages, scripts, helpers, automations, or dashboards, read `_context/modules/shutters.md`.
 
 ## Required behavior
 - Never rename existing `entity_id` values.
@@ -57,6 +59,13 @@ For substantial Home Assistant changes, include:
 - outputs / side effects
 - troubleshooting notes
 - validation checklist
+
+## Documentation maintenance
+- Treat documentation under `_ha_dokumentation/` as project guidance for established module behavior, operating flows, and dashboard structure.
+- Before changing a documented module's architecture, behavior, helpers, scripts, automations, scenes, dashboards, mappings, diagnostics, or control flow, read the corresponding documentation in `_ha_dokumentation/`.
+- If a change affects runtime behavior, control flow, mappings, helpers, diagnostics, dashboard entry points, troubleshooting, or operator-relevant structure, update the corresponding documentation in `_ha_dokumentation/` in the same task.
+- If a documented flow changes and a related `.drawio` file exists, update that diagram in the same task.
+- Pure formatting, comments, ownership notes, or other strictly non-functional cleanup do not require a documentation update unless clarity, ownership, or operating guidance changed.
 
 
 ## Additional Operational Constraints (Repository-Specific)

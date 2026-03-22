@@ -20,3 +20,8 @@ Rules specific to Roborock packages, helpers, scripts, automations, and dashboar
 ## Migration rules
 - Do not use `initial:` on persistent Roborock helpers.
 - Apply defaults only via explicit bootstrap or migration logic.
+
+## Documentation
+- Before changing Roborock packages, scripts, helpers, automations, or dashboard flows, read `D:\Codex\_ha_dokumentation\roborock\ROBOROCK_APP.md`.
+- If Roborock runtime behavior, scheduler flow, mappings, diagnostics, or dashboard entry points change, update the Roborock documentation in `D:\Codex\_ha_dokumentation\roborock\`.
+- If the documented flow changes, update `D:\Codex\_ha_dokumentation\roborock\roborock_app_flows.drawio` in the same task.
