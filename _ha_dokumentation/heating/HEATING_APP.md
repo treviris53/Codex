@@ -13,7 +13,7 @@ Dashboard-Einstiegen und dem End-to-End-Datenfluss zwischen Entscheidung und The
 | Execution Layer | `packages/heating/heating_scripts.yaml` | Wendet Profile ueber autoritative Szenen auf die Climates an |
 | Automation Layer | `packages/heating/heating_automations.yaml` | Steuert geplante Anwendungen, Sonderfaelle und Override-Lifecycle |
 | Scene Layer | `packages/heating/heating_scenes.yaml` | Definiert die autoritativen Runtime-Szenen fuer 17, 19 und 21 Grad |
-| Dashboard / UI | `dashboards/sieker_dashboard.yaml`, `dashboards/sieker_hub.yaml`, `dashboards/sieker_hub_v2.yaml` | Bietet Legacy-Subview-Zugriff sowie die Hub-Varianten v1 und v2 mit Übersicht, Diagnose, Service und Tuning |
+| Dashboard / UI | `dashboards/sieker_dashboard.yaml`, `dashboards/sieker_hub.yaml` | Bietet Legacy-Subview-Zugriff sowie den aktuellen Hub mit Übersicht, Diagnose, Service und Tuning |
 
 ## Zweck der App
 
@@ -234,22 +234,21 @@ relevanter Climate-Entities fuer jeweils 5 Sekunden. Ein Override wird nur geset
 5. Nach `timer.finished` wird das Override wieder ausgeschaltet.
 6. Anschliessend wird das aktuelle Sollprofil erneut angewendet.
 
-## Dashboard-Einstiege in `dashboards/sieker_dashboard.yaml`, `dashboards/sieker_hub.yaml` und `dashboards/sieker_hub_v2.yaml`
+## Dashboard-Einstiege in `dashboards/sieker_dashboard.yaml` und `dashboards/sieker_hub.yaml`
 
 ### Funktion
 
-Die Heating-App besitzt drei Dashboard-Einstiege:
+Die Heating-App besitzt zwei Dashboard-Einstiege:
 
 - Legacy in `sieker_dashboard.yaml`
-- Hub v1 in `sieker_hub.yaml`
-- Hub v2 in `sieker_hub_v2.yaml`
+- Hub in `sieker_hub.yaml`
 
 ### Legacy-Subviews in `sieker_dashboard.yaml`
 
 - `path: heizung`
 - `path: heizung-debug`
 
-### Hub-Subviews in `sieker_hub.yaml` und `sieker_hub_v2.yaml`
+### Hub-Subviews in `sieker_hub.yaml`
 
 - `path: heizung`
 - `path: heizung-diagnose`

@@ -10,7 +10,7 @@ und dem End-to-End-Datenfluss zwischen Benutzeroberflaeche, Zeitplan und Roboroc
 | --- | --- | --- |
 | Core / Execution Layer | `packages/roborock/roborock_core.yaml` | Verwaltet Busy-Lock, Statusbewertung, Programmausfuehrung, Fehlerbehandlung und manuelle Starts |
 | Scheduler / Job Layer | `packages/roborock/roborock_jobs.yaml` | Verwaltet 21 Wochen-Slots, Job-CSV-Helfer, Bootstrap fuer Standardzeiten und Scheduler-Dispatch |
-| Dashboard / App-UI | `dashboards/roborock.yaml`, `dashboards/sieker_hub.yaml`, `dashboards/sieker_hub_v2.yaml` | Bietet das bestehende Einzel-Dashboard sowie die integrierten Hub-Einstiege v1 und v2 mit Programmen, Karte, Diagnose, Wochenplan und Wartung |
+| Dashboard / App-UI | `dashboards/roborock.yaml`, `dashboards/sieker_hub.yaml` | Bietet das bestehende Einzel-Dashboard sowie den integrierten Hub-Einstieg mit Programmen, Karte, Diagnose, Wochenplan und Wartung |
 
 ## Zweck der App
 
@@ -292,15 +292,14 @@ und validiert danach den echten Wochentag ueber `now().isoweekday()`.
 - keine direkte Hardwaresteuerung im Scheduler selbst
 - Auswertung und Nutzung der 63 Scheduler-Helfer plus globalem Schalter
 
-## Dashboard-Einstiege in `dashboards/roborock.yaml`, `dashboards/sieker_hub.yaml` und `dashboards/sieker_hub_v2.yaml`
+## Dashboard-Einstiege in `dashboards/roborock.yaml` und `dashboards/sieker_hub.yaml`
 
 ### Funktion
 
-Die Roborock-App besitzt drei Dashboard-Einstiege:
+Die Roborock-App besitzt zwei Dashboard-Einstiege:
 
 - `dashboards/roborock.yaml` als bestehendes Einzel-Dashboard
-- `dashboards/sieker_hub.yaml` als integrierter Fachmodul-Einstieg im Sieker-Hub v1
-- `dashboards/sieker_hub_v2.yaml` als integrierter Fachmodul-Einstieg im Sieker-Hub v2
+- `dashboards/sieker_hub.yaml` als integrierter Fachmodul-Einstieg im Sieker-Hub
 
 Beide Varianten nutzen ausschliesslich sichere Script-Entrypoints fuer manuelle Programme.
 
@@ -314,7 +313,7 @@ Beide Varianten nutzen ausschliesslich sichere Script-Entrypoints fuer manuelle 
 | Karte | `xiaomi-vacuum-map-card` mit Status- und Verbrauchs-Tiles |
 | Wochenplan | Globaler Scheduler-Schalter plus 7 x 3 Slot-Editoren |
 
-### Aufbau von `dashboards/sieker_hub.yaml` und `dashboards/sieker_hub_v2.yaml`
+### Aufbau von `dashboards/sieker_hub.yaml`
 
 | Bereich | Inhalt |
 | --- | --- |
@@ -324,9 +323,6 @@ Beide Varianten nutzen ausschliesslich sichere Script-Entrypoints fuer manuelle 
 | `path: roborock-diagnose` | Betriebs- und Diagnose-Helfer |
 | `path: roborock-wochenplan` | Globaler Schalter, Alias-/ID-Referenz und Wochentagskarten mit Statusfarbe und Kurztext |
 | `path: roborock-wartung` | Reset-Buttons und Verbrauchsmaterial-Staende |
-
-`sieker_hub_v2.yaml` ergänzt zusätzlich einen getrennten Top-Level-View für Räume/Klima und hält die
-Startseite bewusster frei von vollständigen Raumlisten.
 
 ### Manuelle Programme im Dashboard
 

@@ -4,7 +4,7 @@
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="2" value="Dashboards&#xa;sieker_dashboard.yaml&#xa;sieker_hub.yaml (v1)&#xa;sieker_hub_v2.yaml&#xa;&#xa;- rollladen&#xa;- diagnose&#xa;- service&#xa;- beschattung&#xa;- rollladen-tuning" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;" vertex="1" parent="1"><mxGeometry x="30" y="135" width="230" height="180" as="geometry" /></mxCell>
+        <mxCell id="2" value="Dashboards&#xa;sieker_dashboard.yaml&#xa;sieker_hub.yaml&#xa;&#xa;- rollladen&#xa;- diagnose&#xa;- service&#xa;- beschattung&#xa;- rollladen-tuning" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;" vertex="1" parent="1"><mxGeometry x="30" y="135" width="230" height="180" as="geometry" /></mxCell>
         <mxCell id="3" value="Beschattung Helper + Templates&#xa;&#xa;- Parameter&#xa;- Freigaben&#xa;- Ost/West aktiv" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;" vertex="1" parent="1"><mxGeometry x="300" y="50" width="230" height="140" as="geometry" /></mxCell>
         <mxCell id="4" value="Beschattung Outputs&#xa;input_boolean.beschattung_ost/west" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;" vertex="1" parent="1"><mxGeometry x="610" y="70" width="210" height="100" as="geometry" /></mxCell>
         <mxCell id="5" value="Rolladen Helpers&#xa;&#xa;- Zeitfenster&#xa;- Offsets&#xa;- Override-Booleans&#xa;- Timer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;" vertex="1" parent="1"><mxGeometry x="300" y="250" width="230" height="150" as="geometry" /></mxCell>

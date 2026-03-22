@@ -18,7 +18,7 @@ manuellen Overrides, Debug-Sensoren und Dashboard-Subviews fuer Bedienung und Di
 | Beschattung Helper Layer | `packages/shutters/beschattung_helpers.yaml` | Parameter fuer Azimut, Elevation, Lux und Temperatur |
 | Beschattung Decision Layer | `packages/shutters/beschattung_templates.yaml` | Berechnet die fachliche Beschattungsentscheidung |
 | Beschattung Output Layer | `packages/shutters/beschattung_outputs.yaml` | Mappt die Beschattungsentscheidung auf `input_boolean.beschattung_*` |
-| Dashboard / UI | `dashboards/sieker_dashboard.yaml`, `dashboards/sieker_hub.yaml`, `dashboards/sieker_hub_v2.yaml` | Bietet Legacy-Subviews sowie die Hub-Varianten v1 und v2 mit Rollladen-Übersicht, Diagnose, Service und Tuning |
+| Dashboard / UI | `dashboards/sieker_dashboard.yaml`, `dashboards/sieker_hub.yaml` | Bietet Legacy-Subviews sowie den aktuellen Hub mit Rollladen-Übersicht, Diagnose, Service und Tuning |
 
 ## Zweck der App
 
@@ -332,15 +332,14 @@ Wichtige Attribute:
 - `plug_open_start`
 - `plug_open_end`
 
-## Dashboard-Einstiege in `dashboards/sieker_dashboard.yaml`, `dashboards/sieker_hub.yaml` und `dashboards/sieker_hub_v2.yaml`
+## Dashboard-Einstiege in `dashboards/sieker_dashboard.yaml` und `dashboards/sieker_hub.yaml`
 
 ### Funktion
 
-Die Shutter-App besitzt drei Dashboard-Einstiege:
+Die Shutter-App besitzt zwei Dashboard-Einstiege:
 
 - Legacy in `sieker_dashboard.yaml`
-- Hub v1 in `sieker_hub.yaml`
-- Hub v2 in `sieker_hub_v2.yaml`
+- Hub in `sieker_hub.yaml`
 
 ### Legacy-Subviews in `sieker_dashboard.yaml`
 
@@ -349,7 +348,7 @@ Die Shutter-App besitzt drei Dashboard-Einstiege:
 - `path: rollladen-service`
 - `path: rollladen-beschattung`
 
-### Hub-Subviews in `sieker_hub.yaml` und `sieker_hub_v2.yaml`
+### Hub-Subviews in `sieker_hub.yaml`
 
 - `path: rollladen`
 - `path: rollladen-diagnose`

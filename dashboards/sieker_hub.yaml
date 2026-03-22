@@ -1,0 +1,2242 @@
+# Dashboard: Sieker Hub
+# Version: 2.0.1
+# Generated: 2026-03-22
+# Notes:
+# - Best-practice oriented hub dashboard.
+title: Sieker Hub
+views:
+  - title: Home
+    path: home
+    icon: mdi:home-assistant
+    type: sections
+    max_columns: 3
+    sections:
+      - cards:
+          - type: heading
+            heading: Hausstatus
+            heading_style: title
+          - type: entities
+            title: Lagebild
+            show_header_toggle: false
+            entities:
+              - entity: input_boolean.anwesend
+                name: Anwesenheit
+              - entity: sensor.heizung_sollprofil
+                name: Heizprofil
+              - entity: sensor.rollladen_open_ts
+                name: Rollläden öffnen
+              - entity: sensor.rollladen_close_ts
+                name: Rollläden schließen
+              - entity: sensor.saros_20_set_status
+                name: Roborock Status
+              - entity: sensor.eaton_3s850d_batterie_ladung
+                name: USV Akku
+      - cards:
+          - type: heading
+            heading: Handlungsbedarf
+            heading_style: title
+          - type: entities
+            title: Abweichungen
+            show_header_toggle: false
+            entities:
+              - entity: input_boolean.heizung_override
+                name: Heizung Override
+              - entity: input_boolean.rollladen_override_ost
+                name: Override Ost
+              - entity: input_boolean.rollladen_override_west
+                name: Override West
+              - entity: input_boolean.roborock_busy
+                name: Roborock Busy
+              - entity: binary_sensor.roborock_program_blocked
+                name: Roborock Blocked
+              - entity: binary_sensor.steckdose_saison_aktiv
+                name: Balkon Saison
+      - cards:
+          - type: heading
+            heading: Fachmodule
+            heading_style: title
+            icon: mdi:view-dashboard
+          - type: grid
+            columns: 3
+            square: false
+            cards:
+              - type: button
+                name: Heizung
+                icon: mdi:radiator
+                tap_action:
+                  action: navigate
+                  navigation_path: heizung
+              - type: button
+                name: Rollläden
+                icon: mdi:window-shutter
+                tap_action:
+                  action: navigate
+                  navigation_path: rollladen
+              - type: button
+                name: Steckdose Balkon
+                icon: mdi:power-socket-de
+                tap_action:
+                  action: navigate
+                  navigation_path: steckdose-balkon
+              - type: button
+                name: USV
+                icon: mdi:generator-mobile
+                tap_action:
+                  action: navigate
+                  navigation_path: usv
+              - type: button
+                name: Roborock
+                icon: mdi:robot-vacuum
+                tap_action:
+                  action: navigate
+                  navigation_path: roborock
+              - type: button
+                name: Waschmaschine
+                icon: mdi:washing-machine
+                tap_action:
+                  action: navigate
+                  navigation_path: waschmaschine
+
+  - title: Räume
+    path: raeume
+    icon: mdi:floor-plan
+    type: sections
+    max_columns: 3
+    sections:
+      - cards:
+          - type: heading
+            heading: Raumklima
+            heading_style: title
+          - type: grid
+            columns: 3
+            square: false
+            cards:
+              - type: custom:button-card
+                entity: climate.kuche_wandthermostat
+                name: Küche
+                icon: mdi:thermometer
+                show_state: false
+                show_label: true
+                tap_action:
+                  action: more-info
+                label: >
+                  [[[
+                    const temp = states['sensor.kuche_wandthermostat_temperatur']?.state ?? '—';
+                    const hum = states['sensor.kuche_wandthermostat_luftfeuchtigkeit']?.state ?? '—';
+                    return `${temp} °C · ${hum} %`;
+                  ]]]
+                styles:
+                  card:
+                    - padding: 14px
+                    - height: 96px
+                  grid:
+                    - grid-template-areas: '"i n" "i l"'
+                    - grid-template-columns: 32px 1fr
+                    - grid-template-rows: min-content min-content
+                  name:
+                    - justify-self: start
+                    - font-size: 20px
+                  label:
+                    - justify-self: start
+                    - font-size: 15px
+              - type: custom:button-card
+                entity: climate.wohnzimmer_wandthermostat
+                name: Wohnzimmer
+                icon: mdi:thermometer
+                show_state: false
+                show_label: true
+                tap_action:
+                  action: more-info
+                label: >
+                  [[[
+                    const temp = states['sensor.wohnzimmer_wandthermostat_temperatur']?.state ?? '—';
+                    const hum = states['sensor.wohnzimmer_wandthermostat_luftfeuchtigkeit']?.state ?? '—';
+                    return `${temp} °C · ${hum} %`;
+                  ]]]
+                styles:
+                  card:
+                    - padding: 14px
+                    - height: 96px
+                  grid:
+                    - grid-template-areas: '"i n" "i l"'
+                    - grid-template-columns: 32px 1fr
+                    - grid-template-rows: min-content min-content
+                  name:
+                    - justify-self: start
+                    - font-size: 20px
+                  label:
+                    - justify-self: start
+                    - font-size: 15px
+              - type: custom:button-card
+                entity: climate.schlazi_wandthermostat
+                name: Schlafzimmer
+                icon: mdi:thermometer
+                show_state: false
+                show_label: true
+                tap_action:
+                  action: more-info
+                label: >
+                  [[[
+                    const temp = states['sensor.schlazi_wandthermostat_temperatur']?.state ?? '—';
+                    const hum = states['sensor.schlazi_wandthermostat_luftfeuchtigkeit']?.state ?? '—';
+                    return `${temp} °C · ${hum} %`;
+                  ]]]
+                styles:
+                  card:
+                    - padding: 14px
+                    - height: 96px
+                  grid:
+                    - grid-template-areas: '"i n" "i l"'
+                    - grid-template-columns: 32px 1fr
+                    - grid-template-rows: min-content min-content
+                  name:
+                    - justify-self: start
+                    - font-size: 20px
+                  label:
+                    - justify-self: start
+                    - font-size: 15px
+              - type: custom:button-card
+                entity: climate.bad_wandthermostat
+                name: Bad
+                icon: mdi:thermometer
+                show_state: false
+                show_label: true
+                tap_action:
+                  action: more-info
+                label: >
+                  [[[
+                    const temp = states['sensor.bad_wandthermostat_temperatur']?.state ?? '—';
+                    const hum = states['sensor.bad_wandthermostat_luftfeuchtigkeit']?.state ?? '—';
+                    return `${temp} °C · ${hum} %`;
+                  ]]]
+                styles:
+                  card:
+                    - padding: 14px
+                    - height: 96px
+                  grid:
+                    - grid-template-areas: '"i n" "i l"'
+                    - grid-template-columns: 32px 1fr
+                    - grid-template-rows: min-content min-content
+                  name:
+                    - justify-self: start
+                    - font-size: 20px
+                  label:
+                    - justify-self: start
+                    - font-size: 15px
+              - type: custom:button-card
+                entity: climate.flur_wandthermostat
+                name: Flur
+                icon: mdi:thermometer
+                show_state: false
+                show_label: true
+                tap_action:
+                  action: more-info
+                label: >
+                  [[[
+                    const temp = states['sensor.flur_wandthermostat_temperatur']?.state ?? '—';
+                    const hum = states['sensor.flur_wandthermostat_luftfeuchtigkeit']?.state ?? '—';
+                    return `${temp} °C · ${hum} %`;
+                  ]]]
+                styles:
+                  card:
+                    - padding: 14px
+                    - height: 96px
+                  grid:
+                    - grid-template-areas: '"i n" "i l"'
+                    - grid-template-columns: 32px 1fr
+                    - grid-template-rows: min-content min-content
+                  name:
+                    - justify-self: start
+                    - font-size: 20px
+                  label:
+                    - justify-self: start
+                    - font-size: 15px
+              - type: custom:button-card
+                entity: climate.gastebad_wandthermostat
+                name: Gästebad
+                icon: mdi:thermometer
+                show_state: false
+                show_label: true
+                tap_action:
+                  action: more-info
+                label: >
+                  [[[
+                    const temp = states['sensor.gastebad_wandthermostat_temperatur']?.state ?? '—';
+                    const hum = states['sensor.gastebad_wandthermostat_luftfeuchtigkeit']?.state ?? '—';
+                    return `${temp} °C · ${hum} %`;
+                  ]]]
+                styles:
+                  card:
+                    - padding: 14px
+                    - height: 96px
+                  grid:
+                    - grid-template-areas: '"i n" "i l"'
+                    - grid-template-columns: 32px 1fr
+                    - grid-template-rows: min-content min-content
+                  name:
+                    - justify-self: start
+                    - font-size: 20px
+                  label:
+                    - justify-self: start
+                    - font-size: 15px
+              - type: custom:button-card
+                entity: climate.gaste_wandthermostat
+                name: Gästezimmer
+                icon: mdi:thermometer
+                show_state: false
+                show_label: true
+                tap_action:
+                  action: more-info
+                label: >
+                  [[[
+                    const temp = states['sensor.gaste_wandthermostat_temperatur']?.state ?? '—';
+                    const hum = states['sensor.gaste_wandthermostat_luftfeuchtigkeit']?.state ?? '—';
+                    return `${temp} °C · ${hum} %`;
+                  ]]]
+                styles:
+                  card:
+                    - padding: 14px
+                    - height: 96px
+                  grid:
+                    - grid-template-areas: '"i n" "i l"'
+                    - grid-template-columns: 32px 1fr
+                    - grid-template-rows: min-content min-content
+                  name:
+                    - justify-self: start
+                    - font-size: 20px
+                  label:
+                    - justify-self: start
+                    - font-size: 15px
+              - type: custom:button-card
+                entity: sensor.0x00158d008b61ad80_temperature
+                name: Balkon
+                icon: mdi:weather-partly-cloudy
+                show_state: false
+                show_label: true
+                tap_action:
+                  action: more-info
+                label: >
+                  [[[
+                    const temp = states['sensor.0x00158d008b61ad80_temperature']?.state ?? '—';
+                    const hum = states['sensor.0x00158d008b61ad80_humidity']?.state ?? '—';
+                    return `${temp} °C · ${hum} %`;
+                  ]]]
+                styles:
+                  card:
+                    - padding: 14px
+                    - height: 96px
+                  grid:
+                    - grid-template-areas: '"i n" "i l"'
+                    - grid-template-columns: 32px 1fr
+                    - grid-template-rows: min-content min-content
+                  name:
+                    - justify-self: start
+                    - font-size: 20px
+                  label:
+                    - justify-self: start
+                    - font-size: 15px
+      - cards:
+          - type: heading
+            heading: Kontakte und Umgebung
+            heading_style: title
+          - type: entities
+            title: Balkon und Zugang
+            show_header_toggle: false
+            entities:
+              - entity: binary_sensor.kuche_balkon_turkontakt
+                name: Balkontür
+              - entity: sensor.balkon_lichtsensor_durchschnittliche_beleuchtungsstarke
+                name: Balkon Lux
+
+  - title: Heizung
+    path: heizung
+    icon: mdi:radiator
+    type: sections
+    max_columns: 3
+    sections:
+      - cards:
+          - type: heading
+            heading: Betrieb
+            heading_style: title
+            badges:
+              - type: entity
+                entity: input_boolean.heizung_urlaub
+              - type: entity
+                entity: input_boolean.heizung_override
+          - type: entities
+            title: Status
+            show_header_toggle: false
+            entities:
+              - entity: sensor.heizung_sollprofil
+                name: Sollprofil
+              - entity: input_select.heizung_aktives_profil
+                name: Aktives Profil
+              - entity: input_datetime.heizung_last_applied
+                name: Letzte Anwendung
+              - entity: input_text.heizung_last_action
+                name: Letzte Entscheidung
+              - entity: timer.heizung_override
+                name: Override Timer
+      - cards:
+          - type: heading
+            heading: Eingangslage
+            heading_style: title
+          - type: entities
+            title: Entscheidungsinputs
+            show_header_toggle: false
+            entities:
+              - entity: input_boolean.anwesend
+                name: Anwesenheit
+              - entity: binary_sensor.anwesend_stabil
+                name: Anwesenheit stabil
+              - entity: binary_sensor.winterbetrieb_empfohlen
+                name: Winterbetrieb empfohlen
+              - entity: sensor.hamburg_fu_temp_next12h_max
+                name: Tagesmax Vorhersage
+              - entity: sensor.season
+                name: Saison
+      - cards:
+          - type: heading
+            heading: Untermenüs
+            heading_style: title
+          - type: grid
+            columns: 3
+            square: false
+            cards:
+              - type: button
+                name: Diagnose
+                icon: mdi:bug-outline
+                tap_action:
+                  action: navigate
+                  navigation_path: heizung-diagnose
+              - type: button
+                name: Service
+                icon: mdi:tools
+                tap_action:
+                  action: navigate
+                  navigation_path: heizung-service
+              - type: button
+                name: Tuning
+                icon: mdi:tune
+                tap_action:
+                  action: navigate
+                  navigation_path: heizung-tuning
+          - type: history-graph
+            title: Profil und Wetter (24h)
+            hours_to_show: 24
+            refresh_interval: 60
+            entities:
+              - entity: sensor.heizung_sollprofil
+              - entity: input_select.heizung_aktives_profil
+              - entity: binary_sensor.winterbetrieb_empfohlen
+              - entity: sensor.hamburg_fu_temp_next12h_max
+
+  - title: Diagnose
+    path: heizung-diagnose
+    icon: mdi:bug-outline
+    subview: true
+    type: sections
+    max_columns: 3
+    sections:
+      - cards:
+          - type: heading
+            heading: Entscheidungen
+          - type: entities
+            title: Sollprofil und Gründe
+            show_header_toggle: false
+            entities:
+              - entity: sensor.heizung_sollprofil
+                name: Sollprofil
+              - type: attribute
+                entity: sensor.heizung_sollprofil
+                attribute: grund
+                name: Grund
+              - type: attribute
+                entity: sensor.heizung_sollprofil
+                attribute: decision_chain
+                name: Entscheidungskette
+              - type: attribute
+                entity: sensor.heizung_sollprofil
+                attribute: tx_dwd
+                name: Tagesmax DWD
+              - type: attribute
+                entity: sensor.heizung_sollprofil
+                attribute: sommer_schwellwert
+                name: Sommer-Schwellwert
+              - type: attribute
+                entity: sensor.heizung_sollprofil
+                attribute: anwesend_stabil
+                name: Anwesenheit stabil
+              - type: attribute
+                entity: sensor.heizung_sollprofil
+                attribute: winterbetrieb_empfohlen
+                name: Winter empfohlen
+      - cards:
+          - type: heading
+            heading: Rohwerte
+          - type: entities
+            title: Eingänge
+            show_header_toggle: false
+            entities:
+              - entity: input_boolean.heizung_urlaub
+              - entity: input_boolean.heizung_debug
+              - entity: input_boolean.anwesend
+              - entity: binary_sensor.anwesend_stabil
+              - entity: binary_sensor.winterbetrieb_empfohlen
+              - entity: sensor.hamburg_fu_temp_next12h_max
+              - entity: sensor.aussentemperatur_mittel_24h
+              - entity: sensor.aussentemperatur_mittel_72h
+              - entity: sensor.season
+      - cards:
+          - type: heading
+            heading: Historie
+          - type: history-graph
+            title: Profilwechsel (7 Tage)
+            hours_to_show: 168
+            refresh_interval: 300
+            entities:
+              - entity: sensor.heizung_sollprofil
+              - entity: input_select.heizung_aktives_profil
+              - entity: input_boolean.heizung_urlaub
+              - entity: binary_sensor.winterbetrieb_empfohlen
+              - entity: binary_sensor.anwesend_stabil
+
+  - title: Service
+    path: heizung-service
+    icon: mdi:tools
+    subview: true
+    type: sections
+    max_columns: 2
+    sections:
+      - cards:
+          - type: heading
+            heading: Anwenden
+          - type: entities
+            title: Was wird angewendet
+            show_header_toggle: false
+            entities:
+              - entity: sensor.heizung_sollprofil
+                name: Sollprofil jetzt
+              - entity: input_select.heizung_aktives_profil
+                name: Aktives Profil
+              - entity: input_text.heizung_last_scene
+                name: Letzte Szene
+              - entity: input_datetime.heizung_last_applied
+                name: Letzte Anwendung
+              - entity: script.heizung_profil_anwenden_pkg
+                name: Profil jetzt anwenden
+      - cards:
+          - type: heading
+            heading: Betriebsbild
+          - type: entities
+            title: Relevante Helper
+            show_header_toggle: false
+            entities:
+              - entity: input_boolean.heizung_override
+              - entity: timer.heizung_override
+              - entity: input_text.heizung_last_action
+                name: Letzte Entscheidung
+
+  - title: Tuning
+    path: heizung-tuning
+    icon: mdi:tune
+    subview: true
+    type: sections
+    max_columns: 2
+    sections:
+      - cards:
+          - type: heading
+            heading: Betriebsmodus
+          - type: entities
+            title: Modus
+            show_header_toggle: false
+            entities:
+              - entity: input_boolean.heizung_automatik
+                name: Heizungsautomatik
+              - entity: input_boolean.heizung_debug
+                name: Debug-Logging
+      - cards:
+          - type: heading
+            heading: Stellschrauben
+          - type: entities
+            title: Schwellwerte
+            show_header_toggle: false
+            entities:
+              - entity: input_number.heizung_abwesenheit_stunden
+                name: Abwesenheitsschwelle (h)
+              - entity: input_number.heizung_temperatur_sommer
+                name: Sommer-Schwelle Tagesmax (°C)
+      - cards:
+          - type: heading
+            heading: Hinweise
+          - type: markdown
+            content: |
+              Die Heating-App bleibt bewusst träge.
+
+              Sofortige Anwendungen sind weiter Sonderfälle.
+
+              Dieses Dashboard ändert nur die Bedienstruktur, nicht die Laufzeitlogik.
+
+  - title: Rollläden
+    path: rollladen
+    icon: mdi:window-shutter
+    type: sections
+    max_columns: 3
+    sections:
+      - cards:
+          - type: heading
+            heading: Status
+            heading_style: title
+            badges:
+              - type: entity
+                entity: input_boolean.rollladen_automation_enabled
+              - type: entity
+                entity: binary_sensor.rollladen_day_window
+          - type: entities
+            title: Übersicht
+            show_header_toggle: false
+            entities:
+              - entity: sensor.rollladen_open_ts
+                name: Öffnet um
+              - entity: sensor.rollladen_close_ts
+                name: Schließt um
+              - entity: input_boolean.rollladen_override_ost
+                name: Override Ost
+              - entity: timer.rollladen_override_ost
+                name: Timer Ost
+              - entity: input_boolean.rollladen_override_west
+                name: Override West
+              - entity: timer.rollladen_override_west
+                name: Timer West
+      - cards:
+          - type: heading
+            heading: Zielbild
+            heading_style: title
+          - type: entities
+            title: Zielpositionen
+            show_header_toggle: false
+            entities:
+              - entity: sensor.rollladen_ost_target_position
+                name: Ost Ziel
+              - entity: sensor.rollladen_west_target_position
+                name: West Ziel
+              - entity: sensor.rollladen_nord_target_position
+                name: Nord Ziel
+              - entity: sensor.rollladen_ost_debug
+                name: Ost Debug
+              - entity: sensor.rollladen_west_debug
+                name: West Debug
+              - entity: sensor.rollladen_nord_debug
+                name: Nord Debug
+      - cards:
+          - type: heading
+            heading: Untermenüs
+            heading_style: title
+          - type: grid
+            columns: 3
+            square: false
+            cards:
+              - type: button
+                name: Diagnose
+                icon: mdi:bug-outline
+                tap_action:
+                  action: navigate
+                  navigation_path: rollladen-diagnose
+              - type: button
+                name: Service
+                icon: mdi:tools
+                tap_action:
+                  action: navigate
+                  navigation_path: rollladen-service
+              - type: button
+                name: Tuning
+                icon: mdi:tune
+                tap_action:
+                  action: navigate
+                  navigation_path: rollladen-tuning
+          - type: entities
+            title: Einflussfaktoren
+            show_header_toggle: false
+            entities:
+              - entity: switch.schalt_mess_steckdose_steckdose
+                name: Steckdose Ost
+              - entity: input_boolean.beschattung_ost
+                name: Beschattung Ost
+              - entity: input_boolean.beschattung_west
+                name: Beschattung West
+              - entity: binary_sensor.kuche_balkon_turkontakt
+                name: Türkontakt
+
+  - title: Diagnose
+    path: rollladen-diagnose
+    icon: mdi:bug-outline
+    subview: true
+    type: sections
+    max_columns: 3
+    sections:
+      - cards:
+          - type: heading
+            heading: Status
+          - type: entities
+            title: Überblick
+            show_header_toggle: false
+            entities:
+              - entity: binary_sensor.rollladen_day_window
+                name: Day Window
+              - entity: sensor.rollladen_open_ts
+                name: Open TS
+              - entity: sensor.rollladen_close_ts
+                name: Close TS
+              - entity: binary_sensor.kuche_balkon_turkontakt
+                name: Türkontakt
+      - cards:
+          - type: heading
+            heading: Debug-Sensoren
+          - type: entities
+            title: Ost
+            show_header_toggle: false
+            entities:
+              - entity: sensor.rollladen_ost_debug
+                name: Zielposition / Status
+              - type: attribute
+                entity: sensor.rollladen_ost_debug
+                attribute: reason
+                name: reason
+              - type: attribute
+                entity: sensor.rollladen_ost_debug
+                attribute: door_state
+                name: door_state
+              - type: attribute
+                entity: sensor.rollladen_ost_debug
+                attribute: plug_on
+                name: plug_on
+              - type: attribute
+                entity: sensor.rollladen_ost_debug
+                attribute: latest_close
+                name: latest_close
+          - type: entities
+            title: West / Nord
+            show_header_toggle: false
+            entities:
+              - entity: sensor.rollladen_west_debug
+                name: West Debug
+              - type: attribute
+                entity: sensor.rollladen_west_debug
+                attribute: reason
+                name: West Grund
+              - entity: sensor.rollladen_nord_debug
+                name: Nord Debug
+              - type: attribute
+                entity: sensor.rollladen_nord_debug
+                attribute: reason
+                name: Nord Grund
+      - cards:
+          - type: heading
+            heading: Historie
+          - type: history-graph
+            title: Zielpositionen (24h)
+            hours_to_show: 24
+            refresh_interval: 60
+            entities:
+              - entity: sensor.rollladen_ost_debug
+              - entity: sensor.rollladen_west_debug
+              - entity: sensor.rollladen_nord_debug
+          - type: history-graph
+            title: Einflussfaktoren (24h)
+            hours_to_show: 24
+            refresh_interval: 60
+            entities:
+              - entity: input_boolean.rollladen_automation_enabled
+              - entity: binary_sensor.rollladen_day_window
+              - entity: switch.schalt_mess_steckdose_steckdose
+              - entity: input_boolean.beschattung_ost
+              - entity: input_boolean.beschattung_west
+              - entity: binary_sensor.kuche_balkon_turkontakt
+
+  - title: Service
+    path: rollladen-service
+    icon: mdi:tools
+    subview: true
+    type: sections
+    max_columns: 3
+    sections:
+      - cards:
+          - type: heading
+            heading: Sichere Skripte
+          - type: entities
+            title: Apply
+            show_header_toggle: false
+            entities:
+              - entity: script.rollladen_ost_apply
+              - entity: script.rollladen_apply_west
+                name: Rollladen West Apply
+              - entity: script.rollladen_apply_nord
+                name: Rollladen Nord Apply
+      - cards:
+          - type: heading
+            heading: Direkte Bedienung
+          - type: markdown
+            content: |
+              Dieser Bereich ist bewusst als manuelle Service-/Notfallbedienung getrennt.
+          - type: tile
+            entity: cover.rollladen_ost
+            name: Rollladen Ost
+            features:
+              - type: cover-position
+          - type: tile
+            entity: cover.rollladen_west
+            name: Rollladen West
+            features:
+              - type: cover-position
+          - type: tile
+            entity: cover.rollladen_nord
+            name: Rollladen Nord
+            features:
+              - type: cover-position
+      - cards:
+          - type: heading
+            heading: Sammelbedienung
+          - type: tile
+            entity: cover.rollladen_all
+            name: Rollläden Alle
+            features:
+              - type: cover-position
+
+  - title: Tuning
+    path: rollladen-tuning
+    icon: mdi:tune
+    subview: true
+    type: sections
+    max_columns: 3
+    sections:
+      - cards:
+          - type: heading
+            heading: Zeitregeln
+          - type: entities
+            title: Automatik
+            show_header_toggle: false
+            entities:
+              - entity: input_boolean.rollladen_automation_enabled
+                name: Rollläden Automatik
+              - entity: binary_sensor.rollladen_day_window
+                name: Day Window
+          - type: entities
+            title: Policies
+            show_header_toggle: false
+            entities:
+              - entity: input_datetime.rollladen_earliest_open
+              - entity: input_datetime.rollladen_latest_open
+              - entity: input_datetime.rollladen_latest_close
+              - entity: input_datetime.rollladen_ost_plug_open_start
+              - entity: input_datetime.rollladen_ost_plug_open_end
+              - entity: input_number.rollladen_offset_morgen_min
+              - entity: input_number.rollladen_offset_abend_min
+      - cards:
+          - type: heading
+            heading: Beschattung
+          - type: entities
+            title: Parameter
+            show_header_toggle: false
+            entities:
+              - entity: input_number.beschattung_azimut_ost_min
+              - entity: input_number.beschattung_azimut_ost_max
+              - entity: input_number.beschattung_azimut_west_min
+              - entity: input_number.beschattung_azimut_west_max
+              - entity: input_number.beschattung_elevation_min
+              - entity: input_number.beschattung_sommer_temp_min
+              - entity: input_number.beschattung_lux_ost_min
+              - entity: input_number.beschattung_lux_west_min
+              - entity: input_number.beschattung_temp_ost_min
+              - entity: input_number.beschattung_temp_west_min
+      - cards:
+          - type: heading
+            heading: Diagnosewerte
+          - type: entities
+            title: Live und Diff
+            show_header_toggle: false
+            entities:
+              - entity: sensor.sun_solar_azimuth
+              - entity: sensor.sun_solar_elevation
+              - entity: sensor.balkon_lichtsensor_durchschnittliche_beleuchtungsstarke
+              - entity: sensor.beschattung_diff_elevation
+              - entity: sensor.beschattung_diff_sommer_temp
+              - entity: sensor.beschattung_diff_lux_ost
+              - entity: sensor.beschattung_diff_lux_west
+              - entity: sensor.beschattung_debug_ost
+              - entity: sensor.beschattung_debug_west
+
+  - title: Steckdose Balkon
+    path: steckdose-balkon
+    icon: mdi:power-socket-de
+    type: sections
+    max_columns: 3
+    sections:
+      - cards:
+          - type: heading
+            heading: Übersicht
+            heading_style: title
+          - type: entities
+            title: Status
+            show_header_toggle: false
+            entities:
+              - entity: binary_sensor.steckdose_saison_aktiv
+                name: Saison aktiv
+              - entity: switch.schalt_mess_steckdose_steckdose
+                name: Steckdose Balkon
+              - entity: binary_sensor.dunkelheit_balkon
+                name: Dunkelheit
+              - entity: sensor.steckdose_balkon_debug
+                name: Debug
+              - entity: input_text.steckdose_balkon_last_action
+                name: Letzte Aktion
+              - entity: input_datetime.steckdose_balkon_last_action_at
+                name: Zeitpunkt
+      - cards:
+          - type: heading
+            heading: Zeitfenster
+          - type: entities
+            title: Saison
+            show_header_toggle: false
+            entities:
+              - entity: input_datetime.steckdose_morgens_ein
+                name: Morgens Ein
+              - type: text
+                name: Morgens Aus (fix)
+                text: '08:15'
+              - entity: input_datetime.steckdose_abends_ein
+                name: Abends Ein
+              - entity: input_datetime.steckdose_abends_aus
+                name: Abends Aus
+      - cards:
+          - type: heading
+            heading: Untermenüs
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - type: button
+                name: Diagnose
+                icon: mdi:bug-outline
+                tap_action:
+                  action: navigate
+                  navigation_path: steckdose-balkon-diagnose
+              - type: button
+                name: Tuning
+                icon: mdi:tune
+                tap_action:
+                  action: navigate
+                  navigation_path: steckdose-balkon-tuning
+
+  - title: Diagnose
+    path: steckdose-balkon-diagnose
+    icon: mdi:bug-outline
+    subview: true
+    type: sections
+    max_columns: 3
+    sections:
+      - cards:
+          - type: heading
+            heading: Debug-Sensor
+          - type: entities
+            title: Steckdose Balkon Debug
+            show_header_toggle: false
+            entities:
+              - entity: sensor.steckdose_balkon_debug
+                name: State
+              - type: attribute
+                entity: sensor.steckdose_balkon_debug
+                attribute: reason
+                name: reason
+              - type: attribute
+                entity: sensor.steckdose_balkon_debug
+                attribute: expected_state
+                name: expected_state
+              - type: attribute
+                entity: sensor.steckdose_balkon_debug
+                attribute: season_active
+                name: season_active
+              - type: attribute
+                entity: sensor.steckdose_balkon_debug
+                attribute: dunkelheit
+                name: dunkelheit
+              - type: attribute
+                entity: sensor.steckdose_balkon_debug
+                attribute: within_morning_window
+                name: within_morning_window
+              - type: attribute
+                entity: sensor.steckdose_balkon_debug
+                attribute: within_evening_window
+                name: within_evening_window
+              - type: attribute
+                entity: sensor.steckdose_balkon_debug
+                attribute: last_action
+                name: last_action
+              - type: attribute
+                entity: sensor.steckdose_balkon_debug
+                attribute: last_reason
+                name: last_reason
+      - cards:
+          - type: heading
+            heading: Historie
+          - type: history-graph
+            title: Debug vs Inputs (24h)
+            hours_to_show: 24
+            refresh_interval: 60
+            entities:
+              - entity: switch.schalt_mess_steckdose_steckdose
+              - entity: sensor.steckdose_balkon_debug
+              - entity: binary_sensor.steckdose_saison_aktiv
+              - entity: binary_sensor.dunkelheit_balkon
+              - entity: sensor.balkon_helligkeit_lux
+
+  - title: Tuning
+    path: steckdose-balkon-tuning
+    icon: mdi:tune
+    subview: true
+    type: sections
+    max_columns: 2
+    sections:
+      - cards:
+          - type: heading
+            heading: Zeitfenster
+          - type: entities
+            title: Saison
+            show_header_toggle: false
+            entities:
+              - entity: input_datetime.steckdose_morgens_ein
+              - entity: input_datetime.steckdose_abends_ein
+              - entity: input_datetime.steckdose_abends_aus
+      - cards:
+          - type: heading
+            heading: Helligkeit
+          - type: entities
+            title: Schwellen
+            show_header_toggle: false
+            entities:
+              - entity: sensor.balkon_lichtsensor_durchschnittliche_beleuchtungsstarke
+                name: Lux (Balkon)
+              - entity: input_number.dunkelheit_lux_schwelle
+                name: Lux-Schwelle
+              - entity: input_number.dunkelheit_lux_hysterese
+                name: Lux-Hysterese
+
+  - title: USV
+    path: usv
+    icon: mdi:generator-mobile
+    type: sections
+    max_columns: 3
+    sections:
+      - cards:
+          - type: heading
+            heading: Übersicht
+            heading_style: title
+            badges:
+              - type: entity
+                entity: sensor.eaton_3s850d_status
+              - type: entity
+                entity: sensor.eaton_3s850d_statusdaten
+          - type: gauge
+            entity: sensor.eaton_3s850d_batterie_ladung
+            name: Akku-Ladung
+            needle: true
+            severity:
+              green: 60
+              yellow: 25
+              red: 0
+          - type: tile
+            entity: sensor.eaton_3s850d_batterielaufzeit
+            name: Akkulaufzeit
+          - type: tile
+            entity: sensor.eaton_3s850d_last
+            name: Last
+          - type: tile
+            entity: sensor.eaton_3s850d_wirkleistung
+            name: Leistung
+      - cards:
+          - type: heading
+            heading: Ausgang
+          - type: tile
+            entity: sensor.eaton_3s850d_ausgangsspannung
+            name: Spannung
+          - type: tile
+            entity: sensor.eaton_3s850d_piepser_status
+            name: Piepser
+          - type: tile
+            entity: timer.os_timer_ups
+            name: Shutdown Timer
+      - cards:
+          - type: heading
+            heading: Untermenü
+          - type: button
+            name: Diagnose
+            icon: mdi:bug-outline
+            tap_action:
+              action: navigate
+              navigation_path: usv-diagnose
+
+  - title: Diagnose
+    path: usv-diagnose
+    icon: mdi:bug-outline
+    subview: true
+    type: sections
+    max_columns: 2
+    sections:
+      - cards:
+          - type: heading
+            heading: Rohstatus
+          - type: entities
+            title: USV
+            show_header_toggle: false
+            entities:
+              - entity: sensor.eaton_3s850d_status
+              - entity: sensor.eaton_3s850d_statusdaten
+              - entity: sensor.eaton_3s850d_batterie_ladung
+              - entity: sensor.eaton_3s850d_batterielaufzeit
+              - entity: sensor.eaton_3s850d_last
+              - entity: sensor.eaton_3s850d_wirkleistung
+              - entity: sensor.eaton_3s850d_ausgangsspannung
+              - entity: sensor.eaton_3s850d_sollwert_fur_schwache_batterie
+              - entity: sensor.eaton_3s850d_piepser_status
+              - entity: timer.os_timer_ups
+
+  - title: Waschmaschine
+    path: waschmaschine
+    icon: mdi:washing-machine
+    type: sections
+    max_columns: 3
+    sections:
+      - cards:
+          - type: heading
+            heading: Übersicht
+            heading_style: title
+          - type: entities
+            title: Status
+            show_header_toggle: false
+            entities:
+              - entity: sensor.waschmaschine_maschinenzustand
+                name: Maschinenzustand
+              - entity: sensor.waschmaschine_fertigstellungszeit
+                name: Fertigstellungszeit
+      - cards:
+          - type: heading
+            heading: Einstellungen
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - type: tile
+                entity: switch.waschmaschine_bubble_soak
+                color: amber
+                vertical: false
+                features_position: bottom
+              - type: tile
+                entity: select.waschmaschine_dosiermenge_fur_waschmittel
+              - type: tile
+                entity: select.waschmaschine_schleuderstufe
+              - type: tile
+                entity: number.waschmaschine_spulgange
+      - cards:
+          - type: heading
+            heading: Einordnung
+          - type: markdown
+            content: |
+              Dieses Modul bündelt die frühere Keller-Waschmaschinenansicht bewusst als Gerät
+              statt als Raum. Die eigentlichen Raumdaten bleiben im separaten View `Räume`.
+
+  - title: Roborock
+    path: roborock
+    icon: mdi:robot-vacuum
+    type: sections
+    max_columns: 3
+    sections:
+      - cards:
+          - type: heading
+            heading: Übersicht
+            heading_style: title
+            badges:
+              - type: entity
+                entity: binary_sensor.roborock_program_ready
+              - type: entity
+                entity: binary_sensor.roborock_program_blocked
+              - type: entity
+                entity: input_boolean.roborock_busy
+          - type: entities
+            title: Status
+            show_header_toggle: false
+            entities:
+              - entity: sensor.saros_20_set_status
+                name: Status
+              - entity: sensor.saros_20_set_batterie
+                name: Batterie
+              - entity: sensor.saros_20_set_staubsauger_fehler
+                name: Fehlertext
+              - entity: input_text.roborock_current_program
+                name: Aktuelles Programm
+              - entity: input_text.roborock_last_error
+                name: Letzter Fehler
+      - cards:
+          - type: heading
+            heading: Letzte Ausführung
+          - type: entities
+            title: Verlauf
+            show_header_toggle: false
+            entities:
+              - entity: input_text.roborock_last_slot
+                name: Letzter Slot
+              - entity: input_text.roborock_last_job
+                name: Letzter Job
+              - entity: input_text.roborock_last_program_sequence
+                name: Letzte Programmfolge
+      - cards:
+          - type: heading
+            heading: Untermenüs
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - type: button
+                name: Programme
+                icon: mdi:playlist-play
+                tap_action:
+                  action: navigate
+                  navigation_path: roborock-programme
+              - type: button
+                name: Karte
+                icon: mdi:map
+                tap_action:
+                  action: navigate
+                  navigation_path: roborock-karte
+              - type: button
+                name: Diagnose
+                icon: mdi:bug-outline
+                tap_action:
+                  action: navigate
+                  navigation_path: roborock-diagnose
+              - type: button
+                name: Wochenplan
+                icon: mdi:calendar-clock
+                tap_action:
+                  action: navigate
+                  navigation_path: roborock-wochenplan
+              - type: custom:button-card
+                name: Wartung
+                icon: mdi:tools
+                show_state: false
+                tap_action:
+                  action: navigate
+                  navigation_path: roborock-wartung
+                styles:
+                  card:
+                    - height: 168px
+                  name:
+                    - font-size: 22px
+                state:
+                  - operator: template
+                    value: >
+                      [[[
+                        return [
+                          'sensor.saros_20_set_verbleibende_zeit_der_hauptburste',
+                          'sensor.saros_20_set_verbleibende_zeit_der_seitenburste',
+                          'sensor.saros_20_set_verbleibende_filterzeit',
+                          'sensor.saros_20_set_verbleibende_sensorzeit',
+                          'sensor.saros_20_set_dock_schmutzfanger_verbleibend'
+                        ].some((id) => {
+                          const raw = states[id]?.state;
+                          const value = Number(raw);
+                          return Number.isFinite(value) && value <= 0;
+                        });
+                      ]]]
+                    styles:
+                      card:
+                        - background-color: var(--error-color)
+                      icon:
+                        - color: white
+                      name:
+                        - color: white
+
+  - title: Programme
+    path: roborock-programme
+    icon: mdi:playlist-play
+    subview: true
+    type: sections
+    max_columns: 3
+    sections:
+      - cards:
+          - type: heading
+            heading: Programme
+            heading_style: title
+          - type: grid
+            columns: 3
+            square: false
+            cards:
+              - type: button
+                name: Schlaf saugen
+                icon: mdi:bed-king-outline
+                tap_action:
+                  action: perform-action
+                  perform_action: script.roborock_run_named_program
+                  data:
+                    program_id: schlaf_saug
+              - type: button
+                name: Schlaf vac+mop
+                icon: mdi:bed-king
+                tap_action:
+                  action: perform-action
+                  perform_action: script.roborock_run_named_program
+                  data:
+                    program_id: schlaf_vac_mop
+              - type: button
+                name: Schlaf saug/wisch
+                icon: mdi:bed
+                tap_action:
+                  action: perform-action
+                  perform_action: script.roborock_run_named_program
+                  data:
+                    program_id: schlaf_saug_wisch
+              - type: button
+                name: Flur saugen
+                icon: mdi:door-open
+                tap_action:
+                  action: perform-action
+                  perform_action: script.roborock_run_named_program
+                  data:
+                    program_id: flur_saug
+              - type: button
+                name: Flur vac+mop
+                icon: mdi:door
+                tap_action:
+                  action: perform-action
+                  perform_action: script.roborock_run_named_program
+                  data:
+                    program_id: flur_vac_mop
+              - type: button
+                name: Flur saug/wisch
+                icon: mdi:door-sliding
+                tap_action:
+                  action: perform-action
+                  perform_action: script.roborock_run_named_program
+                  data:
+                    program_id: flur_saug_wisch
+              - type: button
+                name: Wohn saugen
+                icon: mdi:sofa-outline
+                tap_action:
+                  action: perform-action
+                  perform_action: script.roborock_run_named_program
+                  data:
+                    program_id: wohn_saug
+              - type: button
+                name: Wohn vac+mop
+                icon: mdi:sofa-outline
+                tap_action:
+                  action: perform-action
+                  perform_action: script.roborock_run_named_program
+                  data:
+                    program_id: wohn_vac_mop
+              - type: button
+                name: Wohn saug/wisch
+                icon: mdi:sofa
+                tap_action:
+                  action: perform-action
+                  perform_action: script.roborock_run_named_program
+                  data:
+                    program_id: wohn_saug_wisch
+              - type: button
+                name: Haustierbedarf
+                icon: mdi:paw
+                tap_action:
+                  action: perform-action
+                  perform_action: script.roborock_run_named_program
+                  data:
+                    program_id: haustier
+
+  - title: Karte
+    path: roborock-karte
+    icon: mdi:map
+    subview: true
+    type: sections
+    max_columns: 1
+    sections:
+      - cards:
+          - type: heading
+            heading: Wohnung
+            heading_style: title
+          - type: custom:xiaomi-vacuum-map-card
+            title: Wohnung
+            entity: vacuum.saros_20_set
+            vacuum_platform: Roborock
+            map_source:
+              camera: image.saros_20_set_map_0_custom
+            calibration_source:
+              camera: true
+            map_modes:
+              - template: vacuum_clean_zone
+              - template: vacuum_goto
+            tiles:
+              - label: Status
+                entity: sensor.saros_20_set_status
+                icon: mdi:information-outline
+              - label: Fehler
+                entity: sensor.saros_20_set_staubsauger_fehler
+                icon: mdi:alert-circle
+              - label: Aktueller Raum
+                entity: sensor.saros_20_set_aktueller_raum
+                icon: mdi:floor-plan
+              - label: Reinigungszeit
+                entity: sensor.saros_20_set_reinigungszeit
+                icon: mdi:timer-outline
+                unit: min
+                multiplier: 1
+                precision: 0
+              - label: Hauptbürste
+                entity: sensor.saros_20_set_verbleibende_zeit_der_hauptburste
+                icon: mdi:brush
+                unit: h
+                multiplier: 1
+                precision: 0
+              - label: Seitenbürste
+                entity: sensor.saros_20_set_verbleibende_zeit_der_seitenburste
+                icon: mdi:brush-variant
+                unit: h
+                multiplier: 1
+                precision: 0
+              - label: Filter
+                entity: sensor.saros_20_set_verbleibende_filterzeit
+                icon: mdi:air-filter
+                unit: h
+                multiplier: 1
+                precision: 0
+              - label: Sensoren
+                entity: sensor.saros_20_set_verbleibende_sensorzeit
+                icon: mdi:radar
+                unit: h
+                multiplier: 1
+                precision: 0
+              - label: Schmutzfänger Dock
+                entity: sensor.saros_20_set_dock_schmutzfanger_verbleibend
+                icon: mdi:filter-variant
+                unit: h
+                multiplier: 1
+                precision: 0
+            grid_options:
+              columns: full
+              rows: auto
+
+  - title: Diagnose
+    path: roborock-diagnose
+    icon: mdi:bug-outline
+    subview: true
+    type: sections
+    max_columns: 2
+    sections:
+      - cards:
+          - type: heading
+            heading: Diagnose
+          - type: entities
+            title: Betriebsdaten
+            show_header_toggle: false
+            entities:
+              - entity: sensor.saros_20_set_status
+                name: Status
+              - entity: sensor.saros_20_set_batterie
+                name: Batterie
+              - entity: sensor.saros_20_set_staubsauger_fehler
+                name: Fehlertext
+              - entity: binary_sensor.roborock_program_ready
+                name: Startbereit
+              - entity: binary_sensor.roborock_program_blocked
+                name: Blockiert
+              - entity: input_boolean.roborock_busy
+                name: Busy
+              - entity: input_datetime.roborock_busy_since
+                name: Busy seit
+              - type: attribute
+                entity: script.roborock_execute_job_chain
+                attribute: last_triggered
+                name: Letzter Job-Start
+              - entity: input_text.roborock_last_slot
+                name: Letzter Slot
+              - entity: input_text.roborock_last_job
+                name: Letzter Job
+              - entity: input_text.roborock_last_program_sequence
+                name: Letzte Programmfolge
+              - entity: input_text.roborock_current_program
+                name: Aktuelles Programm
+              - entity: input_text.roborock_last_error
+                name: Letzter Fehler
+
+  - title: Wochenplan
+    path: roborock-wochenplan
+    icon: mdi:calendar-clock
+    subview: true
+    type: sections
+    max_columns: 1
+    sections:
+      - cards:
+          - type: heading
+            heading: Wochenplan
+            heading_style: title
+          - type: entities
+            title: Global
+            show_header_toggle: false
+            entities:
+              - entity: input_boolean.roborock_schedule_enabled
+                name: Zeitplan aktiv
+      - cards:
+          - type: heading
+            heading: Wochentage
+          - type: grid
+            columns: 3
+            square: false
+            cards:
+              - type: custom:button-card
+                name: Montag
+                icon: mdi:calendar
+                show_label: true
+                tap_action:
+                  action: navigate
+                  navigation_path: roborock-wochenplan-mon
+                label: >
+                  [[[
+                    const rows = [
+                      ['input_boolean.roborock_slot_enabled_mon_1', 'input_datetime.roborock_time_mon_1', 'input_text.roborock_jobs_mon_1'],
+                      ['input_boolean.roborock_slot_enabled_mon_2', 'input_datetime.roborock_time_mon_2', 'input_text.roborock_jobs_mon_2'],
+                      ['input_boolean.roborock_slot_enabled_mon_3', 'input_datetime.roborock_time_mon_3', 'input_text.roborock_jobs_mon_3'],
+                    ];
+                    return rows
+                      .filter(([enabled]) => states[enabled]?.state === 'on')
+                      .map(([, timeId, jobsId]) => `${String(states[timeId]?.state ?? '--:--').slice(0, 5)} ${states[jobsId]?.state || '—'}`)
+                      .join('<br>') || '—';
+                  ]]]
+                styles:
+                  card:
+                    - padding: 18px
+                    - height: 160px
+                    - background-color: rgba(120, 120, 120, 0.06)
+                    - border: 1px solid rgba(120, 120, 120, 0.16)
+                  grid:
+                    - grid-template-areas: '"i n" "l l"'
+                    - grid-template-columns: 28px 1fr
+                    - grid-template-rows: min-content 1fr
+                  icon:
+                    - width: 20px
+                  name:
+                    - justify-self: start
+                    - font-size: 18px
+                    - white-space: normal
+                    - line-height: 1.2
+                    - text-overflow: unset
+                    - overflow: visible
+                  label:
+                    - justify-self: start
+                    - text-align: left
+                    - white-space: normal
+                    - font-size: 13px
+                    - line-height: 1.45
+                state:
+                  - operator: template
+                    value: >
+                      [[[
+                        return ['input_boolean.roborock_slot_enabled_mon_1', 'input_boolean.roborock_slot_enabled_mon_2', 'input_boolean.roborock_slot_enabled_mon_3']
+                          .some((id) => states[id]?.state === 'on');
+                      ]]]
+                    styles:
+                      card:
+                        - background-color: rgba(164, 186, 143, 0.24)
+                        - border: 1px solid rgba(129, 156, 106, 0.38)
+                      icon:
+                        - color: var(--success-color)
+              - type: custom:button-card
+                name: Dienstag
+                icon: mdi:calendar
+                show_label: true
+                tap_action:
+                  action: navigate
+                  navigation_path: roborock-wochenplan-die
+                label: >
+                  [[[
+                    const rows = [
+                      ['input_boolean.roborock_slot_enabled_tue_1', 'input_datetime.roborock_time_tue_1', 'input_text.roborock_jobs_tue_1'],
+                      ['input_boolean.roborock_slot_enabled_tue_2', 'input_datetime.roborock_time_tue_2', 'input_text.roborock_jobs_tue_2'],
+                      ['input_boolean.roborock_slot_enabled_tue_3', 'input_datetime.roborock_time_tue_3', 'input_text.roborock_jobs_tue_3'],
+                    ];
+                    return rows
+                      .filter(([enabled]) => states[enabled]?.state === 'on')
+                      .map(([, timeId, jobsId]) => `${String(states[timeId]?.state ?? '--:--').slice(0, 5)} ${states[jobsId]?.state || '—'}`)
+                      .join('<br>') || '—';
+                  ]]]
+                styles:
+                  card:
+                    - padding: 18px
+                    - height: 160px
+                    - background-color: rgba(120, 120, 120, 0.06)
+                    - border: 1px solid rgba(120, 120, 120, 0.16)
+                  grid:
+                    - grid-template-areas: '"i n" "l l"'
+                    - grid-template-columns: 28px 1fr
+                    - grid-template-rows: min-content 1fr
+                  icon:
+                    - width: 20px
+                  name:
+                    - justify-self: start
+                    - font-size: 18px
+                    - white-space: normal
+                    - line-height: 1.2
+                    - text-overflow: unset
+                    - overflow: visible
+                  label:
+                    - justify-self: start
+                    - text-align: left
+                    - white-space: normal
+                    - font-size: 13px
+                    - line-height: 1.45
+                state:
+                  - operator: template
+                    value: >
+                      [[[
+                        return ['input_boolean.roborock_slot_enabled_tue_1', 'input_boolean.roborock_slot_enabled_tue_2', 'input_boolean.roborock_slot_enabled_tue_3']
+                          .some((id) => states[id]?.state === 'on');
+                      ]]]
+                    styles:
+                      card:
+                        - background-color: rgba(164, 186, 143, 0.24)
+                        - border: 1px solid rgba(129, 156, 106, 0.38)
+                      icon:
+                        - color: var(--success-color)
+              - type: custom:button-card
+                name: Mittwoch
+                icon: mdi:calendar
+                show_label: true
+                tap_action:
+                  action: navigate
+                  navigation_path: roborock-wochenplan-mit
+                label: >
+                  [[[
+                    const rows = [
+                      ['input_boolean.roborock_slot_enabled_wed_1', 'input_datetime.roborock_time_wed_1', 'input_text.roborock_jobs_wed_1'],
+                      ['input_boolean.roborock_slot_enabled_wed_2', 'input_datetime.roborock_time_wed_2', 'input_text.roborock_jobs_wed_2'],
+                      ['input_boolean.roborock_slot_enabled_wed_3', 'input_datetime.roborock_time_wed_3', 'input_text.roborock_jobs_wed_3'],
+                    ];
+                    return rows
+                      .filter(([enabled]) => states[enabled]?.state === 'on')
+                      .map(([, timeId, jobsId]) => `${String(states[timeId]?.state ?? '--:--').slice(0, 5)} ${states[jobsId]?.state || '—'}`)
+                      .join('<br>') || '—';
+                  ]]]
+                styles:
+                  card:
+                    - padding: 18px
+                    - height: 160px
+                    - background-color: rgba(120, 120, 120, 0.06)
+                    - border: 1px solid rgba(120, 120, 120, 0.16)
+                  grid:
+                    - grid-template-areas: '"i n" "l l"'
+                    - grid-template-columns: 28px 1fr
+                    - grid-template-rows: min-content 1fr
+                  icon:
+                    - width: 20px
+                  name:
+                    - justify-self: start
+                    - font-size: 18px
+                    - white-space: normal
+                    - line-height: 1.2
+                    - text-overflow: unset
+                    - overflow: visible
+                  label:
+                    - justify-self: start
+                    - text-align: left
+                    - white-space: normal
+                    - font-size: 13px
+                    - line-height: 1.45
+                state:
+                  - operator: template
+                    value: >
+                      [[[
+                        return ['input_boolean.roborock_slot_enabled_wed_1', 'input_boolean.roborock_slot_enabled_wed_2', 'input_boolean.roborock_slot_enabled_wed_3']
+                          .some((id) => states[id]?.state === 'on');
+                      ]]]
+                    styles:
+                      card:
+                        - background-color: rgba(164, 186, 143, 0.24)
+                        - border: 1px solid rgba(129, 156, 106, 0.38)
+                      icon:
+                        - color: var(--success-color)
+              - type: custom:button-card
+                name: Donnerstag
+                icon: mdi:calendar
+                show_label: true
+                tap_action:
+                  action: navigate
+                  navigation_path: roborock-wochenplan-don
+                label: >
+                  [[[
+                    const rows = [
+                      ['input_boolean.roborock_slot_enabled_thu_1', 'input_datetime.roborock_time_thu_1', 'input_text.roborock_jobs_thu_1'],
+                      ['input_boolean.roborock_slot_enabled_thu_2', 'input_datetime.roborock_time_thu_2', 'input_text.roborock_jobs_thu_2'],
+                      ['input_boolean.roborock_slot_enabled_thu_3', 'input_datetime.roborock_time_thu_3', 'input_text.roborock_jobs_thu_3'],
+                    ];
+                    return rows
+                      .filter(([enabled]) => states[enabled]?.state === 'on')
+                      .map(([, timeId, jobsId]) => `${String(states[timeId]?.state ?? '--:--').slice(0, 5)} ${states[jobsId]?.state || '—'}`)
+                      .join('<br>') || '—';
+                  ]]]
+                styles:
+                  card:
+                    - padding: 18px
+                    - height: 160px
+                    - background-color: rgba(120, 120, 120, 0.06)
+                    - border: 1px solid rgba(120, 120, 120, 0.16)
+                  grid:
+                    - grid-template-areas: '"i n" "l l"'
+                    - grid-template-columns: 28px 1fr
+                    - grid-template-rows: min-content 1fr
+                  icon:
+                    - width: 20px
+                  name:
+                    - justify-self: start
+                    - font-size: 18px
+                    - white-space: normal
+                    - line-height: 1.2
+                    - text-overflow: unset
+                    - overflow: visible
+                  label:
+                    - justify-self: start
+                    - text-align: left
+                    - white-space: normal
+                    - font-size: 13px
+                    - line-height: 1.45
+                state:
+                  - operator: template
+                    value: >
+                      [[[
+                        return ['input_boolean.roborock_slot_enabled_thu_1', 'input_boolean.roborock_slot_enabled_thu_2', 'input_boolean.roborock_slot_enabled_thu_3']
+                          .some((id) => states[id]?.state === 'on');
+                      ]]]
+                    styles:
+                      card:
+                        - background-color: rgba(164, 186, 143, 0.24)
+                        - border: 1px solid rgba(129, 156, 106, 0.38)
+                      icon:
+                        - color: var(--success-color)
+              - type: custom:button-card
+                name: Freitag
+                icon: mdi:calendar
+                show_label: true
+                tap_action:
+                  action: navigate
+                  navigation_path: roborock-wochenplan-fre
+                label: >
+                  [[[
+                    const rows = [
+                      ['input_boolean.roborock_slot_enabled_fri_1', 'input_datetime.roborock_time_fri_1', 'input_text.roborock_jobs_fri_1'],
+                      ['input_boolean.roborock_slot_enabled_fri_2', 'input_datetime.roborock_time_fri_2', 'input_text.roborock_jobs_fri_2'],
+                      ['input_boolean.roborock_slot_enabled_fri_3', 'input_datetime.roborock_time_fri_3', 'input_text.roborock_jobs_fri_3'],
+                    ];
+                    return rows
+                      .filter(([enabled]) => states[enabled]?.state === 'on')
+                      .map(([, timeId, jobsId]) => `${String(states[timeId]?.state ?? '--:--').slice(0, 5)} ${states[jobsId]?.state || '—'}`)
+                      .join('<br>') || '—';
+                  ]]]
+                styles:
+                  card:
+                    - padding: 18px
+                    - height: 160px
+                    - background-color: rgba(120, 120, 120, 0.06)
+                    - border: 1px solid rgba(120, 120, 120, 0.16)
+                  grid:
+                    - grid-template-areas: '"i n" "l l"'
+                    - grid-template-columns: 28px 1fr
+                    - grid-template-rows: min-content 1fr
+                  icon:
+                    - width: 20px
+                  name:
+                    - justify-self: start
+                    - font-size: 18px
+                    - white-space: normal
+                    - line-height: 1.2
+                    - text-overflow: unset
+                    - overflow: visible
+                  label:
+                    - justify-self: start
+                    - text-align: left
+                    - white-space: normal
+                    - font-size: 13px
+                    - line-height: 1.45
+                state:
+                  - operator: template
+                    value: >
+                      [[[
+                        return ['input_boolean.roborock_slot_enabled_fri_1', 'input_boolean.roborock_slot_enabled_fri_2', 'input_boolean.roborock_slot_enabled_fri_3']
+                          .some((id) => states[id]?.state === 'on');
+                      ]]]
+                    styles:
+                      card:
+                        - background-color: rgba(164, 186, 143, 0.24)
+                        - border: 1px solid rgba(129, 156, 106, 0.38)
+                      icon:
+                        - color: var(--success-color)
+              - type: custom:button-card
+                name: Samstag
+                icon: mdi:calendar
+                show_label: true
+                tap_action:
+                  action: navigate
+                  navigation_path: roborock-wochenplan-sam
+                label: >
+                  [[[
+                    const rows = [
+                      ['input_boolean.roborock_slot_enabled_sat_1', 'input_datetime.roborock_time_sat_1', 'input_text.roborock_jobs_sat_1'],
+                      ['input_boolean.roborock_slot_enabled_sat_2', 'input_datetime.roborock_time_sat_2', 'input_text.roborock_jobs_sat_2'],
+                      ['input_boolean.roborock_slot_enabled_sat_3', 'input_datetime.roborock_time_sat_3', 'input_text.roborock_jobs_sat_3'],
+                    ];
+                    return rows
+                      .filter(([enabled]) => states[enabled]?.state === 'on')
+                      .map(([, timeId, jobsId]) => `${String(states[timeId]?.state ?? '--:--').slice(0, 5)} ${states[jobsId]?.state || '—'}`)
+                      .join('<br>') || '—';
+                  ]]]
+                styles:
+                  card:
+                    - padding: 18px
+                    - height: 160px
+                    - background-color: rgba(120, 120, 120, 0.06)
+                    - border: 1px solid rgba(120, 120, 120, 0.16)
+                  grid:
+                    - grid-template-areas: '"i n" "l l"'
+                    - grid-template-columns: 28px 1fr
+                    - grid-template-rows: min-content 1fr
+                  icon:
+                    - width: 20px
+                  name:
+                    - justify-self: start
+                    - font-size: 18px
+                    - white-space: normal
+                    - line-height: 1.2
+                    - text-overflow: unset
+                    - overflow: visible
+                  label:
+                    - justify-self: start
+                    - text-align: left
+                    - white-space: normal
+                    - font-size: 13px
+                    - line-height: 1.45
+                state:
+                  - operator: template
+                    value: >
+                      [[[
+                        return ['input_boolean.roborock_slot_enabled_sat_1', 'input_boolean.roborock_slot_enabled_sat_2', 'input_boolean.roborock_slot_enabled_sat_3']
+                          .some((id) => states[id]?.state === 'on');
+                      ]]]
+                    styles:
+                      card:
+                        - background-color: rgba(164, 186, 143, 0.24)
+                        - border: 1px solid rgba(129, 156, 106, 0.38)
+                      icon:
+                        - color: var(--success-color)
+              - type: custom:button-card
+                name: Sonntag
+                icon: mdi:calendar
+                show_label: true
+                tap_action:
+                  action: navigate
+                  navigation_path: roborock-wochenplan-son
+                label: >
+                  [[[
+                    const rows = [
+                      ['input_boolean.roborock_slot_enabled_sun_1', 'input_datetime.roborock_time_sun_1', 'input_text.roborock_jobs_sun_1'],
+                      ['input_boolean.roborock_slot_enabled_sun_2', 'input_datetime.roborock_time_sun_2', 'input_text.roborock_jobs_sun_2'],
+                      ['input_boolean.roborock_slot_enabled_sun_3', 'input_datetime.roborock_time_sun_3', 'input_text.roborock_jobs_sun_3'],
+                    ];
+                    return rows
+                      .filter(([enabled]) => states[enabled]?.state === 'on')
+                      .map(([, timeId, jobsId]) => `${String(states[timeId]?.state ?? '--:--').slice(0, 5)} ${states[jobsId]?.state || '—'}`)
+                      .join('<br>') || '—';
+                  ]]]
+                styles:
+                  card:
+                    - padding: 18px
+                    - height: 160px
+                    - background-color: rgba(120, 120, 120, 0.06)
+                    - border: 1px solid rgba(120, 120, 120, 0.16)
+                  grid:
+                    - grid-template-areas: '"i n" "l l"'
+                    - grid-template-columns: 28px 1fr
+                    - grid-template-rows: min-content 1fr
+                  icon:
+                    - width: 20px
+                  name:
+                    - justify-self: start
+                    - font-size: 18px
+                    - white-space: normal
+                    - line-height: 1.2
+                    - text-overflow: unset
+                    - overflow: visible
+                  label:
+                    - justify-self: start
+                    - text-align: left
+                    - white-space: normal
+                    - font-size: 13px
+                    - line-height: 1.45
+                state:
+                  - operator: template
+                    value: >
+                      [[[
+                        return ['input_boolean.roborock_slot_enabled_sun_1', 'input_boolean.roborock_slot_enabled_sun_2', 'input_boolean.roborock_slot_enabled_sun_3']
+                          .some((id) => states[id]?.state === 'on');
+                      ]]]
+                    styles:
+                      card:
+                        - background-color: rgba(164, 186, 143, 0.24)
+                        - border: 1px solid rgba(129, 156, 106, 0.38)
+                      icon:
+                        - color: var(--success-color)
+
+      - cards:
+          - type: heading
+            heading: Aliase und IDs
+          - type: markdown
+            content: |
+              **Legacy Job-Aliase**
+
+              `schlaf_s`, `schlaf_vm`, `schlaf_sw`, `flur_s`,
+              `flur_vm`, `flur_sw`, `wohn_s`, `wohn_vm`,
+              `wohn_sw`, `haustier`
+
+              **Kanonische Programm-IDs**
+
+              `schlaf_saug`, `schlaf_vac_mop`, `schlaf_saug_wisch`,
+              `flur_saug`, `flur_vac_mop`, `flur_saug_wisch`,
+              `wohn_saug`, `wohn_vac_mop`, `wohn_saug_wisch`,
+              `haustier`
+
+  - title: Montag
+    path: roborock-wochenplan-mon
+    icon: mdi:calendar
+    subview: true
+    type: sections
+    max_columns: 1
+    sections:
+      - cards:
+          - type: heading
+            heading: Montag
+            heading_style: title
+          - type: entities
+            title: Slot 1
+            show_header_toggle: false
+            entities:
+              - entity: input_boolean.roborock_slot_enabled_mon_1
+                name: Aktiv
+              - entity: input_datetime.roborock_time_mon_1
+                name: Uhrzeit
+              - entity: input_text.roborock_jobs_mon_1
+                name: Jobs
+          - type: entities
+            title: Slot 2
+            show_header_toggle: false
+            entities:
+              - entity: input_boolean.roborock_slot_enabled_mon_2
+                name: Aktiv
+              - entity: input_datetime.roborock_time_mon_2
+                name: Uhrzeit
+              - entity: input_text.roborock_jobs_mon_2
+                name: Jobs
+          - type: entities
+            title: Slot 3
+            show_header_toggle: false
+            entities:
+              - entity: input_boolean.roborock_slot_enabled_mon_3
+                name: Aktiv
+              - entity: input_datetime.roborock_time_mon_3
+                name: Uhrzeit
+              - entity: input_text.roborock_jobs_mon_3
+                name: Jobs
+
+  - title: Dienstag
+    path: roborock-wochenplan-die
+    icon: mdi:calendar
+    subview: true
+    type: sections
+    max_columns: 1
+    sections:
+      - cards:
+          - type: heading
+            heading: Dienstag
+            heading_style: title
+          - type: entities
+            title: Slot 1
+            show_header_toggle: false
+            entities:
+              - entity: input_boolean.roborock_slot_enabled_tue_1
+                name: Aktiv
+              - entity: input_datetime.roborock_time_tue_1
+                name: Uhrzeit
+              - entity: input_text.roborock_jobs_tue_1
+                name: Jobs
+          - type: entities
+            title: Slot 2
+            show_header_toggle: false
+            entities:
+              - entity: input_boolean.roborock_slot_enabled_tue_2
+                name: Aktiv
+              - entity: input_datetime.roborock_time_tue_2
+                name: Uhrzeit
+              - entity: input_text.roborock_jobs_tue_2
+                name: Jobs
+          - type: entities
+            title: Slot 3
+            show_header_toggle: false
+            entities:
+              - entity: input_boolean.roborock_slot_enabled_tue_3
+                name: Aktiv
+              - entity: input_datetime.roborock_time_tue_3
+                name: Uhrzeit
+              - entity: input_text.roborock_jobs_tue_3
+                name: Jobs
+
+  - title: Mittwoch
+    path: roborock-wochenplan-mit
+    icon: mdi:calendar
+    subview: true
+    type: sections
+    max_columns: 1
+    sections:
+      - cards:
+          - type: heading
+            heading: Mittwoch
+            heading_style: title
+          - type: entities
+            title: Slot 1
+            show_header_toggle: false
+            entities:
+              - entity: input_boolean.roborock_slot_enabled_wed_1
+                name: Aktiv
+              - entity: input_datetime.roborock_time_wed_1
+                name: Uhrzeit
+              - entity: input_text.roborock_jobs_wed_1
+                name: Jobs
+          - type: entities
+            title: Slot 2
+            show_header_toggle: false
+            entities:
+              - entity: input_boolean.roborock_slot_enabled_wed_2
+                name: Aktiv
+              - entity: input_datetime.roborock_time_wed_2
+                name: Uhrzeit
+              - entity: input_text.roborock_jobs_wed_2
+                name: Jobs
+          - type: entities
+            title: Slot 3
+            show_header_toggle: false
+            entities:
+              - entity: input_boolean.roborock_slot_enabled_wed_3
+                name: Aktiv
+              - entity: input_datetime.roborock_time_wed_3
+                name: Uhrzeit
+              - entity: input_text.roborock_jobs_wed_3
+                name: Jobs
+
+  - title: Donnerstag
+    path: roborock-wochenplan-don
+    icon: mdi:calendar
+    subview: true
+    type: sections
+    max_columns: 1
+    sections:
+      - cards:
+          - type: heading
+            heading: Donnerstag
+            heading_style: title
+          - type: entities
+            title: Slot 1
+            show_header_toggle: false
+            entities:
+              - entity: input_boolean.roborock_slot_enabled_thu_1
+                name: Aktiv
+              - entity: input_datetime.roborock_time_thu_1
+                name: Uhrzeit
+              - entity: input_text.roborock_jobs_thu_1
+                name: Jobs
+          - type: entities
+            title: Slot 2
+            show_header_toggle: false
+            entities:
+              - entity: input_boolean.roborock_slot_enabled_thu_2
+                name: Aktiv
+              - entity: input_datetime.roborock_time_thu_2
+                name: Uhrzeit
+              - entity: input_text.roborock_jobs_thu_2
+                name: Jobs
+          - type: entities
+            title: Slot 3
+            show_header_toggle: false
+            entities:
+              - entity: input_boolean.roborock_slot_enabled_thu_3
+                name: Aktiv
+              - entity: input_datetime.roborock_time_thu_3
+                name: Uhrzeit
+              - entity: input_text.roborock_jobs_thu_3
+                name: Jobs
+
+  - title: Freitag
+    path: roborock-wochenplan-fre
+    icon: mdi:calendar
+    subview: true
+    type: sections
+    max_columns: 1
+    sections:
+      - cards:
+          - type: heading
+            heading: Freitag
+            heading_style: title
+          - type: entities
+            title: Slot 1
+            show_header_toggle: false
+            entities:
+              - entity: input_boolean.roborock_slot_enabled_fri_1
+                name: Aktiv
+              - entity: input_datetime.roborock_time_fri_1
+                name: Uhrzeit
+              - entity: input_text.roborock_jobs_fri_1
+                name: Jobs
+          - type: entities
+            title: Slot 2
+            show_header_toggle: false
+            entities:
+              - entity: input_boolean.roborock_slot_enabled_fri_2
+                name: Aktiv
+              - entity: input_datetime.roborock_time_fri_2
+                name: Uhrzeit
+              - entity: input_text.roborock_jobs_fri_2
+                name: Jobs
+          - type: entities
+            title: Slot 3
+            show_header_toggle: false
+            entities:
+              - entity: input_boolean.roborock_slot_enabled_fri_3
+                name: Aktiv
+              - entity: input_datetime.roborock_time_fri_3
+                name: Uhrzeit
+              - entity: input_text.roborock_jobs_fri_3
+                name: Jobs
+
+  - title: Samstag
+    path: roborock-wochenplan-sam
+    icon: mdi:calendar
+    subview: true
+    type: sections
+    max_columns: 1
+    sections:
+      - cards:
+          - type: heading
+            heading: Samstag
+            heading_style: title
+          - type: entities
+            title: Slot 1
+            show_header_toggle: false
+            entities:
+              - entity: input_boolean.roborock_slot_enabled_sat_1
+                name: Aktiv
+              - entity: input_datetime.roborock_time_sat_1
+                name: Uhrzeit
+              - entity: input_text.roborock_jobs_sat_1
+                name: Jobs
+          - type: entities
+            title: Slot 2
+            show_header_toggle: false
+            entities:
+              - entity: input_boolean.roborock_slot_enabled_sat_2
+                name: Aktiv
+              - entity: input_datetime.roborock_time_sat_2
+                name: Uhrzeit
+              - entity: input_text.roborock_jobs_sat_2
+                name: Jobs
+          - type: entities
+            title: Slot 3
+            show_header_toggle: false
+            entities:
+              - entity: input_boolean.roborock_slot_enabled_sat_3
+                name: Aktiv
+              - entity: input_datetime.roborock_time_sat_3
+                name: Uhrzeit
+              - entity: input_text.roborock_jobs_sat_3
+                name: Jobs
+
+  - title: Sonntag
+    path: roborock-wochenplan-son
+    icon: mdi:calendar
+    subview: true
+    type: sections
+    max_columns: 1
+    sections:
+      - cards:
+          - type: heading
+            heading: Sonntag
+            heading_style: title
+          - type: entities
+            title: Slot 1
+            show_header_toggle: false
+            entities:
+              - entity: input_boolean.roborock_slot_enabled_sun_1
+                name: Aktiv
+              - entity: input_datetime.roborock_time_sun_1
+                name: Uhrzeit
+              - entity: input_text.roborock_jobs_sun_1
+                name: Jobs
+          - type: entities
+            title: Slot 2
+            show_header_toggle: false
+            entities:
+              - entity: input_boolean.roborock_slot_enabled_sun_2
+                name: Aktiv
+              - entity: input_datetime.roborock_time_sun_2
+                name: Uhrzeit
+              - entity: input_text.roborock_jobs_sun_2
+                name: Jobs
+          - type: entities
+            title: Slot 3
+            show_header_toggle: false
+            entities:
+              - entity: input_boolean.roborock_slot_enabled_sun_3
+                name: Aktiv
+              - entity: input_datetime.roborock_time_sun_3
+                name: Uhrzeit
+              - entity: input_text.roborock_jobs_sun_3
+                name: Jobs
+
+  - title: Wartung
+    path: roborock-wartung
+    icon: mdi:tools
+    subview: true
+    type: sections
+    max_columns: 2
+    sections:
+      - cards:
+          - type: heading
+            heading: Wartung
+          - type: entities
+            title: Reset
+            show_header_toggle: false
+            entities:
+              - entity: button.saros_20_set_hauptbursten_verbrauchsmaterial_zurucksetzen
+                name: Hauptbürste zurücksetzen
+              - entity: button.saros_20_set_seitenbursten_verbrauchsmaterial_zurucksetzen
+                name: Seitenbürste zurücksetzen
+              - entity: button.saros_20_set_luftfilter_verbrauchsmaterial_zurucksetzen
+                name: Luftfilter zurücksetzen
+              - entity: button.saros_20_set_sensor_verbrauchsmaterial_zurucksetzen
+                name: Sensoren zurücksetzen
+      - cards:
+          - type: heading
+            heading: Verbrauchsmaterial
+          - type: entities
+            title: Restlaufzeiten
+            show_header_toggle: false
+            entities:
+              - entity: sensor.saros_20_set_verbleibende_zeit_der_hauptburste
+                name: Hauptbürste
+              - entity: sensor.saros_20_set_verbleibende_zeit_der_seitenburste
+                name: Seitenbürste
+              - entity: sensor.saros_20_set_verbleibende_filterzeit
+                name: Filter
+              - entity: sensor.saros_20_set_verbleibende_sensorzeit
+                name: Sensoren
+              - entity: sensor.saros_20_set_dock_schmutzfanger_verbleibend
+                name: Dock Schmutzfänger

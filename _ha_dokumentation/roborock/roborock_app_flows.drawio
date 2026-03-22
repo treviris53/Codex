@@ -4,7 +4,7 @@
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="2" value="Dashboards&#xa;roborock.yaml&#xa;sieker_hub.yaml (v1)&#xa;sieker_hub_v2.yaml&#xa;&#xa;- Manuelle Programmstarts&#xa;- Diagnose&#xa;- Wochenplan UI&#xa;- Karte&#xa;- Wartung" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;" vertex="1" parent="1">
+        <mxCell id="2" value="Dashboards&#xa;roborock.yaml&#xa;sieker_hub.yaml&#xa;&#xa;- Manuelle Programmstarts&#xa;- Diagnose&#xa;- Wochenplan UI&#xa;- Karte&#xa;- Wartung" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;" vertex="1" parent="1">
           <mxGeometry x="40" y="105" width="240" height="170" as="geometry" />
         </mxCell>
         <mxCell id="3" value="Scheduler Layer&#xa;roborock_jobs.yaml&#xa;&#xa;- 21 Zeittrigger&#xa;- Slot-Enable&#xa;- Job-CSV lesen" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;" vertex="1" parent="1">

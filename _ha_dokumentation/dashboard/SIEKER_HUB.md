@@ -1,10 +1,9 @@
-# Sieker Hub v2
+# Sieker Hub
 
 ## Zweck
 
-`dashboards/sieker_hub_v2.yaml` ist die best-practice-orientierte Weiterentwicklung von
-`dashboards/sieker_hub.yaml` bei unverändertem Bestand. `v1` bleibt als stabile Referenz bestehen,
-`v2` trennt Startseite, Räume und Fachmodule konsequenter.
+`dashboards/sieker_hub.yaml` ist der aktuelle operator-orientierte Hub. Er trennt Startseite,
+Räume und Fachmodule konsequenter als die historisch gewachsene Legacy-Ansicht.
 
 ## Navigationslogik
 
@@ -12,13 +11,13 @@
 - `Räume` ist ein eigener Top-Level-View für Klima- und Umgebungsdaten.
 - Geräte, die keine Raumdaten darstellen, werden als Modul geführt.
 
-## Wichtige Unterschiede zu v1
+## Informationsarchitektur
 
-- Keine Raum-Vorschau mehr auf `Home`.
+- `Home` ist ein Leitstand ohne vollständige Raumvorschau.
 - `Räume` ist bewusst nicht Teil der Fachmodule.
 - Die frühere Keller-Waschmaschinenansicht wurde als eigenes Modul `Waschmaschine` herausgelöst.
 
-## Fachmodule in v2
+## Fachmodule
 
 - Heizung
 - Rollläden
