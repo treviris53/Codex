@@ -13,7 +13,7 @@ Dashboard-Einstiegen und dem End-to-End-Datenfluss zwischen Entscheidung und The
 | Execution Layer | `packages/heating/heating_scripts.yaml` | Wendet Profile ueber autoritative Szenen auf die Climates an |
 | Automation Layer | `packages/heating/heating_automations.yaml` | Steuert geplante Anwendungen, Sonderfaelle und Override-Lifecycle |
 | Scene Layer | `packages/heating/heating_scenes.yaml` | Definiert die autoritativen Runtime-Szenen fuer 17, 19 und 21 Grad |
-| Dashboard / UI | `dashboards/sieker_dashboard.yaml`, `dashboards/sieker_hub.yaml` | Bietet Legacy-Subview-Zugriff sowie den aktuellen Hub mit Übersicht, Diagnose, Service und Tuning |
+| Dashboard / UI | `dashboards/sieker_hub.yaml` | Bietet den aktuellen Hub mit Übersicht, Diagnose, Service, Tuning und manuellen Heizungsszenen unter `Wohnen > Szenen` |
 
 ## Zweck der App
 
@@ -234,46 +234,24 @@ relevanter Climate-Entities fuer jeweils 5 Sekunden. Ein Override wird nur geset
 5. Nach `timer.finished` wird das Override wieder ausgeschaltet.
 6. Anschliessend wird das aktuelle Sollprofil erneut angewendet.
 
-## Dashboard-Einstiege in `dashboards/sieker_dashboard.yaml` und `dashboards/sieker_hub.yaml`
+## Dashboard-Einstiege in `dashboards/sieker_hub.yaml`
 
 ### Funktion
 
-Die Heating-App besitzt zwei Dashboard-Einstiege:
+Die Heating-App besitzt im aktuellen Sieker Hub zwei Bedienpfade:
 
-- Legacy in `sieker_dashboard.yaml`
-- Hub in `sieker_hub.yaml`
+- das Fachmodul `heizung`
+- den manuellen Szenen-Einstieg `wohnen-szenen`
 
-### Legacy-Subviews in `sieker_dashboard.yaml`
-
-- `path: heizung`
-- `path: heizung-debug`
-
-### Hub-Subviews in `sieker_hub.yaml`
+### Fachmodul-Subviews in `sieker_hub.yaml`
 
 - `path: heizung`
 - `path: heizung-diagnose`
 - `path: heizung-service`
 - `path: heizung-tuning`
+- `path: wohnen-szenen`
 
-### Inhalte der Legacy-Hauptansicht `heizung`
-
-| Bereich | Inhalt |
-| --- | --- |
-| Betrieb | Automatik, Urlaub, Debug, aktives Profil, Override, Override-Timer |
-| Stellschrauben | Abwesenheitsschwelle und Sommer-Schwellwert |
-| Status | Anwesenheit, Winterbetrieb, Vorhersage, Saison, Sollprofil, letzte Anwendung |
-| Historie | Profil- und Wetterverlaeufe |
-
-### Inhalte der Legacy-Debug-Ansicht `heizung-debug`
-
-| Bereich | Inhalt |
-| --- | --- |
-| Entscheidungen & Gruende | State und Attribute von `sensor.heizung_sollprofil` |
-| Eingaenge | Rohwerte fuer Automatik, Urlaub, Anwesenheit, Winterbetrieb und Wetter |
-| Service | Manueller Start von `script.heizung_profil_anwenden_pkg` |
-| Historie | Langfristige Profilverlaeufe |
-
-### Inhalte des Hub-Einstiegs `heizung`
+### Inhalte des Fachmoduls `heizung`
 
 | Bereich | Inhalt |
 | --- | --- |
@@ -304,6 +282,13 @@ Die Heating-App besitzt zwei Dashboard-Einstiege:
 | Betriebsmodus | Heizungsautomatik und Debug-Logging |
 | Stellschrauben | Abwesenheitsschwelle und Sommer-Schwellwert |
 | Hinweise | Bedienhinweise ohne Aenderung der fachlichen Laufzeitlogik |
+
+### Inhalte des manuellen Szenen-Einstiegs `wohnen-szenen`
+
+| Bereich | Inhalt |
+| --- | --- |
+| Manuelle Heizungsszenen | Direkter Start der Szenen 17, 19 und 21 Grad |
+| Rueckmeldung | Aktives Profil, letzte Szene und letzte Anwendung |
 
 ## End-to-End-Datenfluss
 
@@ -382,7 +367,6 @@ Die Dokumentation wurde gegen den aktuellen Stand aus folgenden Dateien erstellt
 - `D:\Codex\packages\heating\heating_scripts.yaml`
 - `D:\Codex\packages\heating\heating_automations.yaml`
 - `D:\Codex\packages\heating\heating_scenes.yaml`
-- `D:\Codex\dashboards\sieker_dashboard.yaml`
 - `D:\Codex\dashboards\sieker_hub.yaml`
 
 ### Checkpunkte
@@ -390,8 +374,8 @@ Die Dokumentation wurde gegen den aktuellen Stand aus folgenden Dateien erstellt
 - Helper-, Template-, Script-, Automation- und Scene-Layer gelesen
 - Sollprofil-Reihenfolge dokumentiert
 - Override-Erkennung und Timer-Lifecycle dokumentiert
-- Legacy-Dashboard-Subviews `heizung` und `heizung-debug` aufgenommen
 - Hub-Subviews `heizung`, `heizung-diagnose`, `heizung-service` und `heizung-tuning` aufgenommen
+- Manuellen Szenen-Einstieg `wohnen-szenen` aufgenommen
 - draw.io-kompatible Flussdiagramme erzeugt
 
 ## Einordnung

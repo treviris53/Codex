@@ -18,7 +18,7 @@ manuellen Overrides, Debug-Sensoren und Dashboard-Subviews fuer Bedienung und Di
 | Beschattung Helper Layer | `packages/shutters/beschattung_helpers.yaml` | Parameter fuer Azimut, Elevation, Lux und Temperatur |
 | Beschattung Decision Layer | `packages/shutters/beschattung_templates.yaml` | Berechnet die fachliche Beschattungsentscheidung |
 | Beschattung Output Layer | `packages/shutters/beschattung_outputs.yaml` | Mappt die Beschattungsentscheidung auf `input_boolean.beschattung_*` |
-| Dashboard / UI | `dashboards/sieker_dashboard.yaml`, `dashboards/sieker_hub.yaml` | Bietet Legacy-Subviews sowie den aktuellen Hub mit Rollladen-Übersicht, Diagnose, Service und Tuning |
+| Dashboard / UI | `dashboards/sieker_hub.yaml` | Bietet den aktuellen Hub mit Rollladen-Übersicht, Diagnose, Service und Tuning |
 
 ## Zweck der App
 
@@ -332,66 +332,18 @@ Wichtige Attribute:
 - `plug_open_start`
 - `plug_open_end`
 
-## Dashboard-Einstiege in `dashboards/sieker_dashboard.yaml` und `dashboards/sieker_hub.yaml`
+## Dashboard-Einstiege in `dashboards/sieker_hub.yaml`
 
 ### Funktion
 
-Die Shutter-App besitzt zwei Dashboard-Einstiege:
+Die Shutter-App besitzt im aktuellen Sieker Hub einen klaren Fachmodul-Einstieg.
 
-- Legacy in `sieker_dashboard.yaml`
-- Hub in `sieker_hub.yaml`
-
-### Legacy-Subviews in `sieker_dashboard.yaml`
-
-- `path: rollladen`
-- `path: rollladen-diagnose`
-- `path: rollladen-service`
-- `path: rollladen-beschattung`
-
-### Hub-Subviews in `sieker_hub.yaml`
+### Subviews in `sieker_hub.yaml`
 
 - `path: rollladen`
 - `path: rollladen-diagnose`
 - `path: rollladen-service`
 - `path: rollladen-tuning`
-
-### Inhalte der Legacy-Hauptansicht `rollladen`
-
-| Bereich | Inhalt |
-| --- | --- |
-| Steuerung | Automatik, Day-Window, Overrides und Navigation |
-| Zeit-Offsets | Morgen- und Abend-Offsets |
-| Rolllaeden | Direkte Tiles fuer Ost, West, Nord und Alle |
-| Einflussfaktoren | Sonne, Steckdose, Beschattung, Tuerkontakt |
-| Debug | Ost-, West- und Nord-Debug |
-
-### Inhalte der Legacy-Diagnose-Ansicht `rollladen-diagnose`
-
-| Bereich | Inhalt |
-| --- | --- |
-| Status | Master, Day-Window, Open/Close-Timestamps |
-| Einflussfaktoren | Steckdose, Beschattung, Tuerkontakt |
-| Debug-Sensoren | State und Attribute fuer Ost, West und Nord |
-| Historie | Zielpositionen und Einflussfaktoren ueber Zeit |
-
-### Inhalte der Legacy-Service-Ansicht `rollladen-service`
-
-| Bereich | Inhalt |
-| --- | --- |
-| Direkte Bedienung | Tile-Karten fuer Covers |
-| Policies | Zeitregeln und Offsets |
-| Tools | Manuell ausloesbare Apply-Skripte |
-
-### Inhalte der Legacy-Beschattungs-Ansicht `rollladen-beschattung`
-
-| Bereich | Inhalt |
-| --- | --- |
-| Parameter | Zentrale Beschattungs-Schwellenwerte |
-| Live Werte | Rohsensoren fuer Sonne, Temperatur und Licht |
-| Diffs | Abstand zum jeweiligen Schwellwert |
-| Debug | Warum Ost/West AN oder AUS ist |
-| Outputs | `input_boolean.beschattung_ost/west` |
-| Logik | Aktiv-Sensoren und ihre Vorbedingungen |
 
 ### Inhalte des Hub-Einstiegs `rollladen`
 
@@ -517,7 +469,6 @@ Die Dokumentation wurde gegen den aktuellen Stand aus folgenden Dateien erstellt
 - `D:\Codex\packages\shutters\beschattung_helpers.yaml`
 - `D:\Codex\packages\shutters\beschattung_templates.yaml`
 - `D:\Codex\packages\shutters\beschattung_outputs.yaml`
-- `D:\Codex\dashboards\sieker_dashboard.yaml`
 - `D:\Codex\dashboards\sieker_hub.yaml`
 
 ### Checkpunkte
@@ -526,7 +477,6 @@ Die Dokumentation wurde gegen den aktuellen Stand aus folgenden Dateien erstellt
 - Autoritative Zielpositionslogik dokumentiert
 - Beschattungsentscheidung und Output-Mapping dokumentiert
 - Override-Erkennung und Timer-Lifecycle dokumentiert
-- Legacy-Dashboard-Subviews `rollladen*` aufgenommen
 - Hub-Subviews `rollladen`, `rollladen-diagnose`, `rollladen-service` und `rollladen-tuning` aufgenommen
 - draw.io-kompatible Flussdiagramme erzeugt
 

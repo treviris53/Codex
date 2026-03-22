@@ -2,29 +2,42 @@
 
 ## Zweck
 
-`dashboards/sieker_hub.yaml` ist der aktuelle operator-orientierte Hub. Er trennt Startseite,
-Räume und Fachmodule konsequenter als die historisch gewachsene Legacy-Ansicht.
+`dashboards/sieker_hub.yaml` ist der aktuelle operator-orientierte Hub. Er trennt
+Startseite, Wohnen, Räume und Fachmodule klar nach Bedienzweck.
 
 ## Navigationslogik
 
-- `Home` ist ein Leitstand mit Hausstatus, Abweichungen und Fachmodulen.
+- `Home` ist ein Leitstand mit Hausstatus, Handlungsbedarf und Fachmodulen.
+- `Wohnen` bündelt die manuelle Alltagssteuerung für Beleuchtung, Steckdosen und Szenen.
 - `Räume` ist ein eigener Top-Level-View für Klima- und Umgebungsdaten.
 - Geräte, die keine Raumdaten darstellen, werden als Modul geführt.
 
 ## Informationsarchitektur
 
-- `Home` ist ein Leitstand ohne vollständige Raumvorschau.
+- `Home` ist ein Leitstand ohne vollständige Raumvorschau und ohne Alltagsbedienung.
+- `Wohnen` trennt manuelle Wohnfunktionen bewusst von Diagnose- und Technikmodulen.
 - `Räume` ist bewusst nicht Teil der Fachmodule.
 - Die frühere Keller-Waschmaschinenansicht wurde als eigenes Modul `Waschmaschine` herausgelöst.
 
 ## Fachmodule
 
+- Wohnen
 - Heizung
 - Rollläden
 - Steckdose Balkon
 - USV
 - Waschmaschine
 - Roborock
+
+## Wohnen-Modul
+
+Das Modul `Wohnen` bündelt die früher auf der Startseite verteilte manuelle Bedienung.
+
+### Unterseiten
+
+- `Beleuchtung` für manuell schaltbare Lichter nach Räumen
+- `Steckdosen` für allgemeine, bewusst manuell bediente Steckdosen inklusive Leistung, Energie und Kindersicherung
+- `Szenen` für die manuellen Heizungsszenen 17, 19 und 21 Grad
 
 ## Räume-View
 

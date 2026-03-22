@@ -1,5 +1,5 @@
 # Dashboard: Sieker Hub
-# Version: 2.0.1
+# Version: 2.0.2
 # Generated: 2026-03-22
 # Notes:
 # - Best-practice oriented hub dashboard.
@@ -96,6 +96,12 @@ views:
                 tap_action:
                   action: navigate
                   navigation_path: waschmaschine
+              - type: button
+                name: Wohnen
+                icon: mdi:sofa-outline
+                tap_action:
+                  action: navigate
+                  navigation_path: wohnen
 
   - title: Räume
     path: raeume
@@ -347,6 +353,242 @@ views:
                 name: Balkontür
               - entity: sensor.balkon_lichtsensor_durchschnittliche_beleuchtungsstarke
                 name: Balkon Lux
+
+  - title: Wohnen
+    path: wohnen
+    icon: mdi:sofa-outline
+    type: sections
+    max_columns: 3
+    sections:
+      - cards:
+          - type: heading
+            heading: Schnellzugriff
+            heading_style: title
+          - type: grid
+            columns: 3
+            square: false
+            cards:
+              - type: tile
+                entity: light.licht_wohnzimmer_haupt
+                name: Wohnzimmer Hauptlicht
+              - type: tile
+                entity: light.licht_schlafzimmer
+                name: Schlafzimmer Licht
+              - type: tile
+                entity: switch.0xa4c138442a735c69
+                name: Wohnzimmer Steckdose
+      - cards:
+          - type: heading
+            heading: Untermenüs
+            heading_style: title
+          - type: grid
+            columns: 3
+            square: false
+            cards:
+              - type: button
+                name: Beleuchtung
+                icon: mdi:lightbulb-group-outline
+                tap_action:
+                  action: navigate
+                  navigation_path: wohnen-beleuchtung
+              - type: button
+                name: Steckdosen
+                icon: mdi:power-socket-eu
+                tap_action:
+                  action: navigate
+                  navigation_path: wohnen-steckdosen
+              - type: button
+                name: Szenen
+                icon: mdi:palette-swatch-outline
+                tap_action:
+                  action: navigate
+                  navigation_path: wohnen-szenen
+      - cards:
+          - type: heading
+            heading: Einordnung
+          - type: markdown
+            content: |
+              `Wohnen` bündelt die manuelle Alltagssteuerung für Licht, allgemeine Steckdosen
+              und Wohnszenen. Automatisierte Fachlogik bleibt in den jeweiligen Modulen.
+
+  - title: Beleuchtung
+    path: wohnen-beleuchtung
+    icon: mdi:lightbulb-group-outline
+    subview: true
+    type: sections
+    max_columns: 3
+    sections:
+      - cards:
+          - type: heading
+            heading: Küche
+          - type: tile
+            entity: light.licht_herd
+            name: Herdlicht
+          - type: tile
+            entity: light.0x086bd7fffe404a82
+            name: Küchenlicht
+      - cards:
+          - type: heading
+            heading: Wohnzimmer
+          - type: tile
+            entity: light.vitrinenlicht
+            name: Vitrinenlicht
+          - type: tile
+            entity: light.licht_wohnzimmer_haupt
+            name: Hauptlicht
+          - type: tile
+            entity: light.licht_fernseher
+            name: Fernseher Licht
+      - cards:
+          - type: heading
+            heading: Schlafzimmer
+          - type: tile
+            entity: light.licht_schlafzimmer
+            name: Schlafzimmer Licht
+
+  - title: Steckdosen
+    path: wohnen-steckdosen
+    icon: mdi:power-socket-eu
+    subview: true
+    type: sections
+    max_columns: 3
+    sections:
+      - cards:
+          - type: heading
+            heading: Wohnzimmer
+          - type: entities
+            title: Steckdose Wohnzimmer
+            show_header_toggle: false
+            entities:
+              - entity: switch.0xa4c138442a735c69
+                name: Ein/Aus
+              - entity: switch.steckdose_wohnzimmer_child_lock
+                name: Kindersicherung
+              - entity: sensor.0xa4c138442a735c69_power
+                name: Leistung
+              - entity: sensor.0xa4c138442a735c69_energy
+                name: Energie
+          - type: entities
+            title: Steckdose 4
+            show_header_toggle: false
+            entities:
+              - entity: switch.steckdose_4
+                name: Ein/Aus
+              - entity: switch.steckdose_4_child_lock
+                name: Kindersicherung
+              - entity: sensor.steckdose_4_power
+                name: Leistung
+              - entity: sensor.steckdose_4_energy
+                name: Energie
+          - type: entities
+            title: Steckdose Fernseher
+            show_header_toggle: false
+            entities:
+              - entity: switch.steckdose_fernseher
+                name: Ein/Aus
+              - entity: switch.steckdose_fernseher_child_lock
+                name: Kindersicherung
+              - entity: sensor.steckdose_fernseher_power
+                name: Leistung
+              - entity: sensor.steckdose_fernseher_energy
+                name: Energie
+      - cards:
+          - type: heading
+            heading: Gästezimmer
+          - type: entities
+            title: Steckdose 3
+            show_header_toggle: false
+            entities:
+              - entity: switch.steckdose_3
+                name: Ein/Aus
+              - entity: switch.steckdose_3_child_lock
+                name: Kindersicherung
+              - entity: sensor.steckdose_3_power
+                name: Leistung
+              - entity: sensor.steckdose_3_energy
+                name: Energie
+          - type: entities
+            title: Steckdose Computertisch
+            show_header_toggle: false
+            entities:
+              - entity: switch.steckdose_computertisch
+                name: Ein/Aus
+              - entity: switch.steckdose_computertisch_child_lock
+                name: Kindersicherung
+              - entity: sensor.steckdose_computertisch_power
+                name: Leistung
+              - entity: sensor.steckdose_computertisch_energy
+                name: Energie
+          - type: entities
+            title: Steckdose Drucker/Scanner
+            show_header_toggle: false
+            entities:
+              - entity: switch.0xa4c1389840f71629
+                name: Ein/Aus
+              - entity: switch.0xa4c1389840f71629_child_lock
+                name: Kindersicherung
+              - entity: sensor.0xa4c1389840f71629_power
+                name: Leistung
+              - entity: sensor.0xa4c1389840f71629_energy
+                name: Energie
+      - cards:
+          - type: heading
+            heading: Kontrollraum
+          - type: entities
+            title: Steckdose Kontrollraum
+            show_header_toggle: false
+            entities:
+              - entity: switch.0xa4c13838e02b32cf
+                name: Ein/Aus
+              - entity: switch.steckdose_kontrollraum_child_lock
+                name: Kindersicherung
+              - entity: sensor.0xa4c13838e02b32cf_power
+                name: Leistung
+              - entity: sensor.0xa4c13838e02b32cf_energy
+                name: Energie
+          - type: heading
+            heading: Abgrenzung
+          - type: markdown
+            content: |
+              Die Balkon-Steckdose bleibt im eigenen Fachmodul `Steckdose Balkon`,
+              weil dort Automations- und Tuninglogik hinterlegt ist.
+
+  - title: Szenen
+    path: wohnen-szenen
+    icon: mdi:palette-swatch-outline
+    subview: true
+    type: sections
+    max_columns: 3
+    sections:
+      - cards:
+          - type: heading
+            heading: Manuelle Heizungsszenen
+          - type: grid
+            columns: 3
+            square: false
+            cards:
+              - type: tile
+                entity: scene.heizung_17deg
+                name: Heizung 17°
+              - type: tile
+                entity: scene.heizung_19deg
+                name: Heizung 19°
+              - type: tile
+                entity: scene.heizung_21deg
+                name: Heizung 21°
+      - cards:
+          - type: heading
+            heading: Rückmeldung
+          - type: entities
+            title: Heizstatus
+            show_header_toggle: false
+            entities:
+              - entity: input_select.heizung_aktives_profil
+                name: Aktives Profil
+              - entity: input_text.heizung_last_scene
+                name: Letzte Szene
+              - entity: input_datetime.heizung_last_applied
+                name: Letzte Anwendung
 
   - title: Heizung
     path: heizung
