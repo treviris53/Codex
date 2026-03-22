@@ -1,0 +1,84 @@
+<mxfile host="app.diagrams.net" modified="2026-03-22T10:55:00.000Z" agent="Codex" version="24.7.17">
+  <diagram id="heating-overview" name="Gesamtuebersicht">
+    <mxGraphModel dx="1420" dy="820" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2" value="Dashboards&#xa;sieker_dashboard.yaml&#xa;sieker_hub.yaml (v1)&#xa;sieker_hub_v2.yaml&#xa;&#xa;- heizung&#xa;- heizung-debug&#xa;- heizung-diagnose&#xa;- heizung-service&#xa;- heizung-tuning" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;" vertex="1" parent="1"><mxGeometry x="40" y="120" width="230" height="160" as="geometry" /></mxCell>
+        <mxCell id="3" value="Helper Layer&#xa;heating_helpers.yaml&#xa;&#xa;- Automatik&#xa;- Urlaub&#xa;- Override&#xa;- Schwellenwerte" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;" vertex="1" parent="1"><mxGeometry x="310" y="50" width="220" height="150" as="geometry" /></mxCell>
+        <mxCell id="4" value="Decision Layer&#xa;heating_templates.yaml&#xa;&#xa;- anwesend_stabil&#xa;- heizung_sollprofil" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;" vertex="1" parent="1"><mxGeometry x="600" y="50" width="220" height="140" as="geometry" /></mxCell>
+        <mxCell id="5" value="Automation Layer&#xa;heating_automations.yaml&#xa;&#xa;- 00:01 / 04:03&#xa;- Sonderfaelle&#xa;- Override-Lifecycle" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=14;" vertex="1" parent="1"><mxGeometry x="600" y="250" width="220" height="150" as="geometry" /></mxCell>
+        <mxCell id="6" value="Execution Layer&#xa;script.heizung_profil_anwenden_pkg&#xa;&#xa;- Szene waehlen&#xa;- Diagnose schreiben" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=14;" vertex="1" parent="1"><mxGeometry x="900" y="250" width="240" height="130" as="geometry" /></mxCell>
+        <mxCell id="7" value="Scene Layer&#xa;heating_scenes.yaml&#xa;&#xa;- 17 / 19 / 21 Grad&#xa;- preset_mode setzen" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=14;" vertex="1" parent="1"><mxGeometry x="900" y="450" width="240" height="130" as="geometry" /></mxCell>
+        <mxCell id="8" value="Climate-Entities&#xa;&#xa;- flur&#xa;- gaeste&#xa;- kueche&#xa;- schlazi&#xa;- wohnzimmer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=14;" vertex="1" parent="1"><mxGeometry x="1240" y="450" width="220" height="130" as="geometry" /></mxCell>
+        <mxCell id="9" value="Diagnose-Helfer&#xa;&#xa;- aktives_profil&#xa;- last_applied&#xa;- last_action&#xa;- last_scene" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=14;" vertex="1" parent="1"><mxGeometry x="1240" y="230" width="220" height="130" as="geometry" /></mxCell>
+        <mxCell id="10" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#6c8ebf;" edge="1" parent="1" source="2" target="3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="11" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#82b366;" edge="1" parent="1" source="3" target="4"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="12" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#d79b00;" edge="1" parent="1" source="4" target="5"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="13" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#b85450;" edge="1" parent="1" source="5" target="6"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="14" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#9673a6;" edge="1" parent="1" source="6" target="7"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="15" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#666666;" edge="1" parent="1" source="7" target="8"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="16" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#666666;" edge="1" parent="1" source="6" target="9"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="17" value="sichtbar im UI" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#666666;fontSize=12;" edge="1" parent="1" source="9" target="2"><mxGeometry relative="1" as="geometry" /></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="heating-decision" name="Profilentscheidung">
+    <mxGraphModel dx="1420" dy="820" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="101" value="Eingaben&#xa;- Urlaub&#xa;- Anwesenheit stabil&#xa;- Winter empfohlen&#xa;- Tagesmax TX" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;" vertex="1" parent="1"><mxGeometry x="80" y="80" width="220" height="140" as="geometry" /></mxCell>
+        <mxCell id="102" value="Urlaub aktiv?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;" vertex="1" parent="1"><mxGeometry x="370" y="90" width="180" height="100" as="geometry" /></mxCell>
+        <mxCell id="103" value="Sollprofil = eco_17" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;" vertex="1" parent="1"><mxGeometry x="650" y="50" width="180" height="80" as="geometry" /></mxCell>
+        <mxCell id="104" value="Anwesend stabil?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;" vertex="1" parent="1"><mxGeometry x="370" y="250" width="180" height="100" as="geometry" /></mxCell>
+        <mxCell id="105" value="Sollprofil = eco_19" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;" vertex="1" parent="1"><mxGeometry x="650" y="230" width="180" height="80" as="geometry" /></mxCell>
+        <mxCell id="106" value="Winterbetrieb empfohlen?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;" vertex="1" parent="1"><mxGeometry x="370" y="410" width="200" height="110" as="geometry" /></mxCell>
+        <mxCell id="107" value="Sollprofil = komfort_21" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;" vertex="1" parent="1"><mxGeometry x="650" y="390" width="190" height="80" as="geometry" /></mxCell>
+        <mxCell id="108" value="TX &lt; Sommer-Schwellwert?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;" vertex="1" parent="1"><mxGeometry x="370" y="580" width="220" height="110" as="geometry" /></mxCell>
+        <mxCell id="109" value="Sollprofil = komfort_21" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;" vertex="1" parent="1"><mxGeometry x="680" y="560" width="190" height="80" as="geometry" /></mxCell>
+        <mxCell id="110" value="Sollprofil = eco_19" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;" vertex="1" parent="1"><mxGeometry x="680" y="700" width="180" height="80" as="geometry" /></mxCell>
+        <mxCell id="111" value="Attribute schreiben&#xa;grund / decision_chain / Diagnose" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=14;" vertex="1" parent="1"><mxGeometry x="980" y="340" width="240" height="110" as="geometry" /></mxCell>
+        <mxCell id="112" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#6c8ebf;" edge="1" parent="1" source="101" target="102"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="113" value="ja" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#82b366;fontSize=12;" edge="1" parent="1" source="102" target="103"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="114" value="nein" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#d6b656;fontSize=12;" edge="1" parent="1" source="102" target="104"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="115" value="nein" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#82b366;fontSize=12;" edge="1" parent="1" source="104" target="105"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="116" value="ja" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#d6b656;fontSize=12;" edge="1" parent="1" source="104" target="106"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="117" value="ja" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#82b366;fontSize=12;" edge="1" parent="1" source="106" target="107"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="118" value="nein" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#d6b656;fontSize=12;" edge="1" parent="1" source="106" target="108"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="119" value="ja" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#82b366;fontSize=12;" edge="1" parent="1" source="108" target="109"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="120" value="nein" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#82b366;fontSize=12;" edge="1" parent="1" source="108" target="110"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="121" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#b85450;" edge="1" parent="1" source="103" target="111"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="122" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#b85450;" edge="1" parent="1" source="105" target="111"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="123" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#b85450;" edge="1" parent="1" source="107" target="111"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="124" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#b85450;" edge="1" parent="1" source="109" target="111"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="125" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#b85450;" edge="1" parent="1" source="110" target="111"><mxGeometry relative="1" as="geometry" /></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="heating-override" name="Override-Lifecycle">
+    <mxGraphModel dx="1420" dy="820" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="201" value="Manueller Climate-Eingriff" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;" vertex="1" parent="1"><mxGeometry x="80" y="120" width="220" height="80" as="geometry" /></mxCell>
+        <mxCell id="202" value="Auto-Detect&#xa;5s stabil&#xa;age &gt; 120s&#xa;Automatik an&#xa;Override aus" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;" vertex="1" parent="1"><mxGeometry x="380" y="95" width="220" height="130" as="geometry" /></mxCell>
+        <mxCell id="203" value="input_boolean.heizung_override = on" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=14;" vertex="1" parent="1"><mxGeometry x="700" y="120" width="230" height="80" as="geometry" /></mxCell>
+        <mxCell id="204" value="timer.heizung_override startet&#xa;2 Stunden" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=14;" vertex="1" parent="1"><mxGeometry x="1010" y="120" width="220" height="80" as="geometry" /></mxCell>
+        <mxCell id="205" value="Apply-Skript blockiert&#xa;solange Override = on" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=14;" vertex="1" parent="1"><mxGeometry x="1010" y="280" width="220" height="90" as="geometry" /></mxCell>
+        <mxCell id="206" value="timer.finished" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;" vertex="1" parent="1"><mxGeometry x="1010" y="450" width="180" height="70" as="geometry" /></mxCell>
+        <mxCell id="207" value="Override aus" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;" vertex="1" parent="1"><mxGeometry x="740" y="445" width="160" height="80" as="geometry" /></mxCell>
+        <mxCell id="208" value="Sollprofil erneut anwenden" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;" vertex="1" parent="1"><mxGeometry x="430" y="445" width="210" height="80" as="geometry" /></mxCell>
+        <mxCell id="209" value="Startup-Reconcile&#xa;stellt Timer/Boolean-Konsistenz wieder her" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;" vertex="1" parent="1"><mxGeometry x="360" y="610" width="310" height="90" as="geometry" /></mxCell>
+        <mxCell id="210" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#6c8ebf;" edge="1" parent="1" source="201" target="202"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="211" value="ja" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#b85450;fontSize=12;" edge="1" parent="1" source="202" target="203"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="212" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#d79b00;" edge="1" parent="1" source="203" target="204"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="213" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#666666;" edge="1" parent="1" source="204" target="205"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="214" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#6c8ebf;" edge="1" parent="1" source="205" target="206"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="215" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#82b366;" edge="1" parent="1" source="206" target="207"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="216" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#82b366;" edge="1" parent="1" source="207" target="208"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="217" value="HA-Start" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#d6b656;fontSize=12;" edge="1" parent="1" source="203" target="209"><mxGeometry relative="1" as="geometry" /></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
