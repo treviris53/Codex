@@ -25,6 +25,8 @@ General architecture and design rules for Home Assistant modules in this reposit
 ### Dashboard
 - Must not directly manipulate hardware entities.
 - Should call safe scripts only.
+- Should preserve existing operator navigation and subview structure unless a dashboard redesign is explicitly requested.
+- Must stay aligned with the authoritative package logic and must not become a second source of runtime decision logic.
 
 ## State management
 - Busy lock pattern uses `input_boolean.<module>_busy`.

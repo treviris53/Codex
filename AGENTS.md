@@ -38,6 +38,7 @@ Primary working directory: `D:\Codex`
   - Home Assistant Core `2026.3.2`
   - Supervisor is present and running
   - Real runtime config path is `/config`
+- The Windows deployment mount `W:\` corresponds to the runtime path `/config`.
 - This repository currently targets one productive Home Assistant instance, not a separate staging HA system.
 - Treat changes as production-near work, but assume some controlled validation is possible through diff, dry-run, reload, restart, and health-check workflows.
 
@@ -77,6 +78,8 @@ Primary working directory: `D:\Codex`
 - Preserve compatibility with existing dashboards, automations, scripts, and scenes.
 - When changing behavior, add a short migration note.
 - Default change posture is conservative-to-balanced for production-near configuration: prefer small, reviewable, low-risk changes unless a broader change is explicitly requested.
+- Do not make ad-hoc write changes directly in the live Home Assistant runtime; repository files are the authoritative write path unless a task explicitly requires deployment.
+- Runtime access should default to read/validate/deploy workflows, not direct manual mutation on the HA host.
 
 ## Home Assistant package conventions
 - Use paths like `packages/<domain>/<feature>.yaml`.
@@ -109,6 +112,12 @@ For substantial Home Assistant changes, include:
 - If a change affects runtime behavior, control flow, mappings, helpers, diagnostics, dashboard entry points, troubleshooting, or operator-relevant structure, update the corresponding documentation in `_ha_dokumentation/` in the same task.
 - If a documented flow changes and a related `.drawio` file exists, update that diagram in the same task.
 - Pure formatting, comments, ownership notes, or other strictly non-functional cleanup do not require a documentation update unless clarity, ownership, or operating guidance changed.
+
+## Dashboard rules
+- Preserve established dashboard navigation, subviews, entity references, and operator-facing structure unless a dashboard change is explicitly requested.
+- Prefer minimal dashboard edits that stay aligned with the authoritative package logic and helper model.
+- Do not introduce dashboard actions that bypass the intended safe script / package execution path.
+- When dashboard entry points, visible diagnostics, or user workflows change, update the matching module documentation.
 
 
 ## Additional Operational Constraints (Repository-Specific)
