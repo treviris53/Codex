@@ -27,6 +27,8 @@ General architecture and design rules for Home Assistant modules in this reposit
 - Should call safe scripts only.
 - Should preserve existing operator navigation and subview structure unless a dashboard redesign is explicitly requested.
 - Must stay aligned with the authoritative package logic and must not become a second source of runtime decision logic.
+- Should prefer clear, compact information architecture with focused subviews over long scrolling pages.
+- Should separate control, status, diagnostics, and service/tuning views when that improves operator clarity.
 
 ## State management
 - Busy lock pattern uses `input_boolean.<module>_busy`.

@@ -118,6 +118,11 @@ For substantial Home Assistant changes, include:
 - Prefer minimal dashboard edits that stay aligned with the authoritative package logic and helper model.
 - Do not introduce dashboard actions that bypass the intended safe script / package execution path.
 - When dashboard entry points, visible diagnostics, or user workflows change, update the matching module documentation.
+- Prefer clear, compact dashboards with logical subviews / submenus over long single-page layouts.
+- Avoid dashboards that grow into long vertical scrolling pages when the content can be split into focused subviews.
+- Group controls, status, diagnostics, service actions, and tuning parameters into separate sections or subviews.
+- Favor fast operator orientation: the most important actions and state should be visible quickly without scrolling through large entity blocks.
+- When extending an existing dashboard, prefer refining or adding subviews instead of continuously expanding one oversized page.
 
 
 ## Additional Operational Constraints (Repository-Specific)
