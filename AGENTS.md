@@ -11,6 +11,48 @@ Primary working directory: `D:\Codex`
 - If needed, the packaged yamllint binary also exists at `D:\Codex\.venv\_python_home\Scripts\yamllint.exe`
 - Run commands from `D:\Codex` so `.yamllint` at the workspace root is picked up automatically.
 
+## Repository vs Runtime Paths
+- This Codex workspace uses the repository root `D:\Codex`.
+- Within this repository, Home Assistant packages live under `packages/`.
+- In the actual Home Assistant runtime, the corresponding location is `/config/packages/`.
+- When editing files in this repository, use repository-relative paths such as `packages/<domain>/<feature>.yaml`.
+- When describing Home Assistant runtime behavior in explanations or technical documentation, use runtime paths such as `/config/packages/...`.
+- Do not create or reference `config/packages/...` as a repository path inside this workspace.
+
+## Package Loading Assumption
+- The current repository is configured to load packages via:
+  `homeassistant:`
+  `  packages: !include_dir_named packages`
+- Treat this as the active package-loading model unless the repository configuration changes.
+- Root files like `automations.yaml`, `scripts.yaml`, `scenes.yaml`, and `template: !include_dir_merge_list templates/` remain separate loading paths and must not be conflated with package files.
+
+## Execution Context
+- This repository is a development / staging workspace, not the live Home Assistant runtime.
+- Changes made here are not automatically active in Home Assistant.
+- Deployment or sync to the actual HA `/config` is a separate step.
+- Treat this repository as the version-controlled source of truth for configuration changes unless a task explicitly targets deployment or runtime validation.
+
+## Confirmed Environment
+- Confirmed runtime environment as of `2026-03-22`:
+  - Home Assistant OS `17.1`
+  - Home Assistant Core `2026.3.2`
+  - Supervisor is present and running
+  - Real runtime config path is `/config`
+- This repository currently targets one productive Home Assistant instance, not a separate staging HA system.
+- Treat changes as production-near work, but assume some controlled validation is possible through diff, dry-run, reload, restart, and health-check workflows.
+
+## Path Usage Rules
+- Prefer repository-relative paths for files inside this workspace, for example `packages/heating/heating_scripts.yaml`.
+- Use runtime paths like `/config/packages/...` only when the runtime context is explicitly being described.
+- Use absolute local filesystem paths only when the task specifically needs machine-local context, external directories, or user-facing file references.
+- Make the context clear whenever both repository and runtime paths are relevant.
+
+## Development Shell Context
+- Default development shell context is PowerShell on Windows 11.
+- Prefer PowerShell-native commands and path handling unless the task explicitly requires another shell.
+- WSL exists but is used only rarely; do not assume WSL is the normal execution path.
+- Git work may happen from Windows and occasionally with WSL involved, but PowerShell / Windows remains the primary context.
+
 ## Context files
 - Treat Markdown files under `_context/` as project guidance for this workspace.
 - If any `_context/` file conflicts with this `AGENTS.md`, follow `AGENTS.md`.
@@ -34,6 +76,7 @@ Primary working directory: `D:\Codex`
 - Keep diffs minimal and stable.
 - Preserve compatibility with existing dashboards, automations, scripts, and scenes.
 - When changing behavior, add a short migration note.
+- Default change posture is conservative-to-balanced for production-near configuration: prefer small, reviewable, low-risk changes unless a broader change is explicitly requested.
 
 ## Home Assistant package conventions
 - Use paths like `packages/<domain>/<feature>.yaml`.
@@ -71,7 +114,7 @@ For substantial Home Assistant changes, include:
 ## Additional Operational Constraints (Repository-Specific)
 
 ### 1. Root vs Packages (Strict Placement Rule)
-New runtime logic MUST be added in `config/packages/<domain>/...`.
+New runtime logic MUST be added in `packages/<domain>/...` within this repository.
 
 Root files:
 - automations.yaml

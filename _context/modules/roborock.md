@@ -8,6 +8,11 @@ Rules specific to Roborock packages, helpers, scripts, automations, and dashboar
 - `program_id` values are canonical.
 - `job_map` is an alias layer for scheduler and UI use only.
 
+## Integration context
+- Roborock device control is based on the official Home Assistant integration path.
+- The dashboard map experience additionally depends on the Xiaomi vacuum map card.
+- Treat map-card behavior and vacuum-control behavior as related but not identical layers when documenting or changing the module.
+
 ## Helper model
 - User-editable helper values store job aliases, not raw button entity IDs.
 - `input_text` helpers may store CSV job aliases where the module expects them.
