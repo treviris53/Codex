@@ -34,6 +34,11 @@ Phase-2-Status:
   - globale Regeltexte in `AGENTS.md` wurden an den sicheren Stellen auf Kurzfassungen plus Verweise reduziert
   - neue Startvorlagen fuer Code Review, Architektur-Aenderung, Doku-Update und Dashboard-Bugfix wurden angelegt
 
+Phase-3-Status:
+
+- Phase 3 ist derzeit nicht aktiv.
+- Sie wird nur relevant, wenn neue komplexe Module entstehen oder sich beim Arbeiten ein echter Bedarf fuer weitere modulbezogene Regel- und Dokumentationsebenen zeigt.
+
 ## 1. Redundanz reduzieren
 
 ### Ziel
@@ -189,6 +194,9 @@ Regeln und Projektrealitaet driften nicht auseinander.
 
 - nur bei Bedarf weitere Module dokumentieren
 - kleinen Review-Rhythmus fuer Regelpflege etablieren
+
+Aktueller Stand:
+- fuer den derzeitigen Repository-Zustand ist Phase 3 optional und nur bei Bedarf zu aktivieren
 
 ## Praktische Arbeitsregel
 
