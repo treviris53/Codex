@@ -1,5 +1,5 @@
 # Dashboard: Wetter
-# Version: 2.1.0
+# Version: 2.2.0
 # Generated: 2026-03-23
 # Notes:
 # - Fokus auf kompakte Wetterlage, Radar und DWD-Details.
@@ -17,6 +17,13 @@ views:
           - type: heading
             heading: Aktuelle Lage
             heading_style: title
+            badges:
+              - type: entity
+                entity: sensor.hamburg_fu_wetterzustand
+              - type: entity
+                entity: sensor.hamburg_fu_vorhersagezeit_local
+              - type: entity
+                entity: sensor.hamburg_fu_windrose
           - type: grid
             columns: 3
             square: false
@@ -104,27 +111,72 @@ views:
               Wind {{ wind }} km/h mit Boeen bis {{ gusts }} km/h, Sichtweite {{ visibility }} km.
           - type: markdown
             content: |
+              **Warnlage**
+
+              {% set rain = states('sensor.hamburg_fu_precip_probability_next1h') | float(0) %}
+              {% set rain_now = states('sensor.hamburg_fu_niederschlag') | float(0) %}
+              {% set wind = states('sensor.hamburg_fu_windgeschwindigkeit') | float(0) %}
+              {% set gusts = states('sensor.hamburg_fu_windboen') | float(0) %}
+              {% set visibility = states('sensor.hamburg_fu_sichtweite') | float(99) %}
+              {% set fog = states('sensor.hamburg_fu_nebelwahrscheinlichkeit') | float(0) %}
+              {% set sun = states('sensor.hamburg_fu_sonneneinstrahlung') | float(0) %}
+              {% set messages = namespace(items=[]) %}
+              {% if rain >= 70 or rain_now >= 0.3 %}
+                {% set messages.items = messages.items + ['Regenlage: kurzfristig erhoehte Niederschlagswahrscheinlichkeit oder bereits aktiver Niederschlag.'] %}
+              {% endif %}
+              {% if gusts >= 45 or wind >= 30 %}
+                {% set messages.items = messages.items + ['Windlage: boeiger Wind, empfindliche Aussenaktivitaeten und offene Fenster pruefen.'] %}
+              {% endif %}
+              {% if visibility <= 3 or fog >= 60 %}
+                {% set messages.items = messages.items + ['Sichtlage: eingeschraenkte Sicht oder erhoehte Nebelwahrscheinlichkeit.'] %}
+              {% endif %}
+              {% if sun >= 250 %}
+                {% set messages.items = messages.items + ['Sonnenlage: hohe Einstrahlung, geeignet fuer Balkon- oder Blendungsbewertung.'] %}
+              {% endif %}
+              {% if messages.items | count == 0 %}
+                Keine markante Warnlage. Das Wetter wirkt derzeit im normalen Bereich.
+              {% else %}
+                {% for item in messages.items %}
+                - {{ item }}
+                {% endfor %}
+              {% endif %}
+          - type: markdown
+            content: |
               **DWD Wetterbericht**
 
               {{ states('sensor.hamburg_fu_wetterbericht') }}
-          - type: entities
-            title: Einordnung
-            show_header_toggle: false
-            entities:
-              - entity: sensor.hamburg_fu_tx_heute
-                name: Tagesmaximum
-              - entity: sensor.hamburg_fu_tn_heute
-                name: Tagesminimum
-              - entity: sensor.hamburg_fu_temp_next12h_max
-                name: Maximum naechste 12h
-              - entity: sensor.hamburg_fu_temp_next12h_min
-                name: Minimum naechste 12h
-              - entity: sensor.hamburg_fu_vorhersagezeit_local
-                name: Vorhersagezeit lokal
       - cards:
           - type: heading
             heading: Schnellbild
             heading_style: title
+          - type: grid
+            columns: 3
+            square: false
+            cards:
+              - type: gauge
+                entity: sensor.hamburg_fu_precip_probability_next1h
+                name: Regen 1h
+                needle: true
+                severity:
+                  green: 0
+                  yellow: 40
+                  red: 70
+              - type: gauge
+                entity: sensor.hamburg_fu_windboen
+                name: Boeen
+                needle: true
+                severity:
+                  green: 0
+                  yellow: 30
+                  red: 45
+              - type: gauge
+                entity: sensor.hamburg_fu_sichtweite
+                name: Sichtweite
+                needle: true
+                severity:
+                  red: 0
+                  yellow: 3
+                  green: 8
           - type: grid
             columns: 2
             square: false
@@ -457,58 +509,76 @@ views:
                 name: Minimum naechste 12h
       - cards:
           - type: heading
-            heading: Trend naechste Tage
+            heading: Einordnung und Trend
             heading_style: title
-          - type: custom:weather-chart-card
-            entity: weather.hamburg_fu
-            show_main: true
-            show_temperature: true
-            show_current_condition: true
-            show_attributes: true
-            show_time: false
-            show_time_seconds: false
-            show_day: false
-            show_date: false
-            show_humidity: true
-            show_pressure: true
-            show_wind_direction: true
-            show_wind_speed: true
-            show_sun: true
-            show_feels_like: true
-            show_dew_point: false
-            show_wind_gust_speed: false
-            show_visibility: false
-            show_last_changed: false
-            use_12hour_format: false
-            icons_size: 25
-            animated_icons: false
-            icon_style: style1
-            autoscroll: false
-            forecast:
-              precipitation_type: rainfall
-              show_probability: true
-              labels_font_size: "11"
-              precip_bar_size: "100"
-              style: style1
-              show_wind_forecast: true
-              condition_icons: true
-              round_temp: true
-              type: daily
-              number_of_forecasts: "0"
-              disable_animation: false
-            units:
-              speed: ""
-          - type: history-graph
-            title: Temperatur-Verlauf 48h
-            hours_to_show: 48
-            refresh_interval: 120
-            entities:
-              - entity: sensor.hamburg_fu_temperatur
-                name: Aktuell
-              - entity: sensor.hamburg_fu_tx_heute
-                name: Vorhersage-Max
-              - entity: sensor.hamburg_fu_tn_heute
-                name: Vorhersage-Min
+          - type: grid
+            columns: 3
+            square: false
+            cards:
+              - type: entities
+                title: Einordnung
+                show_header_toggle: false
+                entities:
+                  - entity: sensor.hamburg_fu_tx_heute
+                    name: Tagesmaximum
+                  - entity: sensor.hamburg_fu_tn_heute
+                    name: Tagesminimum
+                  - entity: sensor.hamburg_fu_temp_next12h_max
+                    name: Maximum naechste 12h
+                  - entity: sensor.hamburg_fu_temp_next12h_min
+                    name: Minimum naechste 12h
+                  - entity: sensor.hamburg_fu_vorhersagezeit_local
+                    name: Vorhersagezeit lokal
+              - type: custom:weather-chart-card
+                entity: weather.hamburg_fu
+                show_main: true
+                show_temperature: true
+                show_current_condition: true
+                show_attributes: true
+                show_time: false
+                show_time_seconds: false
+                show_day: false
+                show_date: false
+                show_humidity: true
+                show_pressure: true
+                show_wind_direction: true
+                show_wind_speed: true
+                show_sun: true
+                show_feels_like: true
+                show_dew_point: false
+                show_wind_gust_speed: false
+                show_visibility: false
+                show_last_changed: false
+                use_12hour_format: false
+                icons_size: 25
+                animated_icons: false
+                icon_style: style1
+                autoscroll: false
+                forecast:
+                  precipitation_type: rainfall
+                  show_probability: true
+                  labels_font_size: "11"
+                  precip_bar_size: "100"
+                  style: style1
+                  show_wind_forecast: true
+                  condition_icons: true
+                  round_temp: true
+                  type: daily
+                  number_of_forecasts: "0"
+                  disable_animation: false
+                units:
+                  speed: ""
+              - type: history-graph
+                title: Temperatur-Verlauf 48h
+                hours_to_show: 48
+                refresh_interval: 120
+                entities:
+                  - entity: sensor.hamburg_fu_temperatur
+                    name: Aktuell
+                  - entity: sensor.hamburg_fu_tx_heute
+                    name: Vorhersage-Max
+                  - entity: sensor.hamburg_fu_tn_heute
+                    name: Vorhersage-Min
 
   - title: Radar
     path: radar
@@ -520,12 +590,31 @@ views:
           - type: heading
             heading: Lokalradar Hamburg
             heading_style: title
+            badges:
+              - type: entity
+                entity: sensor.hamburg_fu_precip_probability_next1h
+              - type: entity
+                entity: sensor.hamburg_fu_precip_sum_24h
           - type: picture-entity
             entity: camera.precipitation_3
             name: Regenradar 35 km
             show_state: false
             show_name: true
             camera_view: auto
+          - type: markdown
+            content: |
+              **Radar-Einordnung**
+
+              {% set rain = states('sensor.hamburg_fu_precip_probability_next1h') | float(0) %}
+              {% set rain_sum = states('sensor.hamburg_fu_precip_sum_24h') | float(0) %}
+              {% set current = states('sensor.hamburg_fu_niederschlag') | float(0) %}
+              {% if rain >= 70 or current >= 0.3 %}
+                Lokal besteht eine aktive oder kurzfristig wahrscheinliche Regenlage.
+              {% elif rain_sum >= 3 %}
+                Radar beobachten: im weiteren 24h-Verlauf ist relevanter Niederschlag moeglich.
+              {% else %}
+                Lokal aktuell keine ausgepraegte Regenlage erkennbar.
+              {% endif %}
           - type: entities
             title: Niederschlagslage lokal
             show_header_toggle: false
@@ -542,6 +631,11 @@ views:
           - type: heading
             heading: Regionalradar Norddeutschland
             heading_style: title
+            badges:
+              - type: entity
+                entity: sensor.hamburg_fu_bewolkungsgrad
+              - type: entity
+                entity: sensor.hamburg_fu_nebelwahrscheinlichkeit
           - type: picture-entity
             entity: camera.precipitation_2
             name: Regenradar 250 km
@@ -571,6 +665,11 @@ views:
           - type: heading
             heading: Thermik
             heading_style: title
+            badges:
+              - type: entity
+                entity: sensor.hamburg_fu_temperatur
+              - type: entity
+                entity: sensor.hamburg_fu_taupunkt
           - type: entities
             title: Temperatur
             show_header_toggle: false
@@ -598,6 +697,11 @@ views:
           - type: heading
             heading: Luft und Sicht
             heading_style: title
+            badges:
+              - type: entity
+                entity: sensor.hamburg_fu_luftfeuchtigkeit
+              - type: entity
+                entity: sensor.hamburg_fu_sichtweite
           - type: entities
             title: Atmosphaere
             show_header_toggle: false
@@ -618,6 +722,11 @@ views:
           - type: heading
             heading: Wind und Niederschlag
             heading_style: title
+            badges:
+              - type: entity
+                entity: sensor.hamburg_fu_windgeschwindigkeit
+              - type: entity
+                entity: sensor.hamburg_fu_precip_probability_next1h
           - type: entities
             title: Wind
             show_header_toggle: false
@@ -648,37 +757,44 @@ views:
           - type: heading
             heading: Sonne und Astronomie
             heading_style: title
-          - type: entities
-            title: Strahlung
-            show_header_toggle: false
-            entities:
-              - entity: sensor.hamburg_fu_sonneneinstrahlung
-                name: Sonneneinstrahlung
-              - entity: sensor.hamburg_fu_sonnenscheindauer
-                name: Sonnenscheindauer
-              - entity: sensor.hamburg_fu_wetterbericht
-                name: Wetterbericht
-              - entity: sensor.hamburg_fu_zeit_messwerte
-                name: Zeit Messwerte
-              - entity: sensor.hamburg_fu_zeit_vorhersagewerte
-                name: Zeit Vorhersagewerte
-          - type: custom:horizon-card
-            moon: true
-            refresh_period: 60
-            fields:
-              sunrise: true
-              sunset: true
-              dawn: true
-              noon: true
-              dusk: true
-              azimuth: true
-              sun_azimuth: true
-              moon_azimuth: true
-              elevation: true
-              sun_elevation: true
-              moon_elevation: true
-              moonrise: true
-              moonset: true
-              moon_phase: true
-            southern_flip: false
-            language: de
+            badges:
+              - type: entity
+                entity: sensor.hamburg_fu_sonneneinstrahlung
+              - type: entity
+                entity: sensor.hamburg_fu_sonnenscheindauer
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - type: entities
+                title: Strahlung
+                show_header_toggle: false
+                entities:
+                  - entity: sensor.hamburg_fu_sonneneinstrahlung
+                    name: Sonneneinstrahlung
+                  - entity: sensor.hamburg_fu_sonnenscheindauer
+                    name: Sonnenscheindauer
+                  - entity: sensor.hamburg_fu_bewolkungsgrad
+                    name: Bewoelkung
+                  - entity: sensor.hamburg_fu_vorhersagezeit_local
+                    name: Vorhersagezeit lokal
+              - type: custom:horizon-card
+                moon: true
+                refresh_period: 60
+                fields:
+                  sunrise: true
+                  sunset: true
+                  dawn: true
+                  noon: true
+                  dusk: true
+                  azimuth: true
+                  sun_azimuth: true
+                  moon_azimuth: true
+                  elevation: true
+                  sun_elevation: true
+                  moon_elevation: true
+                  moonrise: true
+                  moonset: true
+                  moon_phase: true
+                southern_flip: false
+                language: de

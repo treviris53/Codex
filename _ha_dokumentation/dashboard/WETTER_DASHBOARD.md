@@ -67,10 +67,12 @@ Sie zeigt:
 - Schnellnavigation zu Radar, Forecast und DWD-Details
 - Hero-Karte mit aktueller Temperatur, Wetterzustand und Tages-Spanne
 - kompakten `Tagesfokus` als lesbare Kurzbewertung
+- dynamische `Warnlage` fuer operative Auffaelligkeiten
 - DWD-Wetterbericht
+- Risiko-Scan mit Gauges fuer Regen, Boeen und Sichtweite
 - kompaktes Schnellbild fuer Regen, Wind, Luft, Sicht und Sonne
 - Stunden-Forecast fuer die naechsten Stunden
-- Mehrtages-Trend plus Temperaturverlauf
+- gemeinsames Trend-Grid fuer Einordnung, Mehrtages-Trend und Temperaturverlauf
 
 ### Radar
 
@@ -80,6 +82,7 @@ Sie zeigt:
 
 - lokales Radar 35 km
 - regionales Radar 250 km
+- textliche Radar-Einordnung fuer die lokale Regenlage
 - flankierende Niederschlags- und Sicht-Kennzahlen
 
 ### DWD Details
@@ -94,6 +97,7 @@ Sie trennt:
 - Sonne und Astronomie
 
 Damit bleibt die Startansicht frei von Rohdaten-Ueberladung.
+`Sonne und Astronomie` ist als Zweier-Layout aus Kennzahlen und Horizon-Karte aufgebaut.
 
 ## Bedienfluss
 
@@ -121,6 +125,7 @@ Formatierungen im Dashboard beschraenken sich auf:
 - Einheiten-/Label-Aufbereitung
 - Navigation zwischen Views
 - visuelle Hervorhebung auffaelliger Wetterlagen anhand vorhandener DWD-Werte
+- Badge-gestuetzte Schnellorientierung in Uebersichts- und Detailbereichen
 
 ## Outputs / Side Effects
 
@@ -147,6 +152,19 @@ Mit Version `2.1.0` kamen hinzu:
 - Schnellnavigation in der Startansicht
 - `Tagesfokus` als lesbare Kompaktzusammenfassung
 - visuelle Zustandspriorisierung fuer Regen, Wind, Luft, Sicht und Sonne
+
+Mit Version `2.2.0` kamen hinzu:
+
+- dynamische `Warnlage` in der Startansicht
+- Risiko-Scan mit Gauges fuer Regen, Boeen und Sichtweite
+- Badge-Orientierung in Uebersicht, Radar und DWD-Detailsektionen
+- textliche Radar-Einordnung fuer schnellere Niederschlagsbewertung
+
+Mit der nachfolgenden Layout-Korrektur wurden ausserdem:
+
+- `Einordnung`, Mehrtages-Trend und Temperaturverlauf in der Uebersicht zu einem gemeinsamen Grid gebuendelt
+- die problematischen Zeit-Entitaeten aus `Sonne und Astronomie` entfernt
+- `Sonne und Astronomie` als sauberes Zweier-Layout aus Kennzahlen und Horizon-Karte geordnet
 
 ## Troubleshooting
 
