@@ -1409,7 +1409,7 @@ views:
               - entity: input_text.roborock_last_program_sequence
                 name: Letzte Programmfolge
               - entity: sensor.saros_20_set_aktueller_raum
-                name: Aktueller Raum  
+                name: Aktueller Raum
       - cards:
           - type: heading
             heading: Untermenüs
