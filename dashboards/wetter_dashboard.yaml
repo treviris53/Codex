@@ -1,30 +1,346 @@
 # Dashboard: Wetter
-# Version: 1.0.1
-# Generated: 2026-01-26
+# Version: 2.0.0
+# Generated: 2026-03-23
 # Notes:
-# - Lovelace YAML exported from UI (Storage dashboards remove comments); comments were re-added for Git readability.
-# - Editing in UI "Raw configuration editor" will strip comments again; prefer editing the file in Git/Editor.
+# - Fokus auf kompakte Wetterlage, Radar und DWD-Details.
+# - Bestehende DWD- und Radar-Entitaeten bleiben unveraendert.
 
 title: Wetter
 views:
-  - title: Home
+  - title: Aktuell
+    path: aktuell
+    icon: mdi:weather-partly-cloudy
+    type: sections
+    max_columns: 3
     sections:
-      - type: grid
-        cards:
+      - cards:
           - type: heading
-            heading: Vorhersage heute
+            heading: Aktuelle Lage
             heading_style: title
-          - show_current: true
-            show_forecast: true
-            type: weather-forecast
+          - type: custom:button-card
+            entity: sensor.hamburg_fu_temperatur
+            name: Hamburg-Fuhlsbuettel
+            icon: mdi:weather-partly-cloudy
+            show_state: true
+            show_label: true
+            tap_action:
+              action: more-info
+            state_display: >
+              [[[
+                const temp = states['sensor.hamburg_fu_temperatur']?.state ?? '-';
+                return `${temp} °C`;
+              ]]]
+            label: >
+              [[[
+                const condition = states['sensor.hamburg_fu_wetterzustand']?.state ?? '-';
+                const high = states['sensor.hamburg_fu_tx_heute']?.state ?? '-';
+                const low = states['sensor.hamburg_fu_tn_heute']?.state ?? '-';
+                const humidity = states['sensor.hamburg_fu_luftfeuchtigkeit']?.state ?? '-';
+                return `${condition}\nHeute ${low} bis ${high} °C · Feuchte ${humidity} %`;
+              ]]]
+            styles:
+              card:
+                - padding: 18px
+                - min-height: 148px
+              grid:
+                - grid-template-areas: '"i n" "i s" "l l"'
+                - grid-template-columns: 44px 1fr
+                - grid-template-rows: min-content min-content 1fr
+              icon:
+                - width: 32px
+                - color: var(--warning-color)
+              name:
+                - justify-self: start
+                - font-size: 20px
+                - font-weight: 600
+              state:
+                - justify-self: start
+                - font-size: 38px
+                - font-weight: 700
+              label:
+                - justify-self: start
+                - text-align: left
+                - white-space: pre-line
+                - font-size: 14px
+                - line-height: 1.4
+          - type: markdown
+            content: |
+              **DWD Wetterbericht**
+
+              {{ states('sensor.hamburg_fu_wetterbericht') }}
+          - type: entities
+            title: Einordnung
+            show_header_toggle: false
+            entities:
+              - entity: sensor.hamburg_fu_tx_heute
+                name: Tagesmaximum
+              - entity: sensor.hamburg_fu_tn_heute
+                name: Tagesminimum
+              - entity: sensor.hamburg_fu_temp_next12h_max
+                name: Maximum naechste 12h
+              - entity: sensor.hamburg_fu_temp_next12h_min
+                name: Minimum naechste 12h
+              - entity: sensor.hamburg_fu_vorhersagezeit_local
+                name: Vorhersagezeit lokal
+      - cards:
+          - type: heading
+            heading: Schnellbild
+            heading_style: title
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - type: custom:button-card
+                entity: sensor.hamburg_fu_precip_probability_next1h
+                name: Regen
+                icon: mdi:weather-rainy
+                show_state: true
+                show_label: true
+                tap_action:
+                  action: more-info
+                state_display: >
+                  [[[
+                    const probability = states['sensor.hamburg_fu_precip_probability_next1h']?.state ?? '-';
+                    return `${probability} %`;
+                  ]]]
+                label: >
+                  [[[
+                    const current = states['sensor.hamburg_fu_niederschlag']?.state ?? '-';
+                    const total = states['sensor.hamburg_fu_precip_sum_24h']?.state ?? '-';
+                    return `Aktuell ${current} mm/h · 24h ${total} mm`;
+                  ]]]
+                styles:
+                  card:
+                    - padding: 14px
+                    - height: 108px
+                  grid:
+                    - grid-template-areas: '"i n" "i s" "l l"'
+                    - grid-template-columns: 32px 1fr
+                  name:
+                    - justify-self: start
+                    - font-size: 18px
+                  state:
+                    - justify-self: start
+                    - font-size: 28px
+                    - font-weight: 700
+                  label:
+                    - justify-self: start
+                    - text-align: left
+                    - white-space: normal
+              - type: custom:button-card
+                entity: sensor.hamburg_fu_windgeschwindigkeit
+                name: Wind
+                icon: mdi:weather-windy
+                show_state: true
+                show_label: true
+                tap_action:
+                  action: more-info
+                state_display: >
+                  [[[
+                    const wind = states['sensor.hamburg_fu_windgeschwindigkeit']?.state ?? '-';
+                    return `${wind} km/h`;
+                  ]]]
+                label: >
+                  [[[
+                    const gusts = states['sensor.hamburg_fu_windboen']?.state ?? '-';
+                    const direction = states['sensor.hamburg_fu_windrose']?.state ?? '-';
+                    const beaufort = states['sensor.hamburg_fu_beaufort']?.state ?? '-';
+                    return `Boeen ${gusts} km/h · ${direction} · ${beaufort} Bft`;
+                  ]]]
+                styles:
+                  card:
+                    - padding: 14px
+                    - height: 108px
+                  grid:
+                    - grid-template-areas: '"i n" "i s" "l l"'
+                    - grid-template-columns: 32px 1fr
+                  name:
+                    - justify-self: start
+                    - font-size: 18px
+                  state:
+                    - justify-self: start
+                    - font-size: 28px
+                    - font-weight: 700
+                  label:
+                    - justify-self: start
+                    - text-align: left
+                    - white-space: normal
+              - type: custom:button-card
+                entity: sensor.hamburg_fu_luftfeuchtigkeit
+                name: Luft
+                icon: mdi:water-percent
+                show_state: true
+                show_label: true
+                tap_action:
+                  action: more-info
+                state_display: >
+                  [[[
+                    const humidity = states['sensor.hamburg_fu_luftfeuchtigkeit']?.state ?? '-';
+                    return `${humidity} %`;
+                  ]]]
+                label: >
+                  [[[
+                    const dewpoint = states['sensor.hamburg_fu_taupunkt']?.state ?? '-';
+                    const absoluteHumidity = states['sensor.hamburg_fu_absolute_luftfeuchtigkeit']?.state ?? '-';
+                    return `Taupunkt ${dewpoint} °C · Absolut ${absoluteHumidity} g/m³`;
+                  ]]]
+                styles:
+                  card:
+                    - padding: 14px
+                    - height: 108px
+                  grid:
+                    - grid-template-areas: '"i n" "i s" "l l"'
+                    - grid-template-columns: 32px 1fr
+                  name:
+                    - justify-self: start
+                    - font-size: 18px
+                  state:
+                    - justify-self: start
+                    - font-size: 28px
+                    - font-weight: 700
+                  label:
+                    - justify-self: start
+                    - text-align: left
+                    - white-space: normal
+              - type: custom:button-card
+                entity: sensor.hamburg_fu_sichtweite
+                name: Sicht
+                icon: mdi:eye
+                show_state: true
+                show_label: true
+                tap_action:
+                  action: more-info
+                state_display: >
+                  [[[
+                    const visibility = states['sensor.hamburg_fu_sichtweite']?.state ?? '-';
+                    return `${visibility} km`;
+                  ]]]
+                label: >
+                  [[[
+                    const clouds = states['sensor.hamburg_fu_bewolkungsgrad']?.state ?? '-';
+                    const fog = states['sensor.hamburg_fu_nebelwahrscheinlichkeit']?.state ?? '-';
+                    return `Bewoelkung ${clouds} % · Nebel ${fog} %`;
+                  ]]]
+                styles:
+                  card:
+                    - padding: 14px
+                    - height: 108px
+                  grid:
+                    - grid-template-areas: '"i n" "i s" "l l"'
+                    - grid-template-columns: 32px 1fr
+                  name:
+                    - justify-self: start
+                    - font-size: 18px
+                  state:
+                    - justify-self: start
+                    - font-size: 28px
+                    - font-weight: 700
+                  label:
+                    - justify-self: start
+                    - text-align: left
+                    - white-space: normal
+              - type: custom:button-card
+                entity: sensor.hamburg_fu_sonneneinstrahlung
+                name: Sonne
+                icon: mdi:weather-sunny-alert
+                show_state: true
+                show_label: true
+                tap_action:
+                  action: more-info
+                state_display: >
+                  [[[
+                    const irradiance = states['sensor.hamburg_fu_sonneneinstrahlung']?.state ?? '-';
+                    return `${irradiance} W/m²`;
+                  ]]]
+                label: >
+                  [[[
+                    const durationSeconds = parseFloat(states['sensor.hamburg_fu_sonnenscheindauer']?.state);
+                    const duration = Number.isFinite(durationSeconds) ? (durationSeconds / 3600).toFixed(1) : '-';
+                    const pressure = states['sensor.hamburg_fu_druck']?.state ?? '-';
+                    return `Sonnenschein ${duration} h · Druck ${pressure} hPa`;
+                  ]]]
+                styles:
+                  card:
+                    - padding: 14px
+                    - height: 108px
+                  grid:
+                    - grid-template-areas: '"i n" "i s" "l l"'
+                    - grid-template-columns: 32px 1fr
+                  name:
+                    - justify-self: start
+                    - font-size: 18px
+                  state:
+                    - justify-self: start
+                    - font-size: 28px
+                    - font-weight: 700
+                  label:
+                    - justify-self: start
+                    - text-align: left
+                    - white-space: normal
+              - type: custom:button-card
+                entity: sensor.hamburg_fu_wetterzustand
+                name: Station
+                icon: mdi:radar
+                show_state: true
+                show_label: true
+                tap_action:
+                  action: navigate
+                  navigation_path: radar
+                state_display: >
+                  [[[
+                    return states['sensor.hamburg_fu_wetterzustand']?.state ?? '-';
+                  ]]]
+                label: >
+                  [[[
+                    const measured = states['sensor.hamburg_fu_zeit_messwerte']?.state ?? '-';
+                    return `Messwerte ${measured} · Details im Radar-View`;
+                  ]]]
+                styles:
+                  card:
+                    - padding: 14px
+                    - height: 108px
+                  grid:
+                    - grid-template-areas: '"i n" "i s" "l l"'
+                    - grid-template-columns: 32px 1fr
+                  name:
+                    - justify-self: start
+                    - font-size: 18px
+                  state:
+                    - justify-self: start
+                    - font-size: 22px
+                    - font-weight: 600
+                  label:
+                    - justify-self: start
+                    - text-align: left
+                    - white-space: normal
+      - cards:
+          - type: heading
+            heading: Naechste Stunden
+            heading_style: title
+          - type: weather-forecast
             entity: weather.hamburg_fu
+            show_current: false
+            show_forecast: true
             forecast_type: hourly
             secondary_info_attribute: latest_update_utc
-      - type: grid
-        cards:
+          - type: entities
+            title: Kurzfristiger Trend
+            show_header_toggle: false
+            entities:
+              - entity: sensor.hamburg_fu_precip_probability_next1h
+                name: Niederschlag naechste Stunde
+              - entity: sensor.hamburg_fu_precip_sum_24h
+                name: Niederschlag naechste 24h
+              - entity: sensor.hamburg_fu_niederschlag
+                name: Niederschlag aktuell
+              - entity: sensor.hamburg_fu_temp_next12h_max
+                name: Maximum naechste 12h
+              - entity: sensor.hamburg_fu_temp_next12h_min
+                name: Minimum naechste 12h
+      - cards:
           - type: heading
+            heading: Trend naechste Tage
             heading_style: title
-            heading: 5 Tage Vorhersage
           - type: custom:weather-chart-card
             entity: weather.hamburg_fu
             show_main: true
@@ -53,17 +369,181 @@ views:
             forecast:
               precipitation_type: rainfall
               show_probability: true
-              labels_font_size: '11'
-              precip_bar_size: '100'
+              labels_font_size: "11"
+              precip_bar_size: "100"
               style: style1
               show_wind_forecast: true
               condition_icons: true
               round_temp: true
               type: daily
-              number_of_forecasts: '0'
+              number_of_forecasts: "0"
               disable_animation: false
             units:
-              speed: ''
+              speed: ""
+          - type: history-graph
+            title: Temperatur-Verlauf 48h
+            hours_to_show: 48
+            refresh_interval: 120
+            entities:
+              - entity: sensor.hamburg_fu_temperatur
+                name: Aktuell
+              - entity: sensor.hamburg_fu_tx_heute
+                name: Vorhersage-Max
+              - entity: sensor.hamburg_fu_tn_heute
+                name: Vorhersage-Min
+
+  - title: Radar
+    path: radar
+    icon: mdi:radar
+    type: sections
+    max_columns: 2
+    sections:
+      - cards:
+          - type: heading
+            heading: Lokalradar Hamburg
+            heading_style: title
+          - type: picture-entity
+            entity: camera.precipitation_3
+            name: Regenradar 35 km
+            show_state: false
+            show_name: true
+            camera_view: auto
+          - type: entities
+            title: Niederschlagslage lokal
+            show_header_toggle: false
+            entities:
+              - entity: sensor.hamburg_fu_niederschlag
+                name: Niederschlag aktuell
+              - entity: sensor.hamburg_fu_precip_probability_next1h
+                name: Wahrscheinlichkeit naechste Stunde
+              - entity: sensor.hamburg_fu_precip_sum_24h
+                name: Niederschlag naechste 24h
+              - entity: sensor.hamburg_fu_vorhersagezeit_local
+                name: Forecast-Zeit lokal
+      - cards:
+          - type: heading
+            heading: Regionalradar Norddeutschland
+            heading_style: title
+          - type: picture-entity
+            entity: camera.precipitation_2
+            name: Regenradar 250 km
+            show_state: false
+            show_name: true
+            camera_view: auto
+          - type: entities
+            title: Synoptische Einordnung
+            show_header_toggle: false
+            entities:
+              - entity: sensor.hamburg_fu_wetterzustand
+                name: Wetterzustand
+              - entity: sensor.hamburg_fu_bewolkungsgrad
+                name: Bewoelkung
+              - entity: sensor.hamburg_fu_sichtweite
+                name: Sichtweite
+              - entity: sensor.hamburg_fu_nebelwahrscheinlichkeit
+                name: Nebelwahrscheinlichkeit
+
+  - title: DWD Details
+    path: dwd-details
+    icon: mdi:chart-box-outline
+    type: sections
+    max_columns: 3
+    sections:
+      - cards:
+          - type: heading
+            heading: Thermik
+            heading_style: title
+          - type: entities
+            title: Temperatur
+            show_header_toggle: false
+            entities:
+              - entity: sensor.hamburg_fu_temperatur
+                name: Aktuell
+              - entity: sensor.hamburg_fu_taupunkt
+                name: Taupunkt
+              - entity: sensor.hamburg_fu_tx_heute
+                name: Tagesmaximum heute
+              - entity: sensor.hamburg_fu_tn_heute
+                name: Tagesminimum heute
+              - entity: sensor.hamburg_fu_temp_next12h_max
+                name: Maximum naechste 12h
+              - entity: sensor.hamburg_fu_temp_next12h_min
+                name: Minimum naechste 12h
+          - type: history-graph
+            title: Temperatur-Verlauf 48h
+            hours_to_show: 48
+            refresh_interval: 120
+            entities:
+              - entity: sensor.hamburg_fu_temperatur
+                name: Aktuell
+      - cards:
+          - type: heading
+            heading: Luft und Sicht
+            heading_style: title
+          - type: entities
+            title: Atmosphaere
+            show_header_toggle: false
+            entities:
+              - entity: sensor.hamburg_fu_luftfeuchtigkeit
+                name: Relative Luftfeuchtigkeit
+              - entity: sensor.hamburg_fu_absolute_luftfeuchtigkeit
+                name: Absolute Luftfeuchtigkeit
+              - entity: sensor.hamburg_fu_druck
+                name: Luftdruck
+              - entity: sensor.hamburg_fu_sichtweite
+                name: Sichtweite
+              - entity: sensor.hamburg_fu_bewolkungsgrad
+                name: Bewoelkung
+              - entity: sensor.hamburg_fu_nebelwahrscheinlichkeit
+                name: Nebelwahrscheinlichkeit
+      - cards:
+          - type: heading
+            heading: Wind und Niederschlag
+            heading_style: title
+          - type: entities
+            title: Wind
+            show_header_toggle: false
+            entities:
+              - entity: sensor.hamburg_fu_windgeschwindigkeit
+                name: Windgeschwindigkeit
+              - entity: sensor.hamburg_fu_windboen
+                name: Windboeen
+              - entity: sensor.hamburg_fu_windrichtung
+                name: Windrichtung Grad
+              - entity: sensor.hamburg_fu_windrose
+                name: Windrichtung Text
+              - entity: sensor.hamburg_fu_beaufort
+                name: Beaufort
+          - type: entities
+            title: Niederschlag
+            show_header_toggle: false
+            entities:
+              - entity: sensor.hamburg_fu_niederschlag
+                name: Niederschlag aktuell
+              - entity: sensor.hamburg_fu_niederschlagswahrscheinlichkeit
+                name: Niederschlagswahrscheinlichkeit
+              - entity: sensor.hamburg_fu_precip_probability_next1h
+                name: Wahrscheinlichkeit naechste Stunde
+              - entity: sensor.hamburg_fu_precip_sum_24h
+                name: Summe naechste 24h
+      - cards:
+          - type: heading
+            heading: Sonne und Astronomie
+            heading_style: title
+          - type: entities
+            title: Strahlung
+            show_header_toggle: false
+            entities:
+              - entity: sensor.hamburg_fu_sonneneinstrahlung
+                name: Sonneneinstrahlung
+              - entity: sensor.hamburg_fu_sonnenscheindauer
+                name: Sonnenscheindauer
+              - entity: sensor.hamburg_fu_wetterbericht
+                name: Wetterbericht
+              - entity: sensor.hamburg_fu_zeit_messwerte
+                name: Zeit Messwerte
+              - entity: sensor.hamburg_fu_zeit_vorhersagewerte
+                name: Zeit Vorhersagewerte
           - type: custom:horizon-card
             moon: true
             refresh_period: 60
@@ -84,82 +564,3 @@ views:
               moon_phase: true
             southern_flip: false
             language: de
-        column_span: 3
-      - type: grid
-        cards:
-          - type: heading
-            heading: DWD Hamburg-Fuhlsbüttel
-            heading_style: title
-          - type: entities
-            title: 'Kennzahlen '
-            show_header_toggle: false
-            entities:
-              - entity: sensor.hamburg_fu_wetterzustand
-              - entity: sensor.hamburg_fu_druck
-                name: Luftdruck
-              - entity: sensor.hamburg_fu_temperatur
-                name: Temperatur (aktuell)
-              - entity: sensor.hamburg_fu_tx_heute
-                name: Tagesmax (heute)
-              - entity: sensor.hamburg_fu_tn_heute
-                name: Tagesmin (heute)
-              - entity: sensor.hamburg_fu_luftfeuchtigkeit
-                name: Luftfeuchtigkeit
-              - entity: sensor.hamburg_fu_precip_probability_next1h
-                name: Niederschlag-Wahrsch. 1h
-              - entity: sensor.hamburg_fu_precip_sum_24h
-                name: Niederschlag Summe 24h
-              - entity: sensor.hamburg_fu_windrichtung
-                name: Windrichtung °
-              - entity: sensor.hamburg_fu_windgeschwindigkeit
-                name: Windgeschwindigkeit
-              - entity: sensor.hamburg_fu_windboen
-                name: Windböen
-              - entity: sensor.hamburg_fu_windrose
-                name: Windrichtung (Text)
-              - entity: sensor.hamburg_fu_beaufort
-                name: Wind (Beaufort)
-              - entity: sensor.hamburg_fu_vorhersagezeit_local
-                name: Vorhersagezeit (lokal)
-          - type: history-graph
-            title: Temperatur-Verlauf (48h)
-            hours_to_show: 48
-            refresh_interval: 120
-            entities:
-              - entity: sensor.hamburg_fu_temperatur
-                name: Aktuell
-              - entity: sensor.hamburg_fu_tx_heute
-                name: Vorhersage-Max
-              - entity: sensor.hamburg_fu_tn_heute
-                name: Vorhersage-Min
-            grid_options:
-              columns: 12
-              rows: 7
-        column_span: 2
-      - type: grid
-        cards:
-          - type: heading
-            heading: Hamburg
-            heading_style: title
-          - show_state: true
-            show_name: true
-            camera_view: auto
-            type: picture-entity
-            entity: camera.precipitation_3
-            image: https://demo.home-assistant.io/stub_config/bedroom.png
-            name: Regenradar 35km
-      - type: grid
-        cards:
-          - type: heading
-            heading: Umgebung
-            heading_style: title
-          - show_state: true
-            show_name: true
-            camera_view: auto
-            type: picture-entity
-            entity: camera.precipitation_2
-            image: https://demo.home-assistant.io/stub_config/bedroom.png
-            name: Regenradar 250km
-      - type: grid
-        cards: []
-    cards: []
