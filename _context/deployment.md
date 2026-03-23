@@ -21,6 +21,8 @@ Deployment workflow and environment assumptions for this repository.
 - Do not make ad-hoc configuration edits directly in the live HA runtime when the same change belongs in the repository.
 - Use the repository -> deploy-script -> HA workflow as the default path for live changes.
 - Direct runtime inspection is acceptable for validation and debugging; direct runtime mutation should be avoided unless a task explicitly requires it.
+- For guarded live deploys, prefer `deploy_ha_git_guard.ps1` as the entrypoint before the underlying deploy executor.
+- Guarded deploys are YAML-only. Non-YAML files must not be deployed through the guarded workflow.
 
 ## Production diagnostics access
 - Read-only access to productive logs, traces, and runtime diagnostics is allowed when it materially improves debugging or validation.
@@ -33,14 +35,18 @@ Deployment workflow and environment assumptions for this repository.
 Primary deployment script:
 - `deploy_ha_samba_healthcheck.ps1`
 
+Guard wrapper for production-near use:
+- `deploy_ha_git_guard.ps1`
+
 ## Required workflow
 1. Review the intended file paths.
-2. Run a diff check with `-DiffOnly`.
-3. Run a dry run with `-WhatIf` when appropriate.
-4. Deploy with backup when changing live configuration.
-5. Run post-reload when required.
-6. Run health validation after deployment.
-7. Escalate to a full Home Assistant restart only when reload services are insufficient or the change explicitly requires restart semantics.
+2. For guarded deploys, ensure the selected paths resolve only to `.yaml` / `.yml` files.
+3. Run a diff check with `-DiffOnly`.
+4. Run a dry run with `-WhatIf` when appropriate.
+5. Deploy with backup when changing live configuration.
+6. Run post-reload when required.
+7. Run health validation after deployment.
+8. Escalate to a full Home Assistant restart only when reload services are insufficient or the change explicitly requires restart semantics.
 
 ## Supported options
 - `-Paths`

@@ -6,12 +6,74 @@ Diese Datei dokumentiert die vorhandenen PowerShell-Skripte im Workspace. Der Fo
 
 | Skript | Hauptzweck | Typische Ein-/Ausgabe |
 | --- | --- | --- |
+| `deploy_ha_git_guard.ps1` | Git- und YAML-Guard vor dem produktiven Deploy-Skript | Eingabe: relative YAML-Pfade und optionale Guard-Parameter; Ausgabe: Git-/Policy-Checks, delegiertes Deploy, lokale Deploy-Metadaten |
 | `ha_api_test.ps1` | Minimaler Read-Only-Test gegen die Home-Assistant-REST-API | Eingabe: `HA_URL`, `HA_TOKEN`; Ausgabe: API-Antwort auf Konsole |
 | `deploy_ha_samba.ps1` | Deployment ausgewaehlter Dateien/Ordner nach Home Assistant ueber Samba | Eingabe: lokale Pfade; Ausgabe: kopierte Dateien, optionale Backups, optionales Loeschen entfernter Dateien |
 | `deploy_ha_samba_healthcheck.ps1` | Deployment mit Diff-, Reload- und Health-Check-Funktionen | Eingabe: lokale Pfade, API-Zugangsdaten; Ausgabe: Diff/Deploy-Logs, Reloads, API-Pruefung |
 | `sync_ha_debug_roborock.ps1` | Erzeugt einen lokalen Debug-Snapshot fuer Roborock-bezogene Entity-States und Historie | Eingabe: API-Zugangsdaten; Ausgabe: JSON-Dateien und README unter `_ha_debug\roborock\...` |
 | `sync_ha_debug_roborock_v2.ps1` | Erzeugt einen erweiterten Roborock-Debug-Snapshot mit Scheduler-, Script-, Button- und Logbook-Daten | Eingabe: API-Zugangsdaten, relatives oder explizites Zeitfenster; Ausgabe: erweiterte JSON-Dateien und README unter `_ha_debug\roborock\...` |
 | `sync_ha_runtime_snapshot.ps1` | Kopiert zentrale `.storage`-Dateien lokal in `_ha_runtime_snapshot` | Eingabe: Dateiliste aus HA `.storage`; Ausgabe: lokale Snapshot-Dateien, optionale Backups |
+
+## `deploy_ha_git_guard.ps1`
+
+### Funktion
+
+`deploy_ha_git_guard.ps1` ist ein konservativer Wrapper vor `deploy_ha_samba_healthcheck.ps1`. Er fuehrt vor produktionsnahen Deploys Git- und Policy-Pruefungen aus und delegiert danach an das bestehende Deploy-Skript.
+
+### Zweck
+
+- produktive Deploys nur aus dem Repository-Root `D:\Codex`
+- optionaler Branch-Schutz fuer den Live-Workflow
+- Blockade oder bewusste Freigabe bei dirty Worktrees
+- harte YAML-only-Policy fuer Deploy-Pfade
+- lokale Aufzeichnung des letzten erfolgreichen Guarded-Deploys unter `.deploy-state\`
+
+### Wichtige Regeln
+
+- Deploybar sind nur `.yaml`- und `.yml`-Dateien.
+- Verzeichnisse duerfen nur deployt werden, wenn alle enthaltenen Dateien YAML-Dateien sind.
+- Nicht-YAML-Dateien fuehren zum Abbruch; sie werden nicht stillschweigend uebersprungen.
+- Die eigentlichen Runtime-Schreibzugriffe bleiben weiterhin auf `deploy_ha_samba_healthcheck.ps1` beschraenkt.
+
+### Parameter
+
+| Parameter | Typ | Default | Bedeutung |
+| --- | --- | --- | --- |
+| `SourceRoot` | `string` | `D:\Codex` | Repository-Wurzel fuer Git- und Pfadpruefung |
+| `HaConfigRoot` | `string` | `W:\` | Zielwurzel der HA-Konfiguration |
+| `Paths` | `string[]` | leer | Explizite relative YAML-Dateien oder YAML-only-Verzeichnisse |
+| `Environment` | `string` | `live` | Name der Zielumgebung fuer die lokale Statusdatei |
+| `AllowDirtyWorktree` | `switch` | `false` | Erlaubt bewusstes Deploy trotz uncommitteter oder ungetrackter Aenderungen |
+| `RequireBranch` | `string` | leer | Erzwingt einen bestimmten Git-Branch fuer den Deploy |
+| `Backup`, `WhatIf`, `DeleteRemoved`, `HealthCheck`, `StrictModeDeploy`, `DiffOnly`, `PostReload` | diverse | wie Basis-Skript | Werden an `deploy_ha_samba_healthcheck.ps1` weitergereicht |
+
+### Datenfluss
+
+**Quellen**
+
+- Git-Metadaten aus dem Repository unter `D:\Codex`
+- explizite Deploy-Pfade aus `Paths`
+- optional Umgebungs- und API-Parameter fuer das Basis-Skript
+
+**Verarbeitung**
+
+1. validiert `SourceRoot`, `HaConfigRoot` und explizite `Paths`
+2. prueft den Git-Kontext: Repo-Root, Branch, HEAD-Commit, dirty/clean
+3. validiert, dass alle effektiven Deploy-Dateien YAML-only sind
+4. delegiert an `deploy_ha_samba_healthcheck.ps1`
+5. schreibt bei erfolgreichem echten Deploy eine lokale Statusdatei `.deploy-state\<environment>.toml`
+
+**Ausgaben / Seiteneffekte**
+
+- Konsolenlog fuer Guard-Checks
+- delegierter Diff oder echter Deploy ueber das Basis-Skript
+- lokale Deploy-Metadaten unter `.deploy-state\`
+
+### Rollback-Einordnung
+
+- operativer Rollback bleibt ueber die Backup-Funktion des Basis-Skripts moeglich
+- revisionssicherer Rollback bleibt `git checkout <commit>` lokal plus normaler erneuter Deploy
+- die Statusdatei ist nur Nachvollziehbarkeit, kein Rollback-Mechanismus
 
 ## `ha_api_test.ps1`
 
@@ -513,6 +575,7 @@ Das Skript ist fuer Debugging und Ursachenanalyse gedacht, insbesondere fuer Rob
 
 ### 2. Deployment
 
+- `deploy_ha_git_guard.ps1`: Git- und YAML-Policy-Guard vor dem produktionsnahen Deployment
 - `deploy_ha_samba.ps1`: direktes Dateideployment mit optionalem Backup/Mirror
 - `deploy_ha_samba_healthcheck.ps1`: Deployment plus Diff, Reload und Health-Check
 
@@ -523,8 +586,8 @@ Das Skript ist fuer Debugging und Ursachenanalyse gedacht, insbesondere fuer Rob
 ## Praktische Reihenfolge im Einsatz
 
 1. `ha_api_test.ps1`, wenn zuerst nur URL/Token geprueft werden sollen.
-2. `deploy_ha_samba_healthcheck.ps1 -DiffOnly`, um Aenderungen vorab zu sehen.
-3. `deploy_ha_samba_healthcheck.ps1` mit `-Backup`, falls ein kontrolliertes Deployment folgen soll.
+2. `deploy_ha_git_guard.ps1 -DiffOnly`, um Git- und YAML-Guard plus Aenderungen vorab zu sehen.
+3. `deploy_ha_git_guard.ps1` mit `-Backup`, falls ein kontrolliertes produktionsnahes Deployment folgen soll.
 4. `sync_ha_runtime_snapshot.ps1`, wenn lokale Registry-/Runtime-Analyse benoetigt wird.
 5. `sync_ha_debug_roborock.ps1`, wenn Roborock-bezogene Laufzeitdaten oder Historien fuer Debugging gebraucht werden.
 6. `sync_ha_debug_roborock_v2.ps1`, wenn Roborock-Ablauf, Scheduler-Konfiguration, Button-Ausloesungen und Logbook gemeinsam korreliert werden sollen.

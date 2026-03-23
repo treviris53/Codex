@@ -36,6 +36,10 @@ __pycache__/
 *.pyc
 .venv/
 
+# Local deploy metadata (keep docs, ignore per-environment live state)
+.deploy-state/*
+!.deploy-state/README.md
+
 # Editor / OS
 .DS_Store
 Thumbs.db
