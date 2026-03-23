@@ -27,6 +27,7 @@ Diese Datei dokumentiert die vorhandenen PowerShell-Skripte im Workspace. Der Fo
 - Blockade oder bewusste Freigabe bei dirty Worktrees
 - harte YAML-only-Policy fuer Deploy-Pfade
 - lokale Aufzeichnung des letzten erfolgreichen Guarded-Deploys unter `.deploy-state\`
+- read-only Vorschau der committed YAML-Aenderungen seit dem letzten erfolgreichen Guarded-Deploy
 
 ### Wichtige Regeln
 
@@ -34,6 +35,7 @@ Diese Datei dokumentiert die vorhandenen PowerShell-Skripte im Workspace. Der Fo
 - Verzeichnisse duerfen nur deployt werden, wenn alle enthaltenen Dateien YAML-Dateien sind.
 - Nicht-YAML-Dateien fuehren zum Abbruch; sie werden nicht stillschweigend uebersprungen.
 - Die eigentlichen Runtime-Schreibzugriffe bleiben weiterhin auf `deploy_ha_samba_healthcheck.ps1` beschraenkt.
+- `-ChangedSinceLastDeploy` ist eine reine Vorschau. Dieser Modus darf keine Aktivierung oder Statusfortschreibung ausloesen.
 
 ### Parameter
 
@@ -43,6 +45,7 @@ Diese Datei dokumentiert die vorhandenen PowerShell-Skripte im Workspace. Der Fo
 | `HaConfigRoot` | `string` | `W:\` | Zielwurzel der HA-Konfiguration |
 | `Paths` | `string[]` | leer | Explizite relative YAML-Dateien oder YAML-only-Verzeichnisse |
 | `Environment` | `string` | `live` | Name der Zielumgebung fuer die lokale Statusdatei |
+| `ChangedSinceLastDeploy` | `switch` | `false` | Read-only-Vorschau der committed YAML-Aenderungen seit dem letzten erfolgreichen Guarded-Deploy |
 | `AllowDirtyWorktree` | `switch` | `false` | Erlaubt bewusstes Deploy trotz uncommitteter oder ungetrackter Aenderungen |
 | `RequireBranch` | `string` | leer | Erzwingt einen bestimmten Git-Branch fuer den Deploy |
 | `Backup`, `WhatIf`, `DeleteRemoved`, `HealthCheck`, `StrictModeDeploy`, `DiffOnly`, `PostReload` | diverse | wie Basis-Skript | Werden an `deploy_ha_samba_healthcheck.ps1` weitergereicht |
@@ -57,16 +60,16 @@ Diese Datei dokumentiert die vorhandenen PowerShell-Skripte im Workspace. Der Fo
 
 **Verarbeitung**
 
-1. validiert `SourceRoot`, `HaConfigRoot` und explizite `Paths`
-2. prueft den Git-Kontext: Repo-Root, Branch, HEAD-Commit, dirty/clean
-3. validiert, dass alle effektiven Deploy-Dateien YAML-only sind
-4. delegiert an `deploy_ha_samba_healthcheck.ps1`
-5. schreibt bei erfolgreichem echten Deploy eine lokale Statusdatei `.deploy-state\<environment>.toml`
+1. validiert `SourceRoot` und den Git-Kontext: Repo-Root, Branch, HEAD-Commit, dirty/clean
+2. im Normalmodus: validiert explizite YAML-only-Deploy-Pfade und delegiert an `deploy_ha_samba_healthcheck.ps1`
+3. im Preview-Modus `-ChangedSinceLastDeploy`: liest `.deploy-state\<environment>.toml`, ermittelt committed YAML-Aenderungen seit dem letzten erfolgreichen Guarded-Deploy und leitet sichere Vorschlags-Pfade ab
+4. schreibt nur bei erfolgreichem echtem Deploy eine lokale Statusdatei `.deploy-state\<environment>.toml`
 
 **Ausgaben / Seiteneffekte**
 
 - Konsolenlog fuer Guard-Checks
-- delegierter Diff oder echter Deploy ueber das Basis-Skript
+- im Normalmodus delegierter Diff oder echter Deploy ueber das Basis-Skript
+- im Preview-Modus nur Vorschlagsausgabe, kein Runtime-Write
 - lokale Deploy-Metadaten unter `.deploy-state\`
 
 ### Rollback-Einordnung
@@ -74,6 +77,12 @@ Diese Datei dokumentiert die vorhandenen PowerShell-Skripte im Workspace. Der Fo
 - operativer Rollback bleibt ueber die Backup-Funktion des Basis-Skripts moeglich
 - revisionssicherer Rollback bleibt `git checkout <commit>` lokal plus normaler erneuter Deploy
 - die Statusdatei ist nur Nachvollziehbarkeit, kein Rollback-Mechanismus
+
+### Preview-Hinweise
+
+- Der Preview-Modus betrachtet nur committed Git-Aenderungen zwischen dem letzten erfolgreichen Guarded-Deploy-Commit und `HEAD`.
+- Uncommittete oder ungetrackte Worktree-Aenderungen werden im Preview-Modus nicht als Vorschlag beruecksichtigt; sie werden nur als Hinweis gemeldet.
+- Wenn YAML-Dateien geloescht oder umbenannt wurden, versucht der Guard einen sicheren Verzeichnisvorschlag abzuleiten. Gelingt das nicht, wird der Fall als `UNRESOLVED` markiert.
 
 ## `ha_api_test.ps1`
 

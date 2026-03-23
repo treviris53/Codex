@@ -23,6 +23,7 @@ Deployment workflow and environment assumptions for this repository.
 - Direct runtime inspection is acceptable for validation and debugging; direct runtime mutation should be avoided unless a task explicitly requires it.
 - For guarded live deploys, prefer `deploy_ha_git_guard.ps1` as the entrypoint before the underlying deploy executor.
 - Guarded deploys are YAML-only. Non-YAML files must not be deployed through the guarded workflow.
+- `deploy_ha_git_guard.ps1 -ChangedSinceLastDeploy` is a read-only preview mode. It derives YAML-only deploy suggestions from the last successful guarded deploy state and must not perform activation by itself.
 
 ## Production diagnostics access
 - Read-only access to productive logs, traces, and runtime diagnostics is allowed when it materially improves debugging or validation.
@@ -55,6 +56,7 @@ Guard wrapper for production-near use:
 - `-DeleteRemoved`
 - `-PostReload`
 - `-HealthCheck`
+- `-ChangedSinceLastDeploy` (preview only, no deploy)
 
 ## Activation model
 - After deployment, changes may become active through reload services, a Home Assistant restart, or a combination of both depending on the affected subsystem.
