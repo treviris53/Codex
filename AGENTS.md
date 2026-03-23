@@ -57,6 +57,8 @@ Primary working directory: `D:\Codex`
 ## Context files
 - Treat Markdown files under `_context/` as project guidance for this workspace.
 - If any `_context/` file conflicts with this `AGENTS.md`, follow `AGENTS.md`.
+- Use `_context/instruction_map.md` as the quick navigation map for the rule system when orienting in a new thread.
+- When changing rule files, use `_context/rule_change_checklist.md` to counter-check related instructions and avoid rule drift.
 - Before making code or configuration changes, read `_context/project_rules.md`.
 - Before changing Home Assistant architecture, packages, scripts, automations, or dashboards, read `_context/architecture.md`.
 - Before using `_ha_runtime_snapshot/` for validation or debugging, read `_context/runtime_usage.md`.

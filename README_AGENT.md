@@ -1,6 +1,8 @@
 # Agent Instructions
 
 Always read _context/*.md before making changes.
+For a quick navigation map of the rule system, read `_context/instruction_map.md`.
+When changing instruction files, use `_context/rule_change_checklist.md`.
 
 Key rules:
 - Never modify HA runtime state
