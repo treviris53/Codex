@@ -22,6 +22,13 @@ Deployment workflow and environment assumptions for this repository.
 - Use the repository -> deploy-script -> HA workflow as the default path for live changes.
 - Direct runtime inspection is acceptable for validation and debugging; direct runtime mutation should be avoided unless a task explicitly requires it.
 
+## Production diagnostics access
+- Read-only access to productive logs, traces, and runtime diagnostics is allowed when it materially improves debugging or validation.
+- Treat productive logs, traces, and exported runtime diagnostics as observational evidence, not as configuration sources of truth.
+- For pure diagnosis tasks, do not perform direct file edits on `W:\`, service calls, helper toggles, reloads, restarts, or other runtime mutations.
+- If diagnosis requires exporting productive artifacts for offline analysis, store them under `_ha_debug/` as targeted captures and never deploy them back to Home Assistant.
+- If a task transitions from diagnosis to a live corrective action, make that transition explicit and return to the normal repository -> diff -> deploy -> reload/restart workflow.
+
 ## Deployment tool
 Primary deployment script:
 - `deploy_ha_samba_healthcheck.ps1`
@@ -49,6 +56,10 @@ Primary deployment script:
 - Be explicit when a change likely needs restart instead of reload-only behavior.
 
 ## Validation and activation matrix
+- Read-only debug / bug verification:
+  - Allowed: targeted inspection of productive logs, traces, state snapshots, and exported runtime diagnostics
+  - Not allowed as part of diagnosis: runtime writes, reloads, restarts, helper toggles, ad-hoc service calls, or direct edits on `W:\`
+  - Required baseline: separate findings from proposed fixes and explicitly mark any later activation step
 - YAML-only content change:
   - Required baseline: YAML syntax check and changed-file review
 - Automation / script / template package change:

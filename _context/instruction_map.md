@@ -21,9 +21,9 @@ Sie beantwortet zwei Fragen:
 | --- | --- |
 | Architektur, Packages, Scripts, Automationen, Dashboards | `D:\Codex\_context\architecture.md` |
 | Dashboard-Redesign, Dashboard-Bugfix, UI-/Subview-Struktur | `D:\Codex\_context\dashboard.md` |
-| Deployment, Diff, Reload, Restart, Healthcheck | `D:\Codex\_context\deployment.md` |
+| Deployment, Diff, Reload, Restart, Healthcheck, produktive Diagnose mit klarer Aktivierungsgrenze | `D:\Codex\_context\deployment.md` |
 | HACS-Abhaengigkeiten, Custom Cards, Custom Integrations, Themes | `D:\Codex\_context\hacs_inventory.md` |
-| Runtime-Snapshot, Debug-Snapshots, lokale HA-Analyse | `D:\Codex\_context\runtime_usage.md` |
+| Runtime-Snapshot, Debug-Snapshots, lokale HA-Analyse, produktive Logs / Traces im Read-Only-Modus | `D:\Codex\_context\runtime_usage.md` |
 | Scheduler-Mappings, Helper-Defaults, Dashboard-/Programmkonsistenz | `D:\Codex\_context\lessons_learned.md` |
 | Roborock-Modul | `D:\Codex\_context\modules\roborock.md` und `D:\Codex\_ha_dokumentation\roborock\ROBOROCK_APP.md` |
 | Heating-Modul | `D:\Codex\_context\modules\heating.md` und `D:\Codex\_ha_dokumentation\heating\HEATING_APP.md` |
@@ -113,6 +113,7 @@ Live- und Deploy-Kontext:
 - Repo ist autoritative Schreibquelle
 - Deployment-Skript und Deploy-Reihenfolge
 - Reload-vs-Restart-Hinweise
+- produktive Diagnose im Read-Only-Modus
 - Validierungs- und Aktivierungsmatrix
 
 Verwendung:
@@ -121,10 +122,10 @@ Verwendung:
 
 ### `D:\Codex\_context\runtime_usage.md`
 
-Regeln fuer Runtime-Snapshots und Offline-Analyse.
+Regeln fuer Runtime-Snapshots, produktive Logs / Traces und Offline-Analyse.
 
 Verwendung:
-- Wenn `_ha_runtime_snapshot/` oder Runtime-Daten verwendet werden
+- Wenn `_ha_runtime_snapshot/`, `_ha_debug/` oder produktive Runtime-Daten verwendet werden
 
 ### `D:\Codex\_context\lessons_learned.md`
 

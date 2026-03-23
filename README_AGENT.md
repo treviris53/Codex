@@ -6,6 +6,7 @@ When changing instruction files, use `_context/rule_change_checklist.md`.
 
 Key rules:
 - Never modify HA runtime state
+- Read productive logs / traces only in read-only diagnosis mode
 - Only deploy via deploy script
 - program_map is authoritative
 - job_map is alias layer only

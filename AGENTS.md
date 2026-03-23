@@ -62,7 +62,7 @@ Primary working directory: `D:\Codex`
 - Before making code or configuration changes, read `_context/project_rules.md`.
 - Before changing Home Assistant architecture, packages, scripts, automations, or dashboards, read `_context/architecture.md`.
 - Before changing dashboards or dashboard UX structure, read `_context/dashboard.md`.
-- Before using `_ha_runtime_snapshot/` for validation or debugging, read `_context/runtime_usage.md`.
+- Before using `_ha_runtime_snapshot/`, `_ha_debug/`, or live runtime logs / traces for validation or debugging, read `_context/runtime_usage.md`.
 - Before deployment work, read `_context/deployment.md`.
 - When custom integrations, custom cards, HACS dependencies, or themes matter, read `_context/hacs_inventory.md`.
 - When touching scheduler mappings, helper defaults, or dashboard/program consistency, check `_context/lessons_learned.md`.
@@ -84,6 +84,8 @@ Primary working directory: `D:\Codex`
 - Default change posture is conservative-to-balanced for production-near configuration: prefer small, reviewable, low-risk changes unless a broader change is explicitly requested.
 - Do not make ad-hoc write changes directly in the live Home Assistant runtime; repository files are the authoritative write path unless a task explicitly requires deployment.
 - Runtime access should default to read/validate/deploy workflows, not direct manual mutation on the HA host.
+- Read-only access to productive logs, traces, and runtime diagnostics is allowed for debugging when it materially improves diagnosis.
+- Pure debug / verification tasks must not perform runtime writes, direct file edits on `W:\`, service calls, helper toggles, reloads, or restarts unless the task explicitly moves from diagnosis to an approved activation step.
 - HACS is installed and productively used; relevant custom integrations, custom cards, and themes must be considered when changing dashboards or dependent modules.
 
 ## Home Assistant package conventions
