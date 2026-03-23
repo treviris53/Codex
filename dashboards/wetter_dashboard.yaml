@@ -1,9 +1,9 @@
 # Dashboard: Wetter
-# Version: 2.2.0
+# Version: 2.3.1
 # Generated: 2026-03-23
 # Notes:
 # - Fokus auf kompakte Wetterlage, Radar und DWD-Details.
-# - Bestehende DWD- und Radar-Entitaeten bleiben unveraendert.
+# - Bestehende DWD- und Radar-Entitäten bleiben unverändert.
 
 title: Wetter
 views:
@@ -35,31 +35,31 @@ views:
                   action: navigate
                   navigation_path: radar
               - type: button
-                name: DWD Details
+                name: DWD-Details
                 icon: mdi:chart-box-outline
                 tap_action:
                   action: navigate
                   navigation_path: dwd-details
               - type: button
                 entity: weather.hamburg_fu
-                name: Forecast
+                name: Vorhersage
                 icon: mdi:weather-cloudy-arrow-right
                 tap_action:
                   action: more-info
           - type: custom:button-card
             entity: sensor.hamburg_fu_temperatur
-            name: Hamburg-Fuhlsbuettel
+            name: Hamburg-Fuhlsbüttel
             icon: mdi:weather-partly-cloudy
             show_state: true
             show_label: true
             tap_action:
               action: more-info
-            state_display: >
+            state_display: |
               [[[
                 const temp = states['sensor.hamburg_fu_temperatur']?.state ?? '-';
                 return `${temp} °C`;
               ]]]
-            label: >
+            label: |
               [[[
                 const condition = states['sensor.hamburg_fu_wetterzustand']?.state ?? '-';
                 const high = states['sensor.hamburg_fu_tx_heute']?.state ?? '-';
@@ -92,59 +92,6 @@ views:
                 - white-space: pre-line
                 - font-size: 14px
                 - line-height: 1.4
-          - type: markdown
-            content: |
-              **Tagesfokus**
-
-              {% set current = states('sensor.hamburg_fu_temperatur') %}
-              {% set condition = states('sensor.hamburg_fu_wetterzustand') %}
-              {% set high = states('sensor.hamburg_fu_tx_heute') %}
-              {% set low = states('sensor.hamburg_fu_tn_heute') %}
-              {% set rain = states('sensor.hamburg_fu_precip_probability_next1h') %}
-              {% set rain_sum = states('sensor.hamburg_fu_precip_sum_24h') %}
-              {% set wind = states('sensor.hamburg_fu_windgeschwindigkeit') %}
-              {% set gusts = states('sensor.hamburg_fu_windboen') %}
-              {% set visibility = states('sensor.hamburg_fu_sichtweite') %}
-              {{ condition }} bei {{ current }} °C.
-              Heute zwischen {{ low }} und {{ high }} °C.
-              Regenrisiko naechste Stunde {{ rain }} %, erwartete 24h-Summe {{ rain_sum }} mm.
-              Wind {{ wind }} km/h mit Boeen bis {{ gusts }} km/h, Sichtweite {{ visibility }} km.
-          - type: markdown
-            content: |
-              **Warnlage**
-
-              {% set rain = states('sensor.hamburg_fu_precip_probability_next1h') | float(0) %}
-              {% set rain_now = states('sensor.hamburg_fu_niederschlag') | float(0) %}
-              {% set wind = states('sensor.hamburg_fu_windgeschwindigkeit') | float(0) %}
-              {% set gusts = states('sensor.hamburg_fu_windboen') | float(0) %}
-              {% set visibility = states('sensor.hamburg_fu_sichtweite') | float(99) %}
-              {% set fog = states('sensor.hamburg_fu_nebelwahrscheinlichkeit') | float(0) %}
-              {% set sun = states('sensor.hamburg_fu_sonneneinstrahlung') | float(0) %}
-              {% set messages = namespace(items=[]) %}
-              {% if rain >= 70 or rain_now >= 0.3 %}
-                {% set messages.items = messages.items + ['Regenlage: kurzfristig erhoehte Niederschlagswahrscheinlichkeit oder bereits aktiver Niederschlag.'] %}
-              {% endif %}
-              {% if gusts >= 45 or wind >= 30 %}
-                {% set messages.items = messages.items + ['Windlage: boeiger Wind, empfindliche Aussenaktivitaeten und offene Fenster pruefen.'] %}
-              {% endif %}
-              {% if visibility <= 3 or fog >= 60 %}
-                {% set messages.items = messages.items + ['Sichtlage: eingeschraenkte Sicht oder erhoehte Nebelwahrscheinlichkeit.'] %}
-              {% endif %}
-              {% if sun >= 250 %}
-                {% set messages.items = messages.items + ['Sonnenlage: hohe Einstrahlung, geeignet fuer Balkon- oder Blendungsbewertung.'] %}
-              {% endif %}
-              {% if messages.items | count == 0 %}
-                Keine markante Warnlage. Das Wetter wirkt derzeit im normalen Bereich.
-              {% else %}
-                {% for item in messages.items %}
-                - {{ item }}
-                {% endfor %}
-              {% endif %}
-          - type: markdown
-            content: |
-              **DWD Wetterbericht**
-
-              {{ states('sensor.hamburg_fu_wetterbericht') }}
       - cards:
           - type: heading
             heading: Schnellbild
@@ -155,7 +102,7 @@ views:
             cards:
               - type: gauge
                 entity: sensor.hamburg_fu_precip_probability_next1h
-                name: Regen 1h
+                name: Regen 1 h
                 needle: true
                 severity:
                   green: 0
@@ -163,7 +110,7 @@ views:
                   red: 70
               - type: gauge
                 entity: sensor.hamburg_fu_windboen
-                name: Boeen
+                name: Böen
                 needle: true
                 severity:
                   green: 0
@@ -189,12 +136,12 @@ views:
                 show_label: true
                 tap_action:
                   action: more-info
-                state_display: >
+                state_display: |
                   [[[
                     const probability = states['sensor.hamburg_fu_precip_probability_next1h']?.state ?? '-';
                     return `${probability} %`;
                   ]]]
-                label: >
+                label: |
                   [[[
                     const current = states['sensor.hamburg_fu_niederschlag']?.state ?? '-';
                     const total = states['sensor.hamburg_fu_precip_sum_24h']?.state ?? '-';
@@ -222,7 +169,7 @@ views:
                     - white-space: normal
                 state:
                   - operator: template
-                    value: >
+                    value: |
                       [[[
                         const probability = Number(states['sensor.hamburg_fu_precip_probability_next1h']?.state);
                         const current = Number(states['sensor.hamburg_fu_niederschlag']?.state);
@@ -243,17 +190,17 @@ views:
                 show_label: true
                 tap_action:
                   action: more-info
-                state_display: >
+                state_display: |
                   [[[
                     const wind = states['sensor.hamburg_fu_windgeschwindigkeit']?.state ?? '-';
                     return `${wind} km/h`;
                   ]]]
-                label: >
+                label: |
                   [[[
                     const gusts = states['sensor.hamburg_fu_windboen']?.state ?? '-';
                     const direction = states['sensor.hamburg_fu_windrose']?.state ?? '-';
                     const beaufort = states['sensor.hamburg_fu_beaufort']?.state ?? '-';
-                    return `Boeen ${gusts} km/h · ${direction} · ${beaufort} Bft`;
+                    return `Böen ${gusts} km/h · ${direction} · ${beaufort} Bft`;
                   ]]]
                 styles:
                   card:
@@ -277,7 +224,7 @@ views:
                     - white-space: normal
                 state:
                   - operator: template
-                    value: >
+                    value: |
                       [[[
                         const gusts = Number(states['sensor.hamburg_fu_windboen']?.state);
                         const wind = Number(states['sensor.hamburg_fu_windgeschwindigkeit']?.state);
@@ -298,12 +245,12 @@ views:
                 show_label: true
                 tap_action:
                   action: more-info
-                state_display: >
+                state_display: |
                   [[[
                     const humidity = states['sensor.hamburg_fu_luftfeuchtigkeit']?.state ?? '-';
                     return `${humidity} %`;
                   ]]]
-                label: >
+                label: |
                   [[[
                     const dewpoint = states['sensor.hamburg_fu_taupunkt']?.state ?? '-';
                     const absoluteHumidity = states['sensor.hamburg_fu_absolute_luftfeuchtigkeit']?.state ?? '-';
@@ -331,7 +278,7 @@ views:
                     - white-space: normal
                 state:
                   - operator: template
-                    value: >
+                    value: |
                       [[[
                         const humidity = Number(states['sensor.hamburg_fu_luftfeuchtigkeit']?.state);
                         return Number.isFinite(humidity) && humidity >= 85;
@@ -348,16 +295,16 @@ views:
                 show_label: true
                 tap_action:
                   action: more-info
-                state_display: >
+                state_display: |
                   [[[
                     const visibility = states['sensor.hamburg_fu_sichtweite']?.state ?? '-';
                     return `${visibility} km`;
                   ]]]
-                label: >
+                label: |
                   [[[
                     const clouds = states['sensor.hamburg_fu_bewolkungsgrad']?.state ?? '-';
                     const fog = states['sensor.hamburg_fu_nebelwahrscheinlichkeit']?.state ?? '-';
-                    return `Bewoelkung ${clouds} % · Nebel ${fog} %`;
+                    return `Bewölkung ${clouds} % · Nebel ${fog} %`;
                   ]]]
                 styles:
                   card:
@@ -381,7 +328,7 @@ views:
                     - white-space: normal
                 state:
                   - operator: template
-                    value: >
+                    value: |
                       [[[
                         const visibility = Number(states['sensor.hamburg_fu_sichtweite']?.state);
                         const fog = Number(states['sensor.hamburg_fu_nebelwahrscheinlichkeit']?.state);
@@ -400,12 +347,12 @@ views:
                 show_label: true
                 tap_action:
                   action: more-info
-                state_display: >
+                state_display: |
                   [[[
                     const irradiance = states['sensor.hamburg_fu_sonneneinstrahlung']?.state ?? '-';
                     return `${irradiance} W/m²`;
                   ]]]
-                label: >
+                label: |
                   [[[
                     const durationSeconds = parseFloat(states['sensor.hamburg_fu_sonnenscheindauer']?.state);
                     const duration = Number.isFinite(durationSeconds) ? (durationSeconds / 3600).toFixed(1) : '-';
@@ -434,7 +381,7 @@ views:
                     - white-space: normal
                 state:
                   - operator: template
-                    value: >
+                    value: |
                       [[[
                         const irradiance = Number(states['sensor.hamburg_fu_sonneneinstrahlung']?.state);
                         return Number.isFinite(irradiance) && irradiance >= 250;
@@ -454,14 +401,20 @@ views:
                 tap_action:
                   action: navigate
                   navigation_path: radar
-                state_display: >
+                state_display: |
                   [[[
                     return states['sensor.hamburg_fu_wetterzustand']?.state ?? '-';
                   ]]]
-                label: >
+                label: |
                   [[[
-                    const measured = states['sensor.hamburg_fu_zeit_messwerte']?.state ?? '-';
-                    return `Messwerte ${measured} · Details im Radar-View`;
+                    const forecast = states['sensor.hamburg_fu_vorhersagezeit_local']?.state ?? '-';
+                    const formatted = forecast !== '-' ? new Date(forecast).toLocaleString('de-DE', {
+                      day: '2-digit',
+                      month: '2-digit',
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    }) : '-';
+                    return `Vorhersage ${formatted} · Details im Radar-View`;
                   ]]]
                 styles:
                   card:
@@ -485,7 +438,7 @@ views:
                     - white-space: normal
       - cards:
           - type: heading
-            heading: Naechste Stunden
+            heading: Nächste Stunden
             heading_style: title
           - type: weather-forecast
             entity: weather.hamburg_fu
@@ -498,21 +451,132 @@ views:
             show_header_toggle: false
             entities:
               - entity: sensor.hamburg_fu_precip_probability_next1h
-                name: Niederschlag naechste Stunde
+                name: Niederschlag nächste Stunde
               - entity: sensor.hamburg_fu_precip_sum_24h
-                name: Niederschlag naechste 24h
+                name: Niederschlag nächste 24 h
               - entity: sensor.hamburg_fu_niederschlag
                 name: Niederschlag aktuell
               - entity: sensor.hamburg_fu_temp_next12h_max
-                name: Maximum naechste 12h
+                name: Maximum nächste 12 h
               - entity: sensor.hamburg_fu_temp_next12h_min
-                name: Minimum naechste 12h
-      - cards:
+                name: Minimum nächste 12 h
+      - type: grid
+        column_span: 3
+        cards:
+          - type: heading
+            heading: Hinweise
+            heading_style: title
+          - type: grid
+            columns: 3
+            square: false
+            cards:
+              - type: markdown
+                content: >
+                  **Tagesfokus**
+
+
+                  {% set current = states('sensor.hamburg_fu_temperatur') %}
+
+                  {% set condition = states('sensor.hamburg_fu_wetterzustand')
+                  %}
+
+                  {% set high = states('sensor.hamburg_fu_tx_heute') %}
+
+                  {% set low = states('sensor.hamburg_fu_tn_heute') %}
+
+                  {% set rain =
+                  states('sensor.hamburg_fu_precip_probability_next1h') %}
+
+                  {% set rain_sum = states('sensor.hamburg_fu_precip_sum_24h')
+                  %}
+
+                  {% set wind = states('sensor.hamburg_fu_windgeschwindigkeit')
+                  %}
+
+                  {% set gusts = states('sensor.hamburg_fu_windboen') %}
+
+                  {% set visibility = states('sensor.hamburg_fu_sichtweite') %}
+
+                  {{ condition }} bei {{ current }} °C.
+
+                  Heute zwischen {{ low }} und {{ high }} °C.
+
+                  Regenrisiko nächste Stunde {{ rain }} %, erwartete 24h-Summe
+                  {{ rain_sum }} mm.
+
+                  Wind {{ wind }} km/h mit Böen bis {{ gusts }} km/h, Sichtweite
+                  {{ visibility }} km.
+              - type: markdown
+                content: >
+                  **Warnlage**
+
+
+                  {% set rain =
+                  states('sensor.hamburg_fu_precip_probability_next1h') |
+                  float(0) %}
+
+                  {% set rain_now = states('sensor.hamburg_fu_niederschlag') |
+                  float(0) %}
+
+                  {% set wind = states('sensor.hamburg_fu_windgeschwindigkeit')
+                  | float(0) %}
+
+                  {% set gusts = states('sensor.hamburg_fu_windboen') | float(0)
+                  %}
+
+                  {% set visibility = states('sensor.hamburg_fu_sichtweite') |
+                  float(99) %}
+
+                  {% set fog =
+                  states('sensor.hamburg_fu_nebelwahrscheinlichkeit') | float(0)
+                  %}
+
+                  {% set sun = states('sensor.hamburg_fu_sonneneinstrahlung') |
+                  float(0) %}
+
+                  {% set messages = namespace(items=[]) %}
+
+                  {% if rain >= 70 or rain_now >= 0.3 %}
+                    {% set messages.items = messages.items + ['Regenlage: kurzfristig erhöhte Niederschlagswahrscheinlichkeit oder bereits aktiver Niederschlag.'] %}
+                  {% endif %}
+
+                  {% if gusts >= 45 or wind >= 30 %}
+                    {% set messages.items = messages.items + ['Windlage: böiger Wind, empfindliche Außenaktivitäten und offene Fenster prüfen.'] %}
+                  {% endif %}
+
+                  {% if visibility <= 3 or fog >= 60 %}
+                    {% set messages.items = messages.items + ['Sichtlage: eingeschränkte Sicht oder erhöhte Nebelwahrscheinlichkeit.'] %}
+                  {% endif %}
+
+                  {% if sun >= 250 %}
+                    {% set messages.items = messages.items + ['Sonnenlage: hohe Einstrahlung, geeignet für Balkon- oder Blendungsbewertung.'] %}
+                  {% endif %}
+
+                  {% if messages.items | count == 0 %}
+                    Keine markante Warnlage. Das Wetter wirkt derzeit im normalen Bereich.
+                  {% else %}
+                    {% for item in messages.items %}
+                    - {{ item }}
+                    {% endfor %}
+                  {% endif %}
+              - type: markdown
+                content: >
+                  **DWD-Datenstand**
+
+
+                  Datenstand DWD: {{
+                  states('sensor.hamburg_fu_vorhersagezeit_local') }}
+            grid_options:
+              columns: 33
+              rows: auto
+      - type: grid
+        column_span: 3
+        cards:
           - type: heading
             heading: Einordnung und Trend
             heading_style: title
           - type: grid
-            columns: 3
+            columns: 2
             square: false
             cards:
               - type: entities
@@ -524,9 +588,9 @@ views:
                   - entity: sensor.hamburg_fu_tn_heute
                     name: Tagesminimum
                   - entity: sensor.hamburg_fu_temp_next12h_max
-                    name: Maximum naechste 12h
+                    name: Maximum nächste 12 h
                   - entity: sensor.hamburg_fu_temp_next12h_min
-                    name: Minimum naechste 12h
+                    name: Minimum nächste 12 h
                   - entity: sensor.hamburg_fu_vorhersagezeit_local
                     name: Vorhersagezeit lokal
               - type: custom:weather-chart-card
@@ -557,29 +621,31 @@ views:
                 forecast:
                   precipitation_type: rainfall
                   show_probability: true
-                  labels_font_size: "11"
-                  precip_bar_size: "100"
+                  labels_font_size: '11'
+                  precip_bar_size: '100'
                   style: style1
                   show_wind_forecast: true
                   condition_icons: true
                   round_temp: true
                   type: daily
-                  number_of_forecasts: "0"
+                  number_of_forecasts: '0'
                   disable_animation: false
                 units:
-                  speed: ""
-              - type: history-graph
-                title: Temperatur-Verlauf 48h
-                hours_to_show: 48
-                refresh_interval: 120
-                entities:
-                  - entity: sensor.hamburg_fu_temperatur
-                    name: Aktuell
-                  - entity: sensor.hamburg_fu_tx_heute
-                    name: Vorhersage-Max
-                  - entity: sensor.hamburg_fu_tn_heute
-                    name: Vorhersage-Min
-
+                  speed: ''
+            grid_options:
+              columns: 24
+              rows: auto
+          - type: history-graph
+            title: Temperatur-Verlauf 48 h
+            hours_to_show: 48
+            refresh_interval: 120
+            entities:
+              - entity: sensor.hamburg_fu_temperatur
+                name: Aktuell
+              - entity: sensor.hamburg_fu_tx_heute
+                name: Vorhersage-Max
+              - entity: sensor.hamburg_fu_tn_heute
+                name: Vorhersage-Min
   - title: Radar
     path: radar
     icon: mdi:radar
@@ -602,18 +668,26 @@ views:
             show_name: true
             camera_view: auto
           - type: markdown
-            content: |
+            content: >
               **Radar-Einordnung**
 
-              {% set rain = states('sensor.hamburg_fu_precip_probability_next1h') | float(0) %}
-              {% set rain_sum = states('sensor.hamburg_fu_precip_sum_24h') | float(0) %}
-              {% set current = states('sensor.hamburg_fu_niederschlag') | float(0) %}
+
+              {% set rain =
+              states('sensor.hamburg_fu_precip_probability_next1h') | float(0)
+              %}
+
+              {% set rain_sum = states('sensor.hamburg_fu_precip_sum_24h') |
+              float(0) %}
+
+              {% set current = states('sensor.hamburg_fu_niederschlag') |
+              float(0) %}
+
               {% if rain >= 70 or current >= 0.3 %}
                 Lokal besteht eine aktive oder kurzfristig wahrscheinliche Regenlage.
               {% elif rain_sum >= 3 %}
-                Radar beobachten: im weiteren 24h-Verlauf ist relevanter Niederschlag moeglich.
+                Radar beobachten: im weiteren 24-h-Verlauf ist relevanter Niederschlag möglich.
               {% else %}
-                Lokal aktuell keine ausgepraegte Regenlage erkennbar.
+                Lokal aktuell keine ausgeprägte Regenlage erkennbar.
               {% endif %}
           - type: entities
             title: Niederschlagslage lokal
@@ -622,11 +696,11 @@ views:
               - entity: sensor.hamburg_fu_niederschlag
                 name: Niederschlag aktuell
               - entity: sensor.hamburg_fu_precip_probability_next1h
-                name: Wahrscheinlichkeit naechste Stunde
+                name: Wahrscheinlichkeit nächste Stunde
               - entity: sensor.hamburg_fu_precip_sum_24h
-                name: Niederschlag naechste 24h
+                name: Niederschlag nächste 24 h
               - entity: sensor.hamburg_fu_vorhersagezeit_local
-                name: Forecast-Zeit lokal
+                name: Vorhersagezeit lokal
       - cards:
           - type: heading
             heading: Regionalradar Norddeutschland
@@ -649,123 +723,133 @@ views:
               - entity: sensor.hamburg_fu_wetterzustand
                 name: Wetterzustand
               - entity: sensor.hamburg_fu_bewolkungsgrad
-                name: Bewoelkung
+                name: Bewölkung
               - entity: sensor.hamburg_fu_sichtweite
                 name: Sichtweite
               - entity: sensor.hamburg_fu_nebelwahrscheinlichkeit
                 name: Nebelwahrscheinlichkeit
-
-  - title: DWD Details
+  - title: DWD-Details
     path: dwd-details
     icon: mdi:chart-box-outline
     type: sections
-    max_columns: 3
+    max_columns: 2
     sections:
-      - cards:
+      - type: grid
+        column_span: 2
+        cards:
           - type: heading
-            heading: Thermik
+            heading: Thermik und Atmosphäre
             heading_style: title
             badges:
               - type: entity
                 entity: sensor.hamburg_fu_temperatur
               - type: entity
-                entity: sensor.hamburg_fu_taupunkt
-          - type: entities
-            title: Temperatur
-            show_header_toggle: false
-            entities:
-              - entity: sensor.hamburg_fu_temperatur
-                name: Aktuell
-              - entity: sensor.hamburg_fu_taupunkt
-                name: Taupunkt
-              - entity: sensor.hamburg_fu_tx_heute
-                name: Tagesmaximum heute
-              - entity: sensor.hamburg_fu_tn_heute
-                name: Tagesminimum heute
-              - entity: sensor.hamburg_fu_temp_next12h_max
-                name: Maximum naechste 12h
-              - entity: sensor.hamburg_fu_temp_next12h_min
-                name: Minimum naechste 12h
-          - type: history-graph
-            title: Temperatur-Verlauf 48h
-            hours_to_show: 48
-            refresh_interval: 120
-            entities:
-              - entity: sensor.hamburg_fu_temperatur
-                name: Aktuell
-      - cards:
-          - type: heading
-            heading: Luft und Sicht
-            heading_style: title
-            badges:
-              - type: entity
                 entity: sensor.hamburg_fu_luftfeuchtigkeit
-              - type: entity
-                entity: sensor.hamburg_fu_sichtweite
-          - type: entities
-            title: Atmosphaere
-            show_header_toggle: false
-            entities:
-              - entity: sensor.hamburg_fu_luftfeuchtigkeit
-                name: Relative Luftfeuchtigkeit
-              - entity: sensor.hamburg_fu_absolute_luftfeuchtigkeit
-                name: Absolute Luftfeuchtigkeit
-              - entity: sensor.hamburg_fu_druck
-                name: Luftdruck
-              - entity: sensor.hamburg_fu_sichtweite
-                name: Sichtweite
-              - entity: sensor.hamburg_fu_bewolkungsgrad
-                name: Bewoelkung
-              - entity: sensor.hamburg_fu_nebelwahrscheinlichkeit
-                name: Nebelwahrscheinlichkeit
-      - cards:
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - type: entities
+                title: Temperatur
+                show_header_toggle: false
+                entities:
+                  - entity: sensor.hamburg_fu_temperatur
+                    name: Aktuell
+                  - entity: sensor.hamburg_fu_taupunkt
+                    name: Taupunkt
+                  - entity: sensor.hamburg_fu_tx_heute
+                    name: Tagesmaximum heute
+                  - entity: sensor.hamburg_fu_tn_heute
+                    name: Tagesminimum heute
+                  - entity: sensor.hamburg_fu_temp_next12h_max
+                    name: Maximum nächste 12 h
+                  - entity: sensor.hamburg_fu_temp_next12h_min
+                    name: Minimum nächste 12 h
+              - type: entities
+                title: Atmosphäre
+                show_header_toggle: false
+                entities:
+                  - entity: sensor.hamburg_fu_luftfeuchtigkeit
+                    name: Relative Luftfeuchtigkeit
+                  - entity: sensor.hamburg_fu_absolute_luftfeuchtigkeit
+                    name: Absolute Luftfeuchtigkeit
+                  - entity: sensor.hamburg_fu_druck
+                    name: Luftdruck
+                  - entity: sensor.hamburg_fu_sichtweite
+                    name: Sichtweite
+                  - entity: sensor.hamburg_fu_bewolkungsgrad
+                    name: Bewölkung
+                  - entity: sensor.hamburg_fu_nebelwahrscheinlichkeit
+                    name: Nebelwahrscheinlichkeit
+            grid_options:
+              columns: 24
+              rows: auto
+      - type: grid
+        column_span: 2
+        cards:
           - type: heading
-            heading: Wind und Niederschlag
+            heading: Verlauf und Wind
             heading_style: title
             badges:
               - type: entity
                 entity: sensor.hamburg_fu_windgeschwindigkeit
               - type: entity
-                entity: sensor.hamburg_fu_precip_probability_next1h
-          - type: entities
-            title: Wind
-            show_header_toggle: false
-            entities:
-              - entity: sensor.hamburg_fu_windgeschwindigkeit
-                name: Windgeschwindigkeit
-              - entity: sensor.hamburg_fu_windboen
-                name: Windboeen
-              - entity: sensor.hamburg_fu_windrichtung
-                name: Windrichtung Grad
-              - entity: sensor.hamburg_fu_windrose
-                name: Windrichtung Text
-              - entity: sensor.hamburg_fu_beaufort
-                name: Beaufort
-          - type: entities
-            title: Niederschlag
-            show_header_toggle: false
-            entities:
-              - entity: sensor.hamburg_fu_niederschlag
-                name: Niederschlag aktuell
-              - entity: sensor.hamburg_fu_niederschlagswahrscheinlichkeit
-                name: Niederschlagswahrscheinlichkeit
-              - entity: sensor.hamburg_fu_precip_probability_next1h
-                name: Wahrscheinlichkeit naechste Stunde
-              - entity: sensor.hamburg_fu_precip_sum_24h
-                name: Summe naechste 24h
-      - cards:
-          - type: heading
-            heading: Sonne und Astronomie
-            heading_style: title
-            badges:
-              - type: entity
-                entity: sensor.hamburg_fu_sonneneinstrahlung
-              - type: entity
-                entity: sensor.hamburg_fu_sonnenscheindauer
+                entity: sensor.hamburg_fu_windboen
           - type: grid
             columns: 2
             square: false
             cards:
+              - type: history-graph
+                title: Temperatur-Verlauf 48 h
+                hours_to_show: 48
+                refresh_interval: 120
+                entities:
+                  - entity: sensor.hamburg_fu_temperatur
+                    name: Aktuell
+              - type: entities
+                title: Wind
+                show_header_toggle: false
+                entities:
+                  - entity: sensor.hamburg_fu_windgeschwindigkeit
+                    name: Windgeschwindigkeit
+                  - entity: sensor.hamburg_fu_windboen
+                    name: Windböen
+                  - entity: sensor.hamburg_fu_windrichtung
+                    name: Windrichtung Grad
+                  - entity: sensor.hamburg_fu_windrose
+                    name: Windrichtung Text
+                  - entity: sensor.hamburg_fu_beaufort
+                    name: Beaufort
+            grid_options:
+              columns: 24
+              rows: auto
+      - type: grid
+        column_span: 2
+        cards:
+          - type: heading
+            heading: Niederschlag und Strahlung
+            heading_style: title
+            badges:
+              - type: entity
+                entity: sensor.hamburg_fu_precip_probability_next1h
+              - type: entity
+                entity: sensor.hamburg_fu_sonneneinstrahlung
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - type: entities
+                title: Niederschlag
+                show_header_toggle: false
+                entities:
+                  - entity: sensor.hamburg_fu_niederschlag
+                    name: Niederschlag aktuell
+                  - entity: sensor.hamburg_fu_niederschlagswahrscheinlichkeit
+                    name: Niederschlagswahrscheinlichkeit
+                  - entity: sensor.hamburg_fu_precip_probability_next1h
+                    name: Wahrscheinlichkeit nächste Stunde
+                  - entity: sensor.hamburg_fu_precip_sum_24h
+                    name: Summe nächste 24 h
               - type: entities
                 title: Strahlung
                 show_header_toggle: false
@@ -775,26 +859,40 @@ views:
                   - entity: sensor.hamburg_fu_sonnenscheindauer
                     name: Sonnenscheindauer
                   - entity: sensor.hamburg_fu_bewolkungsgrad
-                    name: Bewoelkung
+                    name: Bewölkung
                   - entity: sensor.hamburg_fu_vorhersagezeit_local
                     name: Vorhersagezeit lokal
-              - type: custom:horizon-card
-                moon: true
-                refresh_period: 60
-                fields:
-                  sunrise: true
-                  sunset: true
-                  dawn: true
-                  noon: true
-                  dusk: true
-                  azimuth: true
-                  sun_azimuth: true
-                  moon_azimuth: true
-                  elevation: true
-                  sun_elevation: true
-                  moon_elevation: true
-                  moonrise: true
-                  moonset: true
-                  moon_phase: true
-                southern_flip: false
-                language: de
+            grid_options:
+              columns: 24
+              rows: auto
+      - type: grid
+        column_span: 2
+        cards:
+          - type: heading
+            heading: Astronomie
+            heading_style: title
+            badges:
+              - type: entity
+                entity: sensor.hamburg_fu_sonneneinstrahlung
+              - type: entity
+                entity: sensor.hamburg_fu_sonnenscheindauer
+          - type: custom:horizon-card
+            moon: true
+            refresh_period: 60
+            fields:
+              sunrise: true
+              sunset: true
+              dawn: true
+              noon: true
+              dusk: true
+              azimuth: true
+              sun_azimuth: true
+              moon_azimuth: true
+              elevation: true
+              sun_elevation: true
+              moon_elevation: true
+              moonrise: true
+              moonset: true
+              moon_phase: true
+            southern_flip: false
+            language: de
