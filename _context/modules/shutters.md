@@ -9,6 +9,11 @@ Rules specific to shutters / rollladen / beschattung packages, helpers, template
 - `packages/shutters/beschattung_outputs.yaml` is the only output-mapping layer for `input_boolean.beschattung_ost` and `input_boolean.beschattung_west`.
 - `packages/shutters/rollladen_scripts.yaml` is execution-only and must not become a second decision layer.
 
+## Integration context
+- Shutters are primarily Homematic IP / HmIP based.
+- The installed HACS integration `Homematic(IP) Local for OpenCCU` is relevant environment context.
+- Weather-related dashboard and visualization work may also depend on installed DWD-related HACS components and weather cards.
+
 ## Override model
 - `input_boolean.rollladen_override_ost` and `input_boolean.rollladen_override_west` are manual override flags.
 - Override detection, timer lifecycle, and startup reconcile must stay consistent.

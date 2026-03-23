@@ -8,6 +8,10 @@ Rules specific to Heating packages, helpers, templates, scripts, automations, sc
 - `script.heizung_profil_anwenden_pkg` is the authoritative automatic execution path.
 - `packages/heating/heating_scenes.yaml` is the authoritative runtime scene layer for the 3-profile heating model.
 
+## Integration context
+- Heating is primarily Homematic IP / HmIP based.
+- The installed HACS integration `Homematic(IP) Local for OpenCCU` is relevant context when assessing dependency assumptions or environment-specific behavior.
+
 ## Operating model
 - Keep the intentionally slow / hysteresis-based operating model intact unless explicitly requested.
 - `04:03` remains the main daily application point; `00:01` is the midnight re-apply path.

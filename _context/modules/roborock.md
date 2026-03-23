@@ -11,6 +11,7 @@ Rules specific to Roborock packages, helpers, scripts, automations, and dashboar
 ## Integration context
 - Roborock device control is based on the official Home Assistant integration path.
 - The dashboard map experience additionally depends on the Xiaomi vacuum map card.
+- The installed HACS integration `Roborock Custom Map` is part of the relevant map ecosystem for this module.
 - Treat map-card behavior and vacuum-control behavior as related but not identical layers when documenting or changing the module.
 
 ## Helper model

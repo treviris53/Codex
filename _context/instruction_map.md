@@ -20,7 +20,9 @@ Sie beantwortet zwei Fragen:
 | Aufgabentyp | Zusaetzlich lesen |
 | --- | --- |
 | Architektur, Packages, Scripts, Automationen, Dashboards | `D:\Codex\_context\architecture.md` |
+| Dashboard-Redesign, Dashboard-Bugfix, UI-/Subview-Struktur | `D:\Codex\_context\dashboard.md` |
 | Deployment, Diff, Reload, Restart, Healthcheck | `D:\Codex\_context\deployment.md` |
+| HACS-Abhaengigkeiten, Custom Cards, Custom Integrations, Themes | `D:\Codex\_context\hacs_inventory.md` |
 | Runtime-Snapshot, Debug-Snapshots, lokale HA-Analyse | `D:\Codex\_context\runtime_usage.md` |
 | Scheduler-Mappings, Helper-Defaults, Dashboard-/Programmkonsistenz | `D:\Codex\_context\lessons_learned.md` |
 | Roborock-Modul | `D:\Codex\_context\modules\roborock.md` und `D:\Codex\_ha_dokumentation\roborock\ROBOROCK_APP.md` |
@@ -79,6 +81,29 @@ Architektur- und Schichtregeln:
 
 Verwendung:
 - Vor Architektur-, Package-, Script-, Automation- und Dashboard-Aenderungen
+
+### `D:\Codex\_context\dashboard.md`
+
+Dashboard-spezifische UX- und Strukturregeln:
+
+- kompakte Seiten
+- Subviews / Untermenues
+- Trennung von Bedienung, Status, Diagnose und Service
+- dashboard-relevante HACS-Bausteine
+
+Verwendung:
+- Vor Dashboard-Redesigns, Dashboard-Bugfixes und groesseren UI-Umbauten
+
+### `D:\Codex\_context\hacs_inventory.md`
+
+Inventar der relevanten HACS-Erweiterungen:
+
+- produktiv genutzte Custom Integrations
+- dashboard-relevante Custom Cards
+- theme- und modulrelevante HACS-Abhaengigkeiten
+
+Verwendung:
+- Wenn HACS-Karten, HACS-Integrationen, Themes oder modulrelevante Custom-Komponenten betroffen sind
 
 ### `D:\Codex\_context\deployment.md`
 

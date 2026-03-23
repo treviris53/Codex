@@ -61,8 +61,10 @@ Primary working directory: `D:\Codex`
 - When changing rule files, use `_context/rule_change_checklist.md` to counter-check related instructions and avoid rule drift.
 - Before making code or configuration changes, read `_context/project_rules.md`.
 - Before changing Home Assistant architecture, packages, scripts, automations, or dashboards, read `_context/architecture.md`.
+- Before changing dashboards or dashboard UX structure, read `_context/dashboard.md`.
 - Before using `_ha_runtime_snapshot/` for validation or debugging, read `_context/runtime_usage.md`.
 - Before deployment work, read `_context/deployment.md`.
+- When custom integrations, custom cards, HACS dependencies, or themes matter, read `_context/hacs_inventory.md`.
 - When touching scheduler mappings, helper defaults, or dashboard/program consistency, check `_context/lessons_learned.md`.
 - When touching Roborock packages, scripts, helpers, automations, or dashboards, read `_context/modules/roborock.md`.
 - When touching Heating packages, scripts, helpers, automations, scenes, or dashboards, read `_context/modules/heating.md`.
@@ -82,6 +84,7 @@ Primary working directory: `D:\Codex`
 - Default change posture is conservative-to-balanced for production-near configuration: prefer small, reviewable, low-risk changes unless a broader change is explicitly requested.
 - Do not make ad-hoc write changes directly in the live Home Assistant runtime; repository files are the authoritative write path unless a task explicitly requires deployment.
 - Runtime access should default to read/validate/deploy workflows, not direct manual mutation on the HA host.
+- HACS is installed and productively used; relevant custom integrations, custom cards, and themes must be considered when changing dashboards or dependent modules.
 
 ## Home Assistant package conventions
 - Use paths like `packages/<domain>/<feature>.yaml`.
