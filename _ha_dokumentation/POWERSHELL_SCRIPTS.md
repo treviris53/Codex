@@ -84,6 +84,82 @@ Diese Datei dokumentiert die vorhandenen PowerShell-Skripte im Workspace. Der Fo
 - Uncommittete oder ungetrackte Worktree-Aenderungen werden im Preview-Modus nicht als Vorschlag beruecksichtigt; sie werden nur als Hinweis gemeldet.
 - Wenn YAML-Dateien geloescht oder umbenannt wurden, versucht der Guard einen sicheren Verzeichnisvorschlag abzuleiten. Gelingt das nicht, wird der Fall als `UNRESOLVED` markiert.
 
+### VS-Code-Integration
+
+Die VS-Code-Task-Integration liegt unter `D:\Codex\.vscode\tasks.json` und bildet den Guard-Workflow direkt ab.
+
+Verfuegbare Tasks:
+
+- `HA: Yamllint current file`
+- `HA: Yamllint workspace`
+- `HA: Preview changed since last deploy`
+- `HA: Deploy diff current file`
+- `HA: Deploy live current file`
+- `HA: Deploy diff only`
+- `HA: Deploy diff preset`
+- `HA: Deploy live`
+- `HA: Deploy live preset`
+
+Wichtige Eigenschaften:
+
+- Alle Deploy-Tasks laufen ueber `deploy_ha_git_guard.ps1`.
+- Deploybar bleiben nur `.yaml`- und `.yml`-Dateien bzw. YAML-only-Verzeichnisse.
+- Die Live-Tasks verwenden den produktionsnahen Guard-Pfad mit `-Backup`, `-PostReload`, `-HealthCheck`, `-StrictModeDeploy` und `-RequireBranch main`.
+- Die Prompt- und Preset-Tasks erwarten repository-relative Pfade wie `packages/heating` oder `dashboards/wetter_dashboard.yaml`.
+- Die Current-File-Tasks verwenden `${relativeFile}` und eignen sich deshalb nur fuer aktuell geoeffnete YAML-Dateien innerhalb des Repositorys.
+
+Empfohlene Reihenfolge in VS Code:
+
+1. `HA: Yamllint current file`
+2. `HA: Preview changed since last deploy`
+3. `HA: Deploy diff current file`, `HA: Deploy diff preset` oder `HA: Deploy diff only`
+4. `HA: Deploy live current file`, `HA: Deploy live preset` oder `HA: Deploy live`
+
+Hinweis:
+
+- Workspace-lokale Tastenkombinationen sind nicht im Repository hinterlegt. Falls gewuenscht, muessen sie benutzerspezifisch in VS Code auf die Task-Namen gemappt werden.
+
+### VS-Code-Only Standardablaeufe
+
+#### 1. Einzelne YAML-Datei
+
+Beispiel: `packages/heating/heating_scripts.yaml`
+
+1. Datei in VS Code bearbeiten
+2. `HA: Yamllint current file`
+3. Im Source-Control-Panel die Aenderung pruefen und stagen
+4. Commit in VS Code erstellen
+5. `HA: Deploy diff current file`
+6. Bei erwarteter Diff-Ausgabe `HA: Deploy live current file`
+
+Wichtig:
+
+- Die aktuelle Datei muss eine Repository-Datei mit `.yaml` oder `.yml` sein.
+- Ein Live-Deploy blockiert, wenn der Worktree noch ungeplante uncommittete Aenderungen enthaelt.
+
+#### 2. Modul- oder Verzeichnis-Aenderung
+
+Beispiel: `packages/heating`
+
+1. Mehrere YAML-Dateien im gleichen Modul in VS Code bearbeiten
+2. `HA: Yamllint workspace` oder gezielt die betroffenen Dateien pruefen
+3. Im Source-Control-Panel die zusammengehoerigen Aenderungen stagen
+4. Commit in VS Code erstellen
+5. Optional `HA: Preview changed since last deploy`
+6. `HA: Deploy diff preset` oder `HA: Deploy diff only`
+7. Bei erwarteter Diff-Ausgabe `HA: Deploy live preset` oder `HA: Deploy live`
+
+Wichtig:
+
+- Fuer Module und Verzeichnisse duerfen nur YAML-only-Pfade verwendet werden.
+- Presets sind fuer haeufige Ziele gedacht; freie Verzeichnisse koennen ueber den Prompt-Task angegeben werden.
+
+#### 3. Praktische Git-Regel in VS Code
+
+- Stage und committe nur den Stand, den du wirklich deployen willst.
+- Wenn parallel noch Doku-, Skript- oder sonstige uncommittete Aenderungen offen sind, wird der Guard den Live-Deploy absichtlich blockieren.
+- In diesem Fall zuerst committen, separieren oder zwischenspeichern, dann den Deploy-Task starten.
+
 ## `ha_api_test.ps1`
 
 ### Funktion
