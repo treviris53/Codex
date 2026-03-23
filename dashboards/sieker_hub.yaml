@@ -1,6 +1,6 @@
 # Dashboard: Sieker Hub
-# Version: 2.0.2
-# Generated: 2026-03-22
+# Version: 2.0.3
+# Generated: 2026-03-23
 # Notes:
 # - Best-practice oriented hub dashboard.
 title: Sieker Hub
@@ -423,10 +423,13 @@ views:
             heading: Küche
           - type: tile
             entity: light.licht_herd
-            name: Herdlicht
+            name: Licht Herd
           - type: tile
             entity: light.0x086bd7fffe404a82
-            name: Küchenlicht
+            name: Licht Spüle
+          - type: tile
+            entity: light.0x086bd7fffe404a82
+            name: Licht Küche
       - cards:
           - type: heading
             heading: Wohnzimmer
@@ -469,18 +472,6 @@ views:
               - entity: sensor.0xa4c138442a735c69_energy
                 name: Energie
           - type: entities
-            title: Steckdose 4
-            show_header_toggle: false
-            entities:
-              - entity: switch.steckdose_4
-                name: Ein/Aus
-              - entity: switch.steckdose_4_child_lock
-                name: Kindersicherung
-              - entity: sensor.steckdose_4_power
-                name: Leistung
-              - entity: sensor.steckdose_4_energy
-                name: Energie
-          - type: entities
             title: Steckdose Fernseher
             show_header_toggle: false
             entities:
@@ -495,18 +486,6 @@ views:
       - cards:
           - type: heading
             heading: Gästezimmer
-          - type: entities
-            title: Steckdose 3
-            show_header_toggle: false
-            entities:
-              - entity: switch.steckdose_3
-                name: Ein/Aus
-              - entity: switch.steckdose_3_child_lock
-                name: Kindersicherung
-              - entity: sensor.steckdose_3_power
-                name: Leistung
-              - entity: sensor.steckdose_3_energy
-                name: Energie
           - type: entities
             title: Steckdose Computertisch
             show_header_toggle: false
