@@ -1,5 +1,5 @@
 # Dashboard: Wetter
-# Version: 2.0.0
+# Version: 2.1.0
 # Generated: 2026-03-23
 # Notes:
 # - Fokus auf kompakte Wetterlage, Radar und DWD-Details.
@@ -17,6 +17,28 @@ views:
           - type: heading
             heading: Aktuelle Lage
             heading_style: title
+          - type: grid
+            columns: 3
+            square: false
+            cards:
+              - type: button
+                name: Radar
+                icon: mdi:radar
+                tap_action:
+                  action: navigate
+                  navigation_path: radar
+              - type: button
+                name: DWD Details
+                icon: mdi:chart-box-outline
+                tap_action:
+                  action: navigate
+                  navigation_path: dwd-details
+              - type: button
+                entity: weather.hamburg_fu
+                name: Forecast
+                icon: mdi:weather-cloudy-arrow-right
+                tap_action:
+                  action: more-info
           - type: custom:button-card
             entity: sensor.hamburg_fu_temperatur
             name: Hamburg-Fuhlsbuettel
@@ -63,6 +85,23 @@ views:
                 - white-space: pre-line
                 - font-size: 14px
                 - line-height: 1.4
+          - type: markdown
+            content: |
+              **Tagesfokus**
+
+              {% set current = states('sensor.hamburg_fu_temperatur') %}
+              {% set condition = states('sensor.hamburg_fu_wetterzustand') %}
+              {% set high = states('sensor.hamburg_fu_tx_heute') %}
+              {% set low = states('sensor.hamburg_fu_tn_heute') %}
+              {% set rain = states('sensor.hamburg_fu_precip_probability_next1h') %}
+              {% set rain_sum = states('sensor.hamburg_fu_precip_sum_24h') %}
+              {% set wind = states('sensor.hamburg_fu_windgeschwindigkeit') %}
+              {% set gusts = states('sensor.hamburg_fu_windboen') %}
+              {% set visibility = states('sensor.hamburg_fu_sichtweite') %}
+              {{ condition }} bei {{ current }} °C.
+              Heute zwischen {{ low }} und {{ high }} °C.
+              Regenrisiko naechste Stunde {{ rain }} %, erwartete 24h-Summe {{ rain_sum }} mm.
+              Wind {{ wind }} km/h mit Boeen bis {{ gusts }} km/h, Sichtweite {{ visibility }} km.
           - type: markdown
             content: |
               **DWD Wetterbericht**
@@ -113,6 +152,8 @@ views:
                   card:
                     - padding: 14px
                     - height: 108px
+                    - background-color: rgba(77, 137, 219, 0.08)
+                    - border: 1px solid rgba(77, 137, 219, 0.16)
                   grid:
                     - grid-template-areas: '"i n" "i s" "l l"'
                     - grid-template-columns: 32px 1fr
@@ -127,6 +168,21 @@ views:
                     - justify-self: start
                     - text-align: left
                     - white-space: normal
+                state:
+                  - operator: template
+                    value: >
+                      [[[
+                        const probability = Number(states['sensor.hamburg_fu_precip_probability_next1h']?.state);
+                        const current = Number(states['sensor.hamburg_fu_niederschlag']?.state);
+                        return (Number.isFinite(probability) && probability >= 70) ||
+                          (Number.isFinite(current) && current >= 0.3);
+                      ]]]
+                    styles:
+                      card:
+                        - background-color: rgba(77, 137, 219, 0.24)
+                        - border: 1px solid rgba(77, 137, 219, 0.35)
+                      icon:
+                        - color: var(--info-color)
               - type: custom:button-card
                 entity: sensor.hamburg_fu_windgeschwindigkeit
                 name: Wind
@@ -151,6 +207,8 @@ views:
                   card:
                     - padding: 14px
                     - height: 108px
+                    - background-color: rgba(214, 135, 52, 0.08)
+                    - border: 1px solid rgba(214, 135, 52, 0.16)
                   grid:
                     - grid-template-areas: '"i n" "i s" "l l"'
                     - grid-template-columns: 32px 1fr
@@ -165,6 +223,21 @@ views:
                     - justify-self: start
                     - text-align: left
                     - white-space: normal
+                state:
+                  - operator: template
+                    value: >
+                      [[[
+                        const gusts = Number(states['sensor.hamburg_fu_windboen']?.state);
+                        const wind = Number(states['sensor.hamburg_fu_windgeschwindigkeit']?.state);
+                        return (Number.isFinite(gusts) && gusts >= 45) ||
+                          (Number.isFinite(wind) && wind >= 30);
+                      ]]]
+                    styles:
+                      card:
+                        - background-color: rgba(214, 135, 52, 0.22)
+                        - border: 1px solid rgba(214, 135, 52, 0.35)
+                      icon:
+                        - color: var(--warning-color)
               - type: custom:button-card
                 entity: sensor.hamburg_fu_luftfeuchtigkeit
                 name: Luft
@@ -188,6 +261,8 @@ views:
                   card:
                     - padding: 14px
                     - height: 108px
+                    - background-color: rgba(64, 167, 162, 0.08)
+                    - border: 1px solid rgba(64, 167, 162, 0.16)
                   grid:
                     - grid-template-areas: '"i n" "i s" "l l"'
                     - grid-template-columns: 32px 1fr
@@ -202,6 +277,17 @@ views:
                     - justify-self: start
                     - text-align: left
                     - white-space: normal
+                state:
+                  - operator: template
+                    value: >
+                      [[[
+                        const humidity = Number(states['sensor.hamburg_fu_luftfeuchtigkeit']?.state);
+                        return Number.isFinite(humidity) && humidity >= 85;
+                      ]]]
+                    styles:
+                      card:
+                        - background-color: rgba(64, 167, 162, 0.20)
+                        - border: 1px solid rgba(64, 167, 162, 0.34)
               - type: custom:button-card
                 entity: sensor.hamburg_fu_sichtweite
                 name: Sicht
@@ -225,6 +311,8 @@ views:
                   card:
                     - padding: 14px
                     - height: 108px
+                    - background-color: rgba(120, 120, 120, 0.07)
+                    - border: 1px solid rgba(120, 120, 120, 0.14)
                   grid:
                     - grid-template-areas: '"i n" "i s" "l l"'
                     - grid-template-columns: 32px 1fr
@@ -239,6 +327,19 @@ views:
                     - justify-self: start
                     - text-align: left
                     - white-space: normal
+                state:
+                  - operator: template
+                    value: >
+                      [[[
+                        const visibility = Number(states['sensor.hamburg_fu_sichtweite']?.state);
+                        const fog = Number(states['sensor.hamburg_fu_nebelwahrscheinlichkeit']?.state);
+                        return (Number.isFinite(visibility) && visibility <= 3) ||
+                          (Number.isFinite(fog) && fog >= 60);
+                      ]]]
+                    styles:
+                      card:
+                        - background-color: rgba(120, 120, 120, 0.18)
+                        - border: 1px solid rgba(120, 120, 120, 0.30)
               - type: custom:button-card
                 entity: sensor.hamburg_fu_sonneneinstrahlung
                 name: Sonne
@@ -263,6 +364,8 @@ views:
                   card:
                     - padding: 14px
                     - height: 108px
+                    - background-color: rgba(226, 181, 42, 0.08)
+                    - border: 1px solid rgba(226, 181, 42, 0.16)
                   grid:
                     - grid-template-areas: '"i n" "i s" "l l"'
                     - grid-template-columns: 32px 1fr
@@ -277,6 +380,19 @@ views:
                     - justify-self: start
                     - text-align: left
                     - white-space: normal
+                state:
+                  - operator: template
+                    value: >
+                      [[[
+                        const irradiance = Number(states['sensor.hamburg_fu_sonneneinstrahlung']?.state);
+                        return Number.isFinite(irradiance) && irradiance >= 250;
+                      ]]]
+                    styles:
+                      card:
+                        - background-color: rgba(226, 181, 42, 0.18)
+                        - border: 1px solid rgba(226, 181, 42, 0.32)
+                      icon:
+                        - color: var(--warning-color)
               - type: custom:button-card
                 entity: sensor.hamburg_fu_wetterzustand
                 name: Station
@@ -299,6 +415,8 @@ views:
                   card:
                     - padding: 14px
                     - height: 108px
+                    - background-color: rgba(99, 109, 255, 0.06)
+                    - border: 1px solid rgba(99, 109, 255, 0.15)
                   grid:
                     - grid-template-areas: '"i n" "i s" "l l"'
                     - grid-template-columns: 32px 1fr

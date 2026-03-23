@@ -64,7 +64,9 @@ Radar-Karten:
 
 Sie zeigt:
 
+- Schnellnavigation zu Radar, Forecast und DWD-Details
 - Hero-Karte mit aktueller Temperatur, Wetterzustand und Tages-Spanne
+- kompakten `Tagesfokus` als lesbare Kurzbewertung
 - DWD-Wetterbericht
 - kompaktes Schnellbild fuer Regen, Wind, Luft, Sicht und Sonne
 - Stunden-Forecast fuer die naechsten Stunden
@@ -118,6 +120,7 @@ Formatierungen im Dashboard beschraenken sich auf:
 - Anzeigeverdichtung
 - Einheiten-/Label-Aufbereitung
 - Navigation zwischen Views
+- visuelle Hervorhebung auffaelliger Wetterlagen anhand vorhandener DWD-Werte
 
 ## Outputs / Side Effects
 
@@ -138,6 +141,12 @@ Views ueberfuehrt:
 
 Zusaetzlich wurde der hardcodierte Demo-Platzhalter bei den Radar-Karten entfernt,
 sodass wieder die echten Kamera-Feeds angezeigt werden.
+
+Mit Version `2.1.0` kamen hinzu:
+
+- Schnellnavigation in der Startansicht
+- `Tagesfokus` als lesbare Kompaktzusammenfassung
+- visuelle Zustandspriorisierung fuer Regen, Wind, Luft, Sicht und Sonne
 
 ## Troubleshooting
 
