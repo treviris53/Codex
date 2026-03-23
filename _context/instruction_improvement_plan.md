@@ -28,6 +28,12 @@ Phase-1-Status:
 
 - Phase 1 ist umgesetzt.
 
+Phase-2-Status:
+
+- Phase 2 ist umgesetzt:
+  - globale Regeltexte in `AGENTS.md` wurden an den sicheren Stellen auf Kurzfassungen plus Verweise reduziert
+  - neue Startvorlagen fuer Code Review, Architektur-Aenderung, Doku-Update und Dashboard-Bugfix wurden angelegt
+
 ## 1. Redundanz reduzieren
 
 ### Ziel

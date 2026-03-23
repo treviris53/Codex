@@ -98,6 +98,7 @@ Before proposing a final change:
 - check for accidental `entity_id` renames
 - call out placeholders clearly
 - summarize changed files
+- Use `_context/deployment.md` for the detailed validation and activation matrix when reload/restart/deploy questions matter.
 
 ## Documentation expectations
 For substantial Home Assistant changes, include:
@@ -110,21 +111,16 @@ For substantial Home Assistant changes, include:
 
 ## Documentation maintenance
 - Treat documentation under `_ha_dokumentation/` as project guidance for established module behavior, operating flows, and dashboard structure.
-- Before changing a documented module's architecture, behavior, helpers, scripts, automations, scenes, dashboards, mappings, diagnostics, or control flow, read the corresponding documentation in `_ha_dokumentation/`.
-- If a change affects runtime behavior, control flow, mappings, helpers, diagnostics, dashboard entry points, troubleshooting, or operator-relevant structure, update the corresponding documentation in `_ha_dokumentation/` in the same task.
-- If a documented flow changes and a related `.drawio` file exists, update that diagram in the same task.
-- Pure formatting, comments, ownership notes, or other strictly non-functional cleanup do not require a documentation update unless clarity, ownership, or operating guidance changed.
+- Before changing a documented module's behavior or operator-facing flow, read the corresponding module documentation and keep it in sync in the same task.
+- Pure formatting or strictly non-functional cleanup does not require documentation updates unless clarity, ownership, or operator guidance changed.
+- Use `_context/project_rules.md`, module rules under `_context/modules/`, and `_context/instruction_map.md` for the fuller documentation-maintenance model.
 
 ## Dashboard rules
-- Preserve established dashboard navigation, subviews, entity references, and operator-facing structure unless a dashboard change is explicitly requested.
-- Prefer minimal dashboard edits that stay aligned with the authoritative package logic and helper model.
-- Do not introduce dashboard actions that bypass the intended safe script / package execution path.
-- When dashboard entry points, visible diagnostics, or user workflows change, update the matching module documentation.
-- Prefer clear, compact dashboards with logical subviews / submenus over long single-page layouts.
-- Avoid dashboards that grow into long vertical scrolling pages when the content can be split into focused subviews.
-- Group controls, status, diagnostics, service actions, and tuning parameters into separate sections or subviews.
-- Favor fast operator orientation: the most important actions and state should be visible quickly without scrolling through large entity blocks.
-- When extending an existing dashboard, prefer refining or adding subviews instead of continuously expanding one oversized page.
+- Keep dashboards aligned with the authoritative package logic and safe script entrypoints.
+- Prefer clear, compact dashboards with focused subviews over long scrolling pages.
+- Preserve established navigation and operator-facing structure unless a dashboard change is explicitly requested.
+- When dashboard entry points, diagnostics, or user workflows change, update the matching module documentation.
+- Use `_context/architecture.md` for the fuller dashboard architecture and UX rules.
 
 
 ## Additional Operational Constraints (Repository-Specific)
