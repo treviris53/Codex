@@ -29,3 +29,9 @@ Key rules:
 - Default shell context is PowerShell on Windows 11
 - WSL exists but is only a secondary / occasional context
 - Treat changes as production-near and prefer small, low-risk updates
+
+## Recommended VS Code Extensions
+
+- Core for this repo: `YAML`, `YamLint Fix`, `PowerShell`, `Home Assistant Config Helper`, `Draw.io Integration`, `markdownlint`
+- Helpful but optional: `Markdown All in One`, `Error Lens`, `Git History`
+- Use `D:\Codex\_context\dev_tooling.md` for the fuller VS Code workspace setup, settings, and task guidance

@@ -23,6 +23,7 @@ Sie beantwortet zwei Fragen:
 | Dashboard-Redesign, Dashboard-Bugfix, UI-/Subview-Struktur | `D:\Codex\_context\dashboard.md` |
 | Deployment, Diff, Reload, Restart, Healthcheck, produktive Diagnose mit klarer Aktivierungsgrenze | `D:\Codex\_context\deployment.md` |
 | HACS-Abhaengigkeiten, Custom Cards, Custom Integrations, Themes | `D:\Codex\_context\hacs_inventory.md` |
+| VS Code Setup, Workspace-Settings, Editor-Tasks | `D:\Codex\_context\dev_tooling.md` |
 | Runtime-Snapshot, Debug-Snapshots, lokale HA-Analyse, produktive Logs / Traces im Read-Only-Modus | `D:\Codex\_context\runtime_usage.md` |
 | Scheduler-Mappings, Helper-Defaults, Dashboard-/Programmkonsistenz | `D:\Codex\_context\lessons_learned.md` |
 | Roborock-Modul | `D:\Codex\_context\modules\roborock.md` und `D:\Codex\_ha_dokumentation\roborock\ROBOROCK_APP.md` |
@@ -104,6 +105,18 @@ Inventar der relevanten HACS-Erweiterungen:
 
 Verwendung:
 - Wenn HACS-Karten, HACS-Integrationen, Themes oder modulrelevante Custom-Komponenten betroffen sind
+
+### `D:\Codex\_context\dev_tooling.md`
+
+Editor- und Workspace-Tooling:
+
+- empfohlene VS Code Extensions
+- lokale `.vscode/settings.json`
+- lokale `.vscode/tasks.json`
+- Hinweise fuer Lint- und guarded-deploy-Workflows aus VS Code
+
+Verwendung:
+- Wenn VS Code Setup, Tasks, Workspace-Settings oder Editor-Tooling angepasst werden
 
 ### `D:\Codex\_context\deployment.md`
 
