@@ -1,9 +1,35 @@
 # Dashboard: Sieker Hub
-# Version: 2.0.3
+# Version: 2.0.4
 # Generated: 2026-03-23
 # Notes:
 # - Best-practice oriented hub dashboard.
 title: Sieker Hub
+button_card_templates:
+  room_climate_card:
+    show_state: false
+    show_label: true
+    tap_action:
+      action: more-info
+    label: >
+      [[[
+        const temp = states[variables.temp_entity]?.state ?? '—';
+        const hum = states[variables.humidity_entity]?.state ?? '—';
+        return `${temp} °C · ${hum} %`;
+      ]]]
+    styles:
+      card:
+        - padding: 14px
+        - height: 96px
+      grid:
+        - grid-template-areas: '"i n" "i l"'
+        - grid-template-columns: 32px 1fr
+        - grid-template-rows: min-content min-content
+      name:
+        - justify-self: start
+        - font-size: 20px
+      label:
+        - justify-self: start
+        - font-size: 15px
 views:
   - title: Home
     path: home
@@ -118,229 +144,69 @@ views:
             square: false
             cards:
               - type: custom:button-card
+                template: room_climate_card
                 entity: climate.kuche_wandthermostat
+                variables:
+                  temp_entity: sensor.kuche_wandthermostat_temperatur
+                  humidity_entity: sensor.kuche_wandthermostat_luftfeuchtigkeit
                 name: Küche
                 icon: mdi:thermometer
-                show_state: false
-                show_label: true
-                tap_action:
-                  action: more-info
-                label: >
-                  [[[
-                    const temp = states['sensor.kuche_wandthermostat_temperatur']?.state ?? '—';
-                    const hum = states['sensor.kuche_wandthermostat_luftfeuchtigkeit']?.state ?? '—';
-                    return `${temp} °C · ${hum} %`;
-                  ]]]
-                styles:
-                  card:
-                    - padding: 14px
-                    - height: 96px
-                  grid:
-                    - grid-template-areas: '"i n" "i l"'
-                    - grid-template-columns: 32px 1fr
-                    - grid-template-rows: min-content min-content
-                  name:
-                    - justify-self: start
-                    - font-size: 20px
-                  label:
-                    - justify-self: start
-                    - font-size: 15px
               - type: custom:button-card
+                template: room_climate_card
                 entity: climate.wohnzimmer_wandthermostat
+                variables:
+                  temp_entity: sensor.wohnzimmer_wandthermostat_temperatur
+                  humidity_entity: sensor.wohnzimmer_wandthermostat_luftfeuchtigkeit
                 name: Wohnzimmer
                 icon: mdi:thermometer
-                show_state: false
-                show_label: true
-                tap_action:
-                  action: more-info
-                label: >
-                  [[[
-                    const temp = states['sensor.wohnzimmer_wandthermostat_temperatur']?.state ?? '—';
-                    const hum = states['sensor.wohnzimmer_wandthermostat_luftfeuchtigkeit']?.state ?? '—';
-                    return `${temp} °C · ${hum} %`;
-                  ]]]
-                styles:
-                  card:
-                    - padding: 14px
-                    - height: 96px
-                  grid:
-                    - grid-template-areas: '"i n" "i l"'
-                    - grid-template-columns: 32px 1fr
-                    - grid-template-rows: min-content min-content
-                  name:
-                    - justify-self: start
-                    - font-size: 20px
-                  label:
-                    - justify-self: start
-                    - font-size: 15px
               - type: custom:button-card
+                template: room_climate_card
                 entity: climate.schlazi_wandthermostat
+                variables:
+                  temp_entity: sensor.schlazi_wandthermostat_temperatur
+                  humidity_entity: sensor.schlazi_wandthermostat_luftfeuchtigkeit
                 name: Schlafzimmer
                 icon: mdi:thermometer
-                show_state: false
-                show_label: true
-                tap_action:
-                  action: more-info
-                label: >
-                  [[[
-                    const temp = states['sensor.schlazi_wandthermostat_temperatur']?.state ?? '—';
-                    const hum = states['sensor.schlazi_wandthermostat_luftfeuchtigkeit']?.state ?? '—';
-                    return `${temp} °C · ${hum} %`;
-                  ]]]
-                styles:
-                  card:
-                    - padding: 14px
-                    - height: 96px
-                  grid:
-                    - grid-template-areas: '"i n" "i l"'
-                    - grid-template-columns: 32px 1fr
-                    - grid-template-rows: min-content min-content
-                  name:
-                    - justify-self: start
-                    - font-size: 20px
-                  label:
-                    - justify-self: start
-                    - font-size: 15px
               - type: custom:button-card
+                template: room_climate_card
                 entity: climate.bad_wandthermostat
+                variables:
+                  temp_entity: sensor.bad_wandthermostat_temperatur
+                  humidity_entity: sensor.bad_wandthermostat_luftfeuchtigkeit
                 name: Bad
                 icon: mdi:thermometer
-                show_state: false
-                show_label: true
-                tap_action:
-                  action: more-info
-                label: >
-                  [[[
-                    const temp = states['sensor.bad_wandthermostat_temperatur']?.state ?? '—';
-                    const hum = states['sensor.bad_wandthermostat_luftfeuchtigkeit']?.state ?? '—';
-                    return `${temp} °C · ${hum} %`;
-                  ]]]
-                styles:
-                  card:
-                    - padding: 14px
-                    - height: 96px
-                  grid:
-                    - grid-template-areas: '"i n" "i l"'
-                    - grid-template-columns: 32px 1fr
-                    - grid-template-rows: min-content min-content
-                  name:
-                    - justify-self: start
-                    - font-size: 20px
-                  label:
-                    - justify-self: start
-                    - font-size: 15px
               - type: custom:button-card
+                template: room_climate_card
                 entity: climate.flur_wandthermostat
+                variables:
+                  temp_entity: sensor.flur_wandthermostat_temperatur
+                  humidity_entity: sensor.flur_wandthermostat_luftfeuchtigkeit
                 name: Flur
                 icon: mdi:thermometer
-                show_state: false
-                show_label: true
-                tap_action:
-                  action: more-info
-                label: >
-                  [[[
-                    const temp = states['sensor.flur_wandthermostat_temperatur']?.state ?? '—';
-                    const hum = states['sensor.flur_wandthermostat_luftfeuchtigkeit']?.state ?? '—';
-                    return `${temp} °C · ${hum} %`;
-                  ]]]
-                styles:
-                  card:
-                    - padding: 14px
-                    - height: 96px
-                  grid:
-                    - grid-template-areas: '"i n" "i l"'
-                    - grid-template-columns: 32px 1fr
-                    - grid-template-rows: min-content min-content
-                  name:
-                    - justify-self: start
-                    - font-size: 20px
-                  label:
-                    - justify-self: start
-                    - font-size: 15px
               - type: custom:button-card
+                template: room_climate_card
                 entity: climate.gastebad_wandthermostat
+                variables:
+                  temp_entity: sensor.gastebad_wandthermostat_temperatur
+                  humidity_entity: sensor.gastebad_wandthermostat_luftfeuchtigkeit
                 name: Gästebad
                 icon: mdi:thermometer
-                show_state: false
-                show_label: true
-                tap_action:
-                  action: more-info
-                label: >
-                  [[[
-                    const temp = states['sensor.gastebad_wandthermostat_temperatur']?.state ?? '—';
-                    const hum = states['sensor.gastebad_wandthermostat_luftfeuchtigkeit']?.state ?? '—';
-                    return `${temp} °C · ${hum} %`;
-                  ]]]
-                styles:
-                  card:
-                    - padding: 14px
-                    - height: 96px
-                  grid:
-                    - grid-template-areas: '"i n" "i l"'
-                    - grid-template-columns: 32px 1fr
-                    - grid-template-rows: min-content min-content
-                  name:
-                    - justify-self: start
-                    - font-size: 20px
-                  label:
-                    - justify-self: start
-                    - font-size: 15px
               - type: custom:button-card
+                template: room_climate_card
                 entity: climate.gaste_wandthermostat
+                variables:
+                  temp_entity: sensor.gaste_wandthermostat_temperatur
+                  humidity_entity: sensor.gaste_wandthermostat_luftfeuchtigkeit
                 name: Gästezimmer
                 icon: mdi:thermometer
-                show_state: false
-                show_label: true
-                tap_action:
-                  action: more-info
-                label: >
-                  [[[
-                    const temp = states['sensor.gaste_wandthermostat_temperatur']?.state ?? '—';
-                    const hum = states['sensor.gaste_wandthermostat_luftfeuchtigkeit']?.state ?? '—';
-                    return `${temp} °C · ${hum} %`;
-                  ]]]
-                styles:
-                  card:
-                    - padding: 14px
-                    - height: 96px
-                  grid:
-                    - grid-template-areas: '"i n" "i l"'
-                    - grid-template-columns: 32px 1fr
-                    - grid-template-rows: min-content min-content
-                  name:
-                    - justify-self: start
-                    - font-size: 20px
-                  label:
-                    - justify-self: start
-                    - font-size: 15px
               - type: custom:button-card
+                template: room_climate_card
                 entity: sensor.0x00158d008b61ad80_temperature
+                variables:
+                  temp_entity: sensor.0x00158d008b61ad80_temperature
+                  humidity_entity: sensor.0x00158d008b61ad80_humidity
                 name: Balkon
                 icon: mdi:weather-partly-cloudy
-                show_state: false
-                show_label: true
-                tap_action:
-                  action: more-info
-                label: >
-                  [[[
-                    const temp = states['sensor.0x00158d008b61ad80_temperature']?.state ?? '—';
-                    const hum = states['sensor.0x00158d008b61ad80_humidity']?.state ?? '—';
-                    return `${temp} °C · ${hum} %`;
-                  ]]]
-                styles:
-                  card:
-                    - padding: 14px
-                    - height: 96px
-                  grid:
-                    - grid-template-areas: '"i n" "i l"'
-                    - grid-template-columns: 32px 1fr
-                    - grid-template-rows: min-content min-content
-                  name:
-                    - justify-self: start
-                    - font-size: 20px
-                  label:
-                    - justify-self: start
-                    - font-size: 15px
       - cards:
           - type: heading
             heading: Kontakte und Umgebung
