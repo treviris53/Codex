@@ -1,5 +1,5 @@
 # Dashboard: Sieker Hub
-# Version: 2.0.5
+# Version: 2.0.7
 # Generated: 2026-03-23
 # Notes:
 # - Best-practice oriented hub dashboard.
@@ -52,6 +52,137 @@ button_card_templates:
         - color: var(--secondary-text-color)
         - text-align: left
         - line-height: 1.2
+  room_context_card:
+    show_label: false
+    show_state: true
+    tap_action:
+      action: more-info
+    styles:
+      card:
+        - padding: 18px 16px
+        - min-height: 88px
+        - border-radius: 20px
+      grid:
+        - grid-template-areas: '"i n s"'
+        - grid-template-columns: 44px minmax(0, 1fr) auto
+        - align-items: center
+        - column-gap: 14px
+      img_cell:
+        - width: 44px
+        - height: 44px
+        - justify-self: center
+        - align-self: center
+        - background: rgba(var(--rgb-primary-color), 0.10)
+        - border-radius: 14px
+      icon:
+        - width: 22px
+        - color: var(--primary-color)
+      name:
+        - justify-self: start
+        - font-size: 18px
+        - font-weight: 500
+        - white-space: normal
+        - text-align: left
+      state:
+        - justify-self: end
+        - font-size: 16px
+        - font-weight: 500
+        - text-align: right
+  hub_metric_card:
+    show_label: false
+    show_state: true
+    tap_action:
+      action: more-info
+    state_display: >
+      [[[
+        const value = entity?.state;
+        if (value === 'on') return 'Ein';
+        if (value === 'off') return 'Aus';
+        if (value === 'home') return 'Anwesend';
+        if (value === 'not_home') return 'Abwesend';
+        return value ?? '—';
+      ]]]
+    styles:
+      card:
+        - padding: 18px 16px
+        - min-height: 88px
+        - border-radius: 20px
+      grid:
+        - grid-template-areas: '"i n s"'
+        - grid-template-columns: 44px minmax(0, 1fr) auto
+        - align-items: center
+        - column-gap: 14px
+      img_cell:
+        - width: 44px
+        - height: 44px
+        - justify-self: center
+        - align-self: center
+        - background: rgba(var(--rgb-primary-color), 0.10)
+        - border-radius: 14px
+      icon:
+        - width: 22px
+        - color: var(--primary-color)
+      name:
+        - justify-self: start
+        - font-size: 18px
+        - font-weight: 500
+        - white-space: normal
+        - text-align: left
+      state:
+        - justify-self: end
+        - font-size: 16px
+        - font-weight: 500
+        - text-align: right
+        - color: var(--primary-text-color)
+  hub_alert_card:
+    template: hub_metric_card
+    state:
+      - value: 'on'
+        styles:
+          card:
+            - background: rgba(var(--rgb-warning-color), 0.10)
+          img_cell:
+            - background: rgba(var(--rgb-warning-color), 0.18)
+          icon:
+            - color: var(--warning-color)
+          state:
+            - color: var(--warning-color)
+      - value: 'home'
+        styles:
+          card:
+            - background: rgba(var(--rgb-warning-color), 0.10)
+          img_cell:
+            - background: rgba(var(--rgb-warning-color), 0.18)
+          icon:
+            - color: var(--warning-color)
+          state:
+            - color: var(--warning-color)
+  hub_nav_card:
+    show_state: false
+    show_label: false
+    styles:
+      card:
+        - padding: 18px 16px
+        - height: 132px
+        - border-radius: 20px
+      grid:
+        - grid-template-areas: '"i" "n"'
+        - grid-template-columns: 1fr
+        - grid-template-rows: 1fr min-content
+        - row-gap: 12px
+      img_cell:
+        - justify-self: center
+        - align-self: end
+      icon:
+        - width: 40px
+        - color: var(--primary-color)
+      name:
+        - justify-self: center
+        - align-self: start
+        - font-size: 16px
+        - font-weight: 500
+        - text-align: center
+        - white-space: normal
 views:
   - title: Home
     path: home
@@ -63,42 +194,82 @@ views:
           - type: heading
             heading: Hausstatus
             heading_style: title
-          - type: entities
-            title: Lagebild
-            show_header_toggle: false
-            entities:
-              - entity: input_boolean.anwesend
+          - type: heading
+            heading: Lagebild
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: input_boolean.anwesend
                 name: Anwesenheit
-              - entity: sensor.heizung_sollprofil
+                icon: mdi:account-check-outline
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.heizung_sollprofil
                 name: Heizprofil
-              - entity: sensor.rollladen_open_ts
+                icon: mdi:radiator
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.rollladen_open_ts
                 name: Rollläden öffnen
-              - entity: sensor.rollladen_close_ts
+                icon: mdi:window-shutter-open
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.rollladen_close_ts
                 name: Rollläden schließen
-              - entity: sensor.saros_20_set_status
+                icon: mdi:window-shutter
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.saros_20_set_status
                 name: Roborock Status
-              - entity: sensor.eaton_3s850d_batterie_ladung
+                icon: mdi:robot-vacuum
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.eaton_3s850d_batterie_ladung
                 name: USV Akku
+                icon: mdi:battery-high
       - cards:
           - type: heading
             heading: Handlungsbedarf
             heading_style: title
-          - type: entities
-            title: Abweichungen
-            show_header_toggle: false
-            entities:
-              - entity: input_boolean.heizung_override
+          - type: heading
+            heading: Abweichungen
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - type: custom:button-card
+                template: hub_alert_card
+                entity: input_boolean.heizung_override
                 name: Heizung Override
-              - entity: input_boolean.rollladen_override_ost
+                icon: mdi:radiator-disabled
+              - type: custom:button-card
+                template: hub_alert_card
+                entity: input_boolean.rollladen_override_ost
                 name: Override Ost
-              - entity: input_boolean.rollladen_override_west
+                icon: mdi:window-shutter-alert
+              - type: custom:button-card
+                template: hub_alert_card
+                entity: input_boolean.rollladen_override_west
                 name: Override West
-              - entity: input_boolean.roborock_busy
+                icon: mdi:window-shutter-alert
+              - type: custom:button-card
+                template: hub_alert_card
+                entity: input_boolean.roborock_busy
                 name: Roborock Busy
-              - entity: binary_sensor.roborock_program_blocked
+                icon: mdi:robot-vacuum-alert
+              - type: custom:button-card
+                template: hub_alert_card
+                entity: binary_sensor.roborock_program_blocked
                 name: Roborock Blocked
-              - entity: binary_sensor.steckdose_saison_aktiv
+                icon: mdi:cancel-octagon-outline
+              - type: custom:button-card
+                template: hub_alert_card
+                entity: binary_sensor.steckdose_saison_aktiv
                 name: Balkon Saison
+                icon: mdi:power-plug-outline
       - cards:
           - type: heading
             heading: Fachmodule
@@ -108,43 +279,50 @@ views:
             columns: 3
             square: false
             cards:
-              - type: button
+              - type: custom:button-card
+                template: hub_nav_card
                 name: Heizung
                 icon: mdi:radiator
                 tap_action:
                   action: navigate
                   navigation_path: heizung
-              - type: button
+              - type: custom:button-card
+                template: hub_nav_card
                 name: Rollläden
                 icon: mdi:window-shutter
                 tap_action:
                   action: navigate
                   navigation_path: rollladen
-              - type: button
+              - type: custom:button-card
+                template: hub_nav_card
                 name: Steckdose Balkon
                 icon: mdi:power-socket-de
                 tap_action:
                   action: navigate
                   navigation_path: steckdose-balkon
-              - type: button
+              - type: custom:button-card
+                template: hub_nav_card
                 name: USV
                 icon: mdi:generator-mobile
                 tap_action:
                   action: navigate
                   navigation_path: usv
-              - type: button
+              - type: custom:button-card
+                template: hub_nav_card
                 name: Roborock
                 icon: mdi:robot-vacuum
                 tap_action:
                   action: navigate
                   navigation_path: roborock
-              - type: button
+              - type: custom:button-card
+                template: hub_nav_card
                 name: Waschmaschine
                 icon: mdi:washing-machine
                 tap_action:
                   action: navigate
                   navigation_path: waschmaschine
-              - type: button
+              - type: custom:button-card
+                template: hub_nav_card
                 name: Wohnen
                 icon: mdi:sofa-outline
                 tap_action:
@@ -179,7 +357,7 @@ views:
                 variables:
                   temp_entity: sensor.wohnzimmer_wandthermostat_temperatur
                   humidity_entity: sensor.wohnzimmer_wandthermostat_luftfeuchtigkeit
-                name: Wohnzimmer
+                name: Wohnen
                 icon: mdi:thermometer
               - type: custom:button-card
                 template: room_climate_card
@@ -187,7 +365,7 @@ views:
                 variables:
                   temp_entity: sensor.schlazi_wandthermostat_temperatur
                   humidity_entity: sensor.schlazi_wandthermostat_luftfeuchtigkeit
-                name: Schlafzimmer
+                name: Schlafen
                 icon: mdi:thermometer
               - type: custom:button-card
                 template: room_climate_card
@@ -219,7 +397,7 @@ views:
                 variables:
                   temp_entity: sensor.gaste_wandthermostat_temperatur
                   humidity_entity: sensor.gaste_wandthermostat_luftfeuchtigkeit
-                name: Gästezimmer
+                name: Gäste
                 icon: mdi:thermometer
               - type: custom:button-card
                 template: room_climate_card
@@ -233,14 +411,20 @@ views:
           - type: heading
             heading: Kontakte und Umgebung
             heading_style: title
-          - type: entities
-            title: Balkon und Zugang
-            show_header_toggle: false
-            entities:
-              - entity: binary_sensor.kuche_balkon_turkontakt
+          - type: grid
+            columns: 1
+            square: false
+            cards:
+              - type: custom:button-card
+                template: room_context_card
+                entity: binary_sensor.kuche_balkon_turkontakt
                 name: Balkontür
-              - entity: sensor.balkon_lichtsensor_durchschnittliche_beleuchtungsstarke
+                icon: mdi:door-sliding
+              - type: custom:button-card
+                template: room_context_card
+                entity: sensor.balkon_lichtsensor_durchschnittliche_beleuchtungsstarke
                 name: Balkon Lux
+                icon: mdi:white-balance-sunny
 
   - title: Wohnen
     path: wohnen
