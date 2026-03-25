@@ -201,6 +201,9 @@ export function getModuleById(moduleId) {
 
 const CARD_VERSION = "0.1.0";
 const DOMAIN_PRIORITY = ["light", "climate", "cover", "binary_sensor", "sensor"];
+const AREA_REGISTRY_WS_TYPE = "config/area_registry/list";
+const DEVICE_REGISTRY_WS_TYPE = "config/device_registry/list";
+const ENTITY_REGISTRY_WS_TYPE = "config/entity_registry/list";
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -297,9 +300,17 @@ function severityForState(entityId, stateObj) {
   return "ok";
 }
 
-function getAreaEntityIds(hass, areaId) {
-  const entityRegistry = Object.values(hass?.entities || {});
-  const deviceRegistry = hass?.devices || {};
+function normalizeRegistryMap(items, idKey) {
+  return Object.fromEntries(
+    (items || [])
+      .filter((item) => item?.[idKey])
+      .map((item) => [item[idKey], item]),
+  );
+}
+
+function getAreaEntityIds(registries, areaId) {
+  const entityRegistry = Object.values(registries?.entities || {});
+  const deviceRegistry = registries?.devices || {};
   const entityIds = [];
 
   for (const entity of entityRegistry) {
@@ -345,8 +356,8 @@ function getAreaEntityIds(hass, areaId) {
   });
 }
 
-function selectRoomCards(hass) {
-  const areas = Object.values(hass?.areas || {});
+function selectRoomCards(registries) {
+  const areas = Object.values(registries?.areas || {});
   if (!areas.length) {
     return [];
   }
@@ -367,7 +378,7 @@ function selectRoomCards(hass) {
       return left.name.localeCompare(right.name, "de");
     })
     .map((area) => {
-      const entityIds = getAreaEntityIds(hass, area.area_id);
+      const entityIds = getAreaEntityIds(registries, area.area_id);
       return {
         area,
         entityIds: entityIds.slice(0, ROOMS_CONFIG.max_entities_per_room),
@@ -417,6 +428,10 @@ class SiekerOperatorHub extends HTMLElement {
     this._hass = null;
     this._page = "home";
     this._moduleId = "heating";
+    this._registries = { areas: {}, devices: {}, entities: {} };
+    this._registryLoaded = false;
+    this._registryLoading = false;
+    this._registryError = "";
   }
 
   setConfig(config) {
@@ -427,6 +442,7 @@ class SiekerOperatorHub extends HTMLElement {
 
   set hass(hass) {
     this._hass = hass;
+    this._ensureRegistriesLoaded();
     this._render();
   }
 
@@ -457,6 +473,37 @@ class SiekerOperatorHub extends HTMLElement {
     }
 
     await this._hass.callService(domain, action, data || {});
+  }
+
+  async _ensureRegistriesLoaded() {
+    if (!this._hass?.callWS || this._registryLoaded || this._registryLoading) {
+      return;
+    }
+
+    this._registryLoading = true;
+    this._registryError = "";
+    this._render();
+
+    try {
+      const [areas, devices, entities] = await Promise.all([
+        this._hass.callWS({ type: AREA_REGISTRY_WS_TYPE }),
+        this._hass.callWS({ type: DEVICE_REGISTRY_WS_TYPE }),
+        this._hass.callWS({ type: ENTITY_REGISTRY_WS_TYPE }),
+      ]);
+
+      this._registries = {
+        areas: normalizeRegistryMap(areas, "area_id"),
+        devices: normalizeRegistryMap(devices, "id"),
+        entities: normalizeRegistryMap(entities, "entity_id"),
+      };
+      this._registryLoaded = true;
+    } catch (error) {
+      console.error("Sieker Operator Hub: Registry-Daten konnten nicht geladen werden.", error);
+      this._registryError = error?.message || "Registry-Daten konnten nicht geladen werden.";
+    } finally {
+      this._registryLoading = false;
+      this._render();
+    }
   }
 
   _bindEvents() {
@@ -522,7 +569,29 @@ class SiekerOperatorHub extends HTMLElement {
   }
 
   _renderRooms() {
-    const roomCards = selectRoomCards(this._hass);
+    if (this._registryLoading) {
+      return `
+        <section class="page-section">
+          <div class="section-head">
+            <h2>Raeume</h2>
+            <p>Area-, Device- und Entity-Registry werden gerade geladen.</p>
+          </div>
+        </section>
+      `;
+    }
+
+    if (this._registryError) {
+      return `
+        <section class="page-section">
+          <div class="section-head">
+            <h2>Raeume</h2>
+            <p>Registry-Daten konnten nicht geladen werden: ${escapeHtml(this._registryError)}</p>
+          </div>
+        </section>
+      `;
+    }
+
+    const roomCards = selectRoomCards(this._registries);
 
     if (!roomCards.length) {
       return `
@@ -642,50 +711,62 @@ class SiekerOperatorHub extends HTMLElement {
       return;
     }
 
-    if (!this._hass) {
+    try {
+      if (!this._hass) {
+        this.shadowRoot.innerHTML = `
+          <style>${this._styles()}</style>
+          <ha-card header="${escapeHtml(this._config.title || "Operator Hub")}">
+            <div class="loading-state">Warte auf Home Assistant Daten…</div>
+          </ha-card>
+        `;
+        return;
+      }
+
+      const activeModule = getModuleById(this._moduleId);
+      const moduleButtons = MODULES.map((moduleConfig) => `
+        <button
+          class="subnav-button ${moduleConfig.id === activeModule.id ? "is-active" : ""}"
+          data-page="module"
+          data-module="${escapeHtml(moduleConfig.id)}"
+        >
+          ${escapeHtml(moduleConfig.title)}
+        </button>
+      `).join("");
+
+      let pageMarkup = this._renderHome();
+      if (this._page === "rooms") {
+        pageMarkup = this._renderRooms();
+      } else if (this._page === "module") {
+        pageMarkup = this._renderModule();
+      }
+
       this.shadowRoot.innerHTML = `
         <style>${this._styles()}</style>
         <ha-card header="${escapeHtml(this._config.title || "Operator Hub")}">
-          <div class="loading-state">Warte auf Home Assistant Daten…</div>
+          <div class="app-shell">
+            <div class="topnav">
+              <button class="topnav-button ${this._page === "home" ? "is-active" : ""}" data-page="home">Home</button>
+              <button class="topnav-button ${this._page === "rooms" ? "is-active" : ""}" data-page="rooms">Raeume</button>
+              <div class="subnav">${moduleButtons}</div>
+            </div>
+            <div class="page-content">${pageMarkup}</div>
+            <div class="footer-note">Sieker Operator Hub MVP ${escapeHtml(CARD_VERSION)} · buildloses Repo-Geruest fuer die naechste App-Stufe</div>
+          </div>
         </ha-card>
       `;
-      return;
-    }
 
-    const activeModule = getModuleById(this._moduleId);
-    const moduleButtons = MODULES.map((moduleConfig) => `
-      <button
-        class="subnav-button ${moduleConfig.id === activeModule.id ? "is-active" : ""}"
-        data-page="module"
-        data-module="${escapeHtml(moduleConfig.id)}"
-      >
-        ${escapeHtml(moduleConfig.title)}
-      </button>
-    `).join("");
-
-    let pageMarkup = this._renderHome();
-    if (this._page === "rooms") {
-      pageMarkup = this._renderRooms();
-    } else if (this._page === "module") {
-      pageMarkup = this._renderModule();
-    }
-
-    this.shadowRoot.innerHTML = `
-      <style>${this._styles()}</style>
-      <ha-card header="${escapeHtml(this._config.title || "Operator Hub")}">
-        <div class="app-shell">
-          <div class="topnav">
-            <button class="topnav-button ${this._page === "home" ? "is-active" : ""}" data-page="home">Home</button>
-            <button class="topnav-button ${this._page === "rooms" ? "is-active" : ""}" data-page="rooms">Raeume</button>
-            <div class="subnav">${moduleButtons}</div>
+      this._bindEvents();
+    } catch (error) {
+      console.error("Sieker Operator Hub: Render-Fehler.", error);
+      this.shadowRoot.innerHTML = `
+        <style>${this._styles()}</style>
+        <ha-card header="${escapeHtml(this._config.title || "Operator Hub")}">
+          <div class="loading-state">
+            Frontend-Fehler im Operator Hub: ${escapeHtml(error?.message || "unbekannt")}
           </div>
-          <div class="page-content">${pageMarkup}</div>
-          <div class="footer-note">Sieker Operator Hub MVP ${escapeHtml(CARD_VERSION)} · buildloses Repo-Geruest fuer die naechste App-Stufe</div>
-        </div>
-      </ha-card>
-    `;
-
-    this._bindEvents();
+        </ha-card>
+      `;
+    }
   }
 
   _styles() {
@@ -948,11 +1029,16 @@ class SiekerOperatorHub extends HTMLElement {
   }
 }
 
-customElements.define("sieker-operator-hub", SiekerOperatorHub);
+if (!customElements.get("sieker-operator-hub")) {
+  customElements.define("sieker-operator-hub", SiekerOperatorHub);
+}
 
 window.customCards = window.customCards || [];
-window.customCards.push({
-  type: "sieker-operator-hub",
-  name: "Sieker Operator Hub",
-  description: "MVP custom card shell for the next operator-focused dashboard application.",
-});
+if (!window.customCards.some((card) => card.type === "sieker-operator-hub")) {
+  window.customCards.push({
+    type: "sieker-operator-hub",
+    name: "Sieker Operator Hub",
+    description: "MVP custom card shell for the next operator-focused dashboard application.",
+  });
+}
+
