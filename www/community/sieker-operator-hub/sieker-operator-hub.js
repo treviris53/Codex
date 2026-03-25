@@ -12,6 +12,7 @@ export const ROOMS_CONFIG = {
   title: "Raeume",
   description:
     "Kompakte Klima- und Umgebungsansicht fuer die heutigen Wohnraeume. Manuelle Alltagsbedienung bleibt bewusst im Modul Wohnen.",
+  default_room_id: "kuche",
   rooms: [
     {
       id: "kuche",
@@ -354,6 +355,10 @@ function iconForState(stateObj) {
   return stateObj?.attributes?.icon || "mdi:checkbox-blank-circle-outline";
 }
 
+function iconMarkup(icon, className = "inline-icon") {
+  return `<ha-icon class="${escapeHtml(className)}" icon="${escapeHtml(icon || "mdi:checkbox-blank-circle-outline")}"></ha-icon>`;
+}
+
 function formatTimestamp(rawValue) {
   if (!rawValue || rawValue === "unknown" || rawValue === "unavailable") {
     return rawValue;
@@ -434,9 +439,10 @@ function renderEntityItem(hass, entityId) {
 
   return `
     <div class="entity-row severity-${severity}">
+      <div class="entity-leading">${iconMarkup(iconForState(stateObj), "entity-icon")}</div>
       <div class="entity-meta">
         <span class="entity-name">${escapeHtml(friendlyNameForState(stateObj, entityId))}</span>
-        <span class="entity-id">${escapeHtml(entityId)}</span>
+        <span class="entity-subtitle">${escapeHtml(entityId)}</span>
       </div>
       <div class="entity-state">${escapeHtml(formatStateValue(entityId, stateObj))}</div>
     </div>
@@ -455,48 +461,110 @@ function renderConfiguredEntityItem(hass, entry) {
 
   const severity = severityForState(entry.entity, stateObj);
   const label = entry.name || friendlyNameForState(stateObj, entry.entity);
+  const subtitle = entry.subtitle || stateObj.attributes?.friendly_name || entry.entity;
 
   return `
     <div class="entity-row severity-${severity}">
+      <div class="entity-leading">${iconMarkup(entry.icon || iconForState(stateObj), "entity-icon")}</div>
       <div class="entity-meta">
         <span class="entity-name">${escapeHtml(label)}</span>
+        <span class="entity-subtitle">${escapeHtml(subtitle)}</span>
       </div>
       <div class="entity-state">${escapeHtml(formatStateValue(entry.entity, stateObj))}</div>
     </div>
   `;
 }
 
-function buildRoomSummary(hass, roomConfig) {
-  const values = (roomConfig.summary_entities || [])
-    .map((entityId) => {
-      const stateObj = hass.states[entityId];
-      if (!stateObj) {
-        return null;
-      }
+function shortLabelForEntity(entityId) {
+  if (entityId.includes("temperatur")) {
+    return "Temperatur";
+  }
 
-      return formatStateValue(entityId, stateObj);
-    })
-    .filter((value) => value && value !== "nicht verfuegbar");
+  if (entityId.includes("luftfeuchtigkeit") || entityId.includes("_humidity")) {
+    return "Feuchte";
+  }
 
-  return values.length ? values.join(" · ") : "Keine Kerndaten verfuegbar";
+  if (entityId.includes("pressure")) {
+    return "Luftdruck";
+  }
+
+  if (entityId.includes("beleucht") || entityId.includes("illuminance")) {
+    return "Lux";
+  }
+
+  return entityId.split(".").pop().replaceAll("_", " ");
 }
 
-function renderRoomCard(hass, roomConfig) {
+function renderMetricChip(hass, entityId) {
+  const stateObj = hass.states[entityId];
+  if (!stateObj) {
+    return "";
+  }
+
+  return `
+    <div class="metric-chip">
+      <span class="metric-label">${escapeHtml(shortLabelForEntity(entityId))}</span>
+      <span class="metric-value">${escapeHtml(formatStateValue(entityId, stateObj))}</span>
+    </div>
+  `;
+}
+
+function getRoomById(roomId) {
+  return (ROOMS_CONFIG.rooms || []).find((roomConfig) => roomConfig.id === roomId) || ROOMS_CONFIG.rooms[0];
+}
+
+function renderRoomSelectorButton(hass, roomConfig, isActive, navigateToRooms = false) {
+  const preview = (roomConfig.summary_entities || [])
+    .map((entityId) => {
+      const stateObj = hass.states[entityId];
+      return stateObj ? formatStateValue(entityId, stateObj) : null;
+    })
+    .filter(Boolean)[0] || roomConfig.caption;
+
+  const navigationAttribute = navigateToRooms ? ' data-page="rooms"' : "";
+
+  return `
+    <button class="room-selector ${isActive ? "is-active" : ""}" data-room="${escapeHtml(roomConfig.id)}"${navigationAttribute}>
+      <span class="room-selector-title">${escapeHtml(roomConfig.title)}</span>
+      <span class="room-selector-meta">${escapeHtml(preview || "Raum")}</span>
+    </button>
+  `;
+}
+
+function renderActiveRoomPanel(hass, roomConfig) {
+  const summaryMarkup = (roomConfig.summary_entities || [])
+    .map((entityId) => renderMetricChip(hass, entityId))
+    .filter(Boolean)
+    .join("");
+
   const detailMarkup = (roomConfig.detail_entities || [])
     .map((entry) => renderConfiguredEntityItem(hass, entry))
     .filter(Boolean)
     .join("");
 
   return `
-    <div class="room-card">
-      <div class="room-head">
-        <h3>${escapeHtml(roomConfig.title)}</h3>
-        <span class="nav-icon">${escapeHtml(roomConfig.icon || "mdi:floor-plan")}</span>
+    <div class="room-layout">
+      <div class="room-hero-panel">
+        <div class="room-panel-head">
+          <div>
+            <div class="panel-eyebrow">Aktiver Raum</div>
+            <h2>${escapeHtml(roomConfig.title)}</h2>
+            <p>${escapeHtml(roomConfig.caption || "Raumklima")}</p>
+          </div>
+          <div class="room-badge">${iconMarkup(roomConfig.icon, "room-panel-icon")}</div>
+        </div>
+        <div class="metric-grid">
+          ${summaryMarkup || `<div class="empty-note">Keine Kerndaten sichtbar.</div>`}
+        </div>
       </div>
-      <div class="room-summary">${escapeHtml(buildRoomSummary(hass, roomConfig))}</div>
-      <div class="room-caption">${escapeHtml(roomConfig.caption || "Raumklima")}</div>
-      <div class="entity-list">
-        ${detailMarkup || `<div class="empty-note">Keine kuratierten Kerndaten verfuegbar.</div>`}
+      <div class="panel">
+        <div class="panel-head-inline">
+          <h3>Raumstatus</h3>
+          <span class="panel-kicker">${escapeHtml(String((roomConfig.detail_entities || []).length))} Signale</span>
+        </div>
+        <div class="entity-list compact-list">
+          ${detailMarkup || `<div class="empty-note">Keine kuratierten Raumsignale konfiguriert.</div>`}
+        </div>
       </div>
     </div>
   `;
@@ -519,7 +587,6 @@ function renderDiagnosticEntry(hass, entry) {
 
   return `<div class="diagnostic-card">${rows.join("")}</div>`;
 }
-
 class SiekerOperatorHub extends HTMLElement {
   constructor() {
     super();
@@ -528,11 +595,14 @@ class SiekerOperatorHub extends HTMLElement {
     this._hass = null;
     this._page = "home";
     this._moduleId = "heating";
+    this._roomId = ROOMS_CONFIG.default_room_id || ROOMS_CONFIG.rooms[0]?.id || null;
   }
 
   setConfig(config) {
     this._config = config || {};
     this._page = this._config.default_page || "home";
+    this._moduleId = this._config.default_module || this._moduleId;
+    this._roomId = this._config.default_room || ROOMS_CONFIG.default_room_id || ROOMS_CONFIG.rooms[0]?.id || null;
     this._render();
   }
 
@@ -542,7 +612,7 @@ class SiekerOperatorHub extends HTMLElement {
   }
 
   getCardSize() {
-    return 8;
+    return 16;
   }
 
   static getStubConfig() {
@@ -551,10 +621,23 @@ class SiekerOperatorHub extends HTMLElement {
     };
   }
 
-  _setPage(nextPage, moduleId = this._moduleId) {
+  _setPage(nextPage, moduleId = this._moduleId, roomId = this._roomId) {
     this._page = nextPage;
     this._moduleId = moduleId;
+    this._roomId = roomId;
     this._render();
+  }
+
+  _pageLabel() {
+    if (this._page === "rooms") {
+      return "Raeume";
+    }
+
+    if (this._page === "module") {
+      return getModuleById(this._moduleId).title;
+    }
+
+    return "Home";
   }
 
   async _runService(service, data) {
@@ -571,11 +654,19 @@ class SiekerOperatorHub extends HTMLElement {
   }
 
   _bindEvents() {
-    this.shadowRoot.querySelectorAll("[data-page]").forEach((button) => {
+    this.shadowRoot.querySelectorAll("[data-page]:not([data-room])").forEach((button) => {
       button.addEventListener("click", () => {
         const nextPage = button.getAttribute("data-page");
         const moduleId = button.getAttribute("data-module") || this._moduleId;
-        this._setPage(nextPage, moduleId);
+        this._setPage(nextPage, moduleId, this._roomId);
+      });
+    });
+
+    this.shadowRoot.querySelectorAll("[data-room]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const roomId = button.getAttribute("data-room") || this._roomId;
+        const nextPage = button.getAttribute("data-page") || "rooms";
+        this._setPage(nextPage, this._moduleId, roomId);
       });
     });
 
@@ -597,19 +688,24 @@ class SiekerOperatorHub extends HTMLElement {
       return `
         <div class="status-card severity-${severity}">
           <div class="status-card-head">
-            <span class="status-icon">${escapeHtml(iconForState(stateObj))}</span>
+            <div class="status-icon-wrap">${iconMarkup(iconForState(stateObj), "status-haicon")}</div>
             <span class="status-title">${escapeHtml(friendlyNameForState(stateObj, entityId))}</span>
           </div>
           <div class="status-value">${escapeHtml(formatStateValue(entityId, stateObj))}</div>
-          <div class="status-id">${escapeHtml(entityId)}</div>
         </div>
       `;
     }).join("");
 
+    const roomQuick = (ROOMS_CONFIG.rooms || [])
+      .map((roomConfig) => renderRoomSelectorButton(this._hass, roomConfig, false, true))
+      .join("");
+
     const moduleTiles = MODULES.map((moduleConfig) => `
-      <button class="nav-tile" data-page="module" data-module="${escapeHtml(moduleConfig.id)}">
-        <span class="nav-icon">${escapeHtml(moduleConfig.icon)}</span>
-        <span class="nav-title">${escapeHtml(moduleConfig.title)}</span>
+      <button class="module-tile" data-page="module" data-module="${escapeHtml(moduleConfig.id)}">
+        <div class="module-tile-head">
+          ${iconMarkup(moduleConfig.icon, "nav-haicon")}
+          <span class="nav-title">${escapeHtml(moduleConfig.title)}</span>
+        </div>
         <span class="nav-desc">${escapeHtml(moduleConfig.description)}</span>
       </button>
     `).join("");
@@ -617,24 +713,32 @@ class SiekerOperatorHub extends HTMLElement {
     return `
       <section class="page-section">
         <div class="section-head">
-          <h2>Lagebild</h2>
-          <p>Kompakter Einstieg fuer Bedienung, Status und den Weg in die Fachmodule.</p>
+          <h2>Hausstatus</h2>
+          <p>Schneller Leitstand fuer Anwesenheit, Klima, Rolllaeden, Wetter und Roborock.</p>
         </div>
         <div class="status-grid">${statusCards}</div>
       </section>
       <section class="page-section">
         <div class="section-head">
-          <h2>Fachmodule</h2>
-          <p>Fachliche Bedienung bleibt kuratiert und script-zentriert.</p>
+          <h2>Raeume</h2>
+          <p>Direkter Einstieg in die kuratierte Raumansicht statt langer Kartenwaende.</p>
         </div>
-        <div class="nav-grid">${moduleTiles}</div>
+        <div class="room-selector-grid">${roomQuick}</div>
+      </section>
+      <section class="page-section">
+        <div class="section-head">
+          <h2>Fachmodule</h2>
+          <p>Fachliche Bedienung bleibt ausdruecklich modulzentriert und script-sicher.</p>
+        </div>
+        <div class="module-grid">${moduleTiles}</div>
       </section>
     `;
   }
 
   _renderRooms() {
-    const roomMarkup = (ROOMS_CONFIG.rooms || [])
-      .map((roomConfig) => renderRoomCard(this._hass, roomConfig))
+    const activeRoom = getRoomById(this._roomId);
+    const roomSelector = (ROOMS_CONFIG.rooms || [])
+      .map((roomConfig) => renderRoomSelectorButton(this._hass, roomConfig, roomConfig.id === activeRoom.id))
       .join("");
 
     const environmentMarkup = (ROOMS_CONFIG.environment_panel?.entities || [])
@@ -648,15 +752,19 @@ class SiekerOperatorHub extends HTMLElement {
           <h2>${escapeHtml(ROOMS_CONFIG.title || "Raeume")}</h2>
           <p>${escapeHtml(ROOMS_CONFIG.description || "Raumklima und Umgebung.")}</p>
         </div>
-        <div class="room-grid">${roomMarkup}</div>
+        <div class="room-selector-grid">${roomSelector}</div>
       </section>
       <section class="page-section">
-        <div class="section-head">
-          <h2>${escapeHtml(ROOMS_CONFIG.environment_panel?.title || "Zugang und Umgebung")}</h2>
-          <p>${escapeHtml(ROOMS_CONFIG.environment_panel?.description || "")}</p>
-        </div>
+        ${renderActiveRoomPanel(this._hass, activeRoom)}
+      </section>
+      <section class="page-section">
         <div class="panel">
-          <div class="entity-list">
+          <div class="panel-head-inline">
+            <h3>${escapeHtml(ROOMS_CONFIG.environment_panel?.title || "Zugang und Umgebung")}</h3>
+            <span class="panel-kicker">Umfeld</span>
+          </div>
+          <p class="panel-copy">${escapeHtml(ROOMS_CONFIG.environment_panel?.description || "")}</p>
+          <div class="entity-list compact-list">
             ${environmentMarkup || `<div class="empty-note">Keine separaten Umgebungsdaten konfiguriert.</div>`}
           </div>
         </div>
@@ -746,8 +854,10 @@ class SiekerOperatorHub extends HTMLElement {
       if (!this._hass) {
         this.shadowRoot.innerHTML = `
           <style>${this._styles()}</style>
-          <ha-card header="${escapeHtml(this._config.title || "Operator Hub")}">
-            <div class="loading-state">Warte auf Home Assistant Daten…</div>
+          <ha-card>
+            <div class="app-shell">
+              <div class="loading-state">Warte auf Home Assistant Daten…</div>
+            </div>
           </ha-card>
         `;
         return;
@@ -756,11 +866,12 @@ class SiekerOperatorHub extends HTMLElement {
       const activeModule = getModuleById(this._moduleId);
       const moduleButtons = MODULES.map((moduleConfig) => `
         <button
-          class="subnav-button ${moduleConfig.id === activeModule.id ? "is-active" : ""}"
+          class="module-chip ${moduleConfig.id === activeModule.id && this._page === "module" ? "is-active" : ""}"
           data-page="module"
           data-module="${escapeHtml(moduleConfig.id)}"
         >
-          ${escapeHtml(moduleConfig.title)}
+          ${iconMarkup(moduleConfig.icon, "nav-haicon")}
+          <span>${escapeHtml(moduleConfig.title)}</span>
         </button>
       `).join("");
 
@@ -773,15 +884,25 @@ class SiekerOperatorHub extends HTMLElement {
 
       this.shadowRoot.innerHTML = `
         <style>${this._styles()}</style>
-        <ha-card header="${escapeHtml(this._config.title || "Operator Hub")}">
+        <ha-card>
           <div class="app-shell">
-            <div class="topnav">
-              <button class="topnav-button ${this._page === "home" ? "is-active" : ""}" data-page="home">Home</button>
-              <button class="topnav-button ${this._page === "rooms" ? "is-active" : ""}" data-page="rooms">Raeume</button>
-              <div class="subnav">${moduleButtons}</div>
+            <div class="shell-header">
+              <div class="shell-copy">
+                <div class="shell-eyebrow">Sieker Wohnung</div>
+                <h1 class="shell-title">${escapeHtml(this._config.title || "Operator Hub")}</h1>
+                <p>Kuratiertes Frontend fuer Hausstatus, Raumorientierung und sichere Fachmodule.</p>
+              </div>
+              <div class="page-badge">${escapeHtml(this._pageLabel())}</div>
+            </div>
+            <div class="nav-shell">
+              <div class="segmented-nav">
+                <button class="page-button ${this._page === "home" ? "is-active" : ""}" data-page="home">Home</button>
+                <button class="page-button ${this._page === "rooms" ? "is-active" : ""}" data-page="rooms">Raeume</button>
+              </div>
+              <div class="module-rail">${moduleButtons}</div>
             </div>
             <div class="page-content">${pageMarkup}</div>
-            <div class="footer-note">Sieker Operator Hub MVP ${escapeHtml(CARD_VERSION)} · buildloses Repo-Geruest fuer die naechste App-Stufe</div>
+            <div class="footer-note">Sieker Operator Hub MVP ${escapeHtml(CARD_VERSION)} · Fokus auf Orientierung, nicht auf Registry-Rohdaten</div>
           </div>
         </ha-card>
       `;
@@ -791,9 +912,11 @@ class SiekerOperatorHub extends HTMLElement {
       console.error("Sieker Operator Hub: Render-Fehler.", error);
       this.shadowRoot.innerHTML = `
         <style>${this._styles()}</style>
-        <ha-card header="${escapeHtml(this._config.title || "Operator Hub")}">
-          <div class="loading-state">
-            Frontend-Fehler im Operator Hub: ${escapeHtml(error?.message || "unbekannt")}
+        <ha-card>
+          <div class="app-shell">
+            <div class="loading-state">
+              Frontend-Fehler im Operator Hub: ${escapeHtml(error?.message || "unbekannt")}
+            </div>
           </div>
         </ha-card>
       `;
@@ -808,270 +931,393 @@ class SiekerOperatorHub extends HTMLElement {
 
       ha-card {
         overflow: hidden;
+        border-radius: 28px;
+      }
+
+      ha-icon {
+        color: currentColor;
       }
 
       .app-shell {
-        padding: 16px;
+        display: grid;
+        gap: 24px;
+        padding: clamp(16px, 2vw, 28px);
         background:
-          radial-gradient(circle at top left, rgba(56, 114, 212, 0.12), transparent 28%),
-          radial-gradient(circle at bottom right, rgba(28, 167, 133, 0.10), transparent 26%),
+          linear-gradient(180deg, rgba(33, 91, 185, 0.10) 0%, rgba(33, 91, 185, 0.02) 24%, transparent 60%),
+          radial-gradient(circle at top right, rgba(26, 150, 115, 0.12), transparent 28%),
           var(--card-background-color);
       }
 
-      .topnav {
+      .shell-header {
         display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-bottom: 18px;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 18px;
       }
 
-      .subnav {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
+      .shell-copy {
+        display: grid;
+        gap: 8px;
       }
 
-      .topnav-button,
-      .subnav-button,
-      .nav-tile,
-      .action-button {
-        border: 1px solid var(--divider-color);
-        border-radius: 14px;
-        background: rgba(127, 127, 127, 0.05);
-        color: var(--primary-text-color);
-        cursor: pointer;
-        transition: transform 120ms ease, border-color 120ms ease, background 120ms ease;
+      .shell-eyebrow,
+      .panel-eyebrow {
+        color: var(--secondary-text-color);
+        font-size: 0.74rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
       }
 
-      .topnav-button,
-      .subnav-button {
-        padding: 10px 14px;
-        font: inherit;
+      .shell-title {
+        margin: 0;
+        font-size: clamp(1.45rem, 2vw, 2rem);
+        line-height: 1.1;
       }
 
-      .topnav-button.is-active,
-      .subnav-button.is-active {
-        background: rgba(56, 114, 212, 0.16);
-        border-color: rgba(56, 114, 212, 0.45);
-      }
-
-      .topnav-button:hover,
-      .subnav-button:hover,
-      .nav-tile:hover,
-      .action-button:hover {
-        transform: translateY(-1px);
-      }
-
-      .page-section {
-        margin-bottom: 22px;
-      }
-
-      .section-head {
-        margin-bottom: 12px;
-      }
-
-      .section-head h2 {
-        margin: 0 0 4px;
-        font-size: 1.15rem;
-      }
-
+      .shell-copy p,
       .section-head p,
       .legacy-note,
       .footer-note,
       .empty-note,
-      .loading-state {
+      .loading-state,
+      .panel-copy,
+      .room-panel-head p {
+        margin: 0;
         color: var(--secondary-text-color);
-        line-height: 1.45;
+        line-height: 1.5;
       }
 
-      .status-grid,
-      .nav-grid,
-      .room-grid {
+      .page-badge {
+        padding: 10px 14px;
+        border-radius: 999px;
+        border: 1px solid rgba(56, 114, 212, 0.22);
+        background: rgba(56, 114, 212, 0.12);
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      .nav-shell {
         display: grid;
         gap: 12px;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      }
-
-      .status-card,
-      .room-card,
-      .panel,
-      .diagnostic-card {
-        border: 1px solid rgba(127, 127, 127, 0.20);
-        border-radius: 16px;
-        background: rgba(127, 127, 127, 0.04);
         padding: 14px;
-      }
-
-      .status-card-head,
-      .room-head {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 10px;
-        margin-bottom: 8px;
-      }
-
-      .status-title,
-      .room-head h3,
-      .panel h3 {
-        margin: 0;
-        font-size: 0.98rem;
-        font-weight: 600;
-      }
-
-      .status-icon,
-      .nav-icon {
-        font-family: monospace;
-        color: var(--secondary-text-color);
-      }
-
-      .status-value {
-        font-size: 1.15rem;
-        font-weight: 700;
-        margin-bottom: 4px;
-      }
-
-      .room-summary {
-        font-size: 1.02rem;
-        font-weight: 700;
-        margin-bottom: 4px;
-      }
-
-      .room-caption {
-        color: var(--secondary-text-color);
-        margin-bottom: 12px;
-        line-height: 1.4;
-      }
-
-      .status-id,
-      .entity-id {
-        font-size: 0.78rem;
-        color: var(--secondary-text-color);
-      }
-
-      .nav-tile {
-        padding: 16px;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-        text-align: left;
-      }
-
-      .nav-title {
-        font-size: 1rem;
-        font-weight: 700;
-      }
-
-      .nav-desc {
-        color: var(--secondary-text-color);
-        line-height: 1.4;
-      }
-
-      .module-layout {
-        display: grid;
-        gap: 14px;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      }
-
-      .module-column {
-        display: grid;
-        gap: 14px;
-      }
-
-      .entity-list,
-      .diagnostic-list {
-        display: grid;
-        gap: 10px;
-      }
-
-      .entity-row {
-        display: flex;
-        justify-content: space-between;
-        gap: 10px;
-        padding: 10px 12px;
-        border-radius: 12px;
+        border-radius: 20px;
+        border: 1px solid rgba(127, 127, 127, 0.16);
         background: rgba(127, 127, 127, 0.05);
       }
 
-      .entity-meta {
-        display: grid;
-        gap: 4px;
-      }
-
-      .entity-name {
-        font-weight: 600;
-      }
-
-      .entity-state {
-        text-align: right;
-        font-weight: 600;
-      }
-
-      .severity-warn {
-        border-left: 4px solid rgba(201, 79, 79, 0.75);
-      }
-
-      .severity-ok {
-        border-left: 4px solid rgba(74, 152, 109, 0.65);
-      }
-
-      .severity-muted {
-        border-left: 4px solid rgba(127, 127, 127, 0.45);
-      }
-
+      .segmented-nav,
+      .module-rail,
       .action-grid {
         display: flex;
         flex-wrap: wrap;
         gap: 10px;
       }
 
+      .page-button,
+      .module-chip,
+      .room-selector,
+      .module-tile,
       .action-button {
-        padding: 10px 14px;
+        appearance: none;
+        border: 1px solid rgba(127, 127, 127, 0.20);
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--primary-text-color);
+        cursor: pointer;
         font: inherit;
+        transition: transform 120ms ease, border-color 120ms ease, background 120ms ease, box-shadow 120ms ease;
+      }
+
+      .page-button,
+      .module-chip,
+      .action-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 14px;
+      }
+
+      .page-button.is-active,
+      .module-chip.is-active,
+      .room-selector.is-active {
+        border-color: rgba(56, 114, 212, 0.36);
+        background: rgba(56, 114, 212, 0.14);
+        box-shadow: inset 0 0 0 1px rgba(56, 114, 212, 0.10);
+      }
+
+      .page-button:hover,
+      .module-chip:hover,
+      .room-selector:hover,
+      .module-tile:hover,
+      .action-button:hover {
+        transform: translateY(-1px);
+      }
+
+      .page-content,
+      .page-section,
+      .module-column,
+      .entity-list,
+      .diagnostic-list {
+        display: grid;
+        gap: 14px;
+      }
+
+      .section-head h2,
+      .room-panel-head h2,
+      .panel h3 {
+        margin: 0;
+      }
+
+      .status-grid,
+      .module-grid,
+      .room-selector-grid,
+      .metric-grid {
+        display: grid;
+        gap: 14px;
+      }
+
+      .status-grid {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      }
+
+      .module-grid {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      }
+
+      .room-selector-grid {
+        grid-template-columns: repeat(auto-fit, minmax(146px, 1fr));
+      }
+
+      .metric-grid {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      }
+
+      .status-card,
+      .module-tile,
+      .panel,
+      .diagnostic-card,
+      .room-hero-panel {
+        border: 1px solid rgba(127, 127, 127, 0.18);
+        border-radius: 22px;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 16px;
+      }
+
+      .status-card {
+        display: grid;
+        gap: 12px;
+        min-height: 126px;
+      }
+
+      .status-card-head,
+      .module-tile-head,
+      .panel-head-inline,
+      .room-panel-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .module-tile {
+        display: grid;
+        gap: 10px;
+        text-align: left;
+      }
+
+      .status-icon-wrap,
+      .room-badge,
+      .entity-leading {
+        display: grid;
+        place-items: center;
+        flex: 0 0 auto;
+        border-radius: 14px;
+        background: rgba(56, 114, 212, 0.10);
+      }
+
+      .status-icon-wrap,
+      .room-badge {
+        width: 44px;
+        height: 44px;
+      }
+
+      .entity-leading {
+        width: 34px;
+        height: 34px;
+        border-radius: 12px;
+      }
+
+      .inline-icon,
+      .status-haicon,
+      .nav-haicon,
+      .entity-icon,
+      .room-panel-icon {
+        --mdc-icon-size: 20px;
+      }
+
+      .status-title,
+      .nav-title,
+      .room-selector-title,
+      .entity-name {
+        font-weight: 700;
+      }
+
+      .nav-desc,
+      .room-selector-meta,
+      .entity-subtitle,
+      .panel-kicker {
+        color: var(--secondary-text-color);
+      }
+
+      .status-value,
+      .metric-value,
+      .entity-state {
+        font-weight: 700;
+      }
+
+      .status-value {
+        font-size: 1.18rem;
+      }
+
+      .room-selector {
+        display: grid;
+        gap: 4px;
+        padding: 12px 14px;
+        text-align: left;
+      }
+
+      .room-layout,
+      .module-layout {
+        display: grid;
+        gap: 14px;
+        grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      }
+
+      .room-hero-panel {
+        display: grid;
+        gap: 18px;
+      }
+
+      .metric-chip {
+        display: grid;
+        gap: 4px;
+        padding: 12px 14px;
+        border-radius: 16px;
+        border: 1px solid rgba(127, 127, 127, 0.16);
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      .metric-label {
+        color: var(--secondary-text-color);
+        font-size: 0.76rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .entity-row {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        border-radius: 16px;
+        border: 1px solid rgba(127, 127, 127, 0.12);
+        background: rgba(255, 255, 255, 0.04);
+      }
+
+      .entity-meta {
+        display: grid;
+        gap: 3px;
+        min-width: 0;
+      }
+
+      .entity-subtitle {
+        font-size: 0.82rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .entity-state {
+        text-align: right;
+      }
+
+      .severity-warn {
+        border-color: rgba(201, 79, 79, 0.24);
+        background: rgba(201, 79, 79, 0.08);
+      }
+
+      .severity-ok {
+        border-color: rgba(74, 152, 109, 0.20);
+      }
+
+      .severity-muted {
+        opacity: 0.88;
       }
 
       .action-primary {
-        background: rgba(56, 114, 212, 0.16);
-        border-color: rgba(56, 114, 212, 0.45);
+        border-color: rgba(56, 114, 212, 0.36);
+        background: rgba(56, 114, 212, 0.14);
       }
 
       .action-warn {
+        border-color: rgba(201, 79, 79, 0.30);
         background: rgba(201, 79, 79, 0.12);
-        border-color: rgba(201, 79, 79, 0.35);
       }
 
       .attribute-row {
         display: flex;
         justify-content: space-between;
-        gap: 10px;
+        gap: 12px;
         padding-top: 8px;
         font-size: 0.88rem;
         color: var(--secondary-text-color);
       }
 
       .footer-note {
-        margin-top: 8px;
         font-size: 0.82rem;
       }
 
-      @media (max-width: 700px) {
-        .app-shell {
-          padding: 12px;
-        }
-
-        .entity-row {
+      @media (max-width: 980px) {
+        .shell-header,
+        .room-layout,
+        .module-layout,
+        .panel-head-inline {
+          grid-template-columns: 1fr;
           flex-direction: column;
         }
 
+        .page-badge {
+          align-self: flex-start;
+        }
+      }
+
+      @media (max-width: 720px) {
+        .app-shell {
+          padding: 14px;
+        }
+
+        .status-grid,
+        .module-grid,
+        .room-selector-grid,
+        .metric-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .entity-row {
+          grid-template-columns: auto minmax(0, 1fr);
+        }
+
         .entity-state {
+          grid-column: 2;
           text-align: left;
         }
       }
     `;
   }
 }
-
 if (!customElements.get("sieker-operator-hub")) {
   customElements.define("sieker-operator-hub", SiekerOperatorHub);
 }
@@ -1084,6 +1330,7 @@ if (!window.customCards.some((card) => card.type === "sieker-operator-hub")) {
     description: "MVP custom card shell for the next operator-focused dashboard application.",
   });
 }
+
 
 
 

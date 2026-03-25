@@ -68,6 +68,10 @@ Der Fokus liegt auf:
 - Kontakte / Zugang
 - relevante Rollladen- und Umgebungsdaten
 
+Die UI zeigt dabei nicht alle Raeume gleichzeitig als lange Kartenwand, sondern
+arbeitet mit einer kompakten Raumauswahl und einer fokussierten Detailansicht
+des gerade aktiven Raums.
+
 Manuelle Alltagsbedienung bleibt bewusst ausserhalb der Raumansicht im
 passenden Bedienkontext wie `Wohnen`.
 
@@ -168,6 +172,12 @@ Gruende:
 Wenn sich das Bedienmodell bewaehrt, kann spaeter auf eine strukturierte
 Frontend-Toolchain mit `frontend_apps/...` und Build-Ausgabe nach
 `www/community/...` umgestellt werden.
+
+## Layout-Hinweis
+
+`dashboards/operator_hub.yaml` verwendet fuer den Einstieg bewusst eine
+Single-Card-Panelansicht, damit die App-Shell nicht in einer schmalen
+Sections-Spalte eingeklemmt wird.
 
 ## Grenzen des MVP
 

@@ -8,11 +8,8 @@ views:
   - title: Hub
     path: home
     icon: mdi:view-dashboard-outline
-    type: sections
-    max_columns: 1
-    sections:
-      - type: grid
-        cards:
-          - type: custom:sieker-operator-hub
-            title: Operator Hub
-            default_page: home
+    panel: true
+    cards:
+      - type: custom:sieker-operator-hub
+        title: Operator Hub
+        default_page: home
