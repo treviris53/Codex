@@ -29,6 +29,8 @@ General architecture and design rules for Home Assistant modules in this reposit
 - Must stay aligned with the authoritative package logic and must not become a second source of runtime decision logic.
 - Should prefer clear, compact information architecture with focused subviews over long scrolling pages.
 - Should separate control, status, diagnostics, and service/tuning views when that improves operator clarity.
+- May intentionally depend on established custom cards when they are part of the productive operator UX; replacing them with native cards is not a default simplification.
+- Global Lovelace resource loading changes are architecture-relevant because they can break multiple dashboards at once and therefore require explicit migration planning.
 
 ## State management
 - Busy lock pattern uses `input_boolean.<module>_busy`.

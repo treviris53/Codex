@@ -5,6 +5,9 @@
 `dashboards/sieker_hub.yaml` ist der aktuelle operator-orientierte Hub. Er trennt
 Startseite, Wohnen, Räume und Fachmodule klar nach Bedienzweck.
 
+Der Hub nutzt bewusst produktive Custom Cards dort, wo sie Navigation,
+Verdichtung oder Spezialfunktionen besser tragen als reine Standardkarten.
+
 ## Navigationslogik
 
 - `Home` ist ein Leitstand mit Hausstatus, Handlungsbedarf und Fachmodulen.
@@ -72,3 +75,4 @@ Das Modul `Waschmaschine` bündelt die bisherige Keller-Ansicht als Geräteansic
 - YAML mit `D:\Codex\.venv\Scripts\yamllint.cmd`
 - Navigation gegen `configuration.yaml` geprüft
 - Keine bestehenden `entity_id` umbenannt
+- Bei Dashboard-Problemen immer auch globale Lovelace-Resource-Aenderungen in `configuration.yaml` pruefen; ein fehlerhafter globaler Resource-Umbau kann mehrere Subviews gleichzeitig brechen.

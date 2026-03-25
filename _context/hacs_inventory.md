@@ -19,6 +19,7 @@ Stand:
 - HACS ist installiert und produktiv genutzt.
 - Custom Integrations, Dashboard-Karten und Themes duerfen nicht stillschweigend entfernt, ersetzt oder ignoriert werden.
 - Bei Dashboard-, Integrations- oder Modul-Aenderungen muessen relevante HACS-Abhaengigkeiten mitgedacht werden.
+- Bestehende produktive Dashboard-Flows duerfen weiterhin bewusst auf Custom Cards aufbauen; eine Rueckmigration auf reine Standard-Lovelace-Karten ist kein Default-Ziel.
 
 ## Produktiv und entwicklungsrelevant
 
@@ -80,6 +81,7 @@ Hinweis:
 - pruefen, ob verwendete Custom Cards aus HACS stammen
 - keine bestehende Card stillschweigend durch Standard-Lovelace ersetzen, wenn dadurch Verhalten oder UX verloren geht
 - bei neuen Dashboard-Konzepten bevorzugt vorhandene, bereits installierte Karten nutzen
+- globale Resource-Umbauten in `configuration.yaml` nur mit ausdruecklicher Absprache und aktivem Validierungsplan anfassen, weil sie dashboarduebergreifend produktive Custom Cards brechen koennen
 
 ### Bei Integrations- oder Modul-Aenderungen
 

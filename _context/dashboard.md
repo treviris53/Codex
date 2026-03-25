@@ -46,8 +46,10 @@ Die folgenden installierten HACS-Module sind fuer Dashboard-Arbeit besonders rel
 
 - Vor Dashboard-Refactors pruefen, welche Karten oder visuellen Muster bereits produktiv genutzt werden.
 - Bereits installierte und etablierte HACS-Karten bevorzugt wiederverwenden, wenn sie das bestehende UX-Muster tragen.
+- Die bewusste weitere Nutzung von Custom Cards ist in diesem Repository erlaubt und gewuenscht, wenn sie Bedienfluss, Lesbarkeit oder Fachfunktion tragen.
 - Keine produktiv genutzte Custom Card stillschweigend entfernen, wenn dadurch Bedienfluss, Lesbarkeit oder Funktionsumfang verloren geht.
 - Wenn eine Dashboard-Datei HACS-Karten nutzt, diese Abhaengigkeit in der Aufgabenanalyse und bei groesseren Redesigns auch in der Doku mitberuecksichtigen.
+- Globale Lovelace-Resource-Umbauten, insbesondere `resource_mode: yaml` oder ein zentraler `resources:`-Block in `configuration.yaml`, gelten als high-risk und duerfen nur mit ausdruecklicher Migration/Validierung geaendert werden.
 
 ## Wann diese Datei lesen?
 
