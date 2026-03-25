@@ -108,17 +108,7 @@ lovelace:
       type: module
     - url: /hacsfiles/button-card/button-card.js
       type: module
-    - url: /local/community/sieker-operator-hub/sieker-operator-hub.js
-      type: module
   dashboards:
-    operator-hub-dashboard:
-      mode: yaml
-      title: Operator Hub
-      icon: mdi:view-dashboard-edit-outline
-      show_in_sidebar: true
-      require_admin: false
-      filename: dashboards/operator_hub.yaml
-
     roborock-dashboard:
       mode: yaml
       title: Roborock

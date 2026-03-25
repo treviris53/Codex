@@ -36,10 +36,6 @@ __pycache__/
 *.pyc
 .venv/
 
-# Local frontend workspaces / build output
-frontend_apps/**/node_modules/
-frontend_apps/**/dist/
-
 # Local deploy metadata (keep docs, ignore per-environment live state)
 .deploy-state/*
 !.deploy-state/README.md
