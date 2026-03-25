@@ -105,10 +105,10 @@ function Get-RelativePathForState {
     return ($RelativePath -replace "\\", "/").Trim()
 }
 
-function Test-YamlExtension {
+function Test-DeployableExtension {
     param([string]$Path)
 
-    return [System.IO.Path]::GetExtension($Path) -in @(".yaml", ".yml")
+    return [System.IO.Path]::GetExtension($Path) -in @(".yaml", ".yml", ".json")
 }
 
 function Get-ParentRelativePath {
@@ -127,7 +127,7 @@ function Get-ParentRelativePath {
     return Get-RelativePathForState -RelativePath $parent
 }
 
-function Test-YamlOnlyDirectory {
+function Test-DeployableDirectory {
     param([string]$RelativeDirectoryPath)
 
     if ([string]::IsNullOrWhiteSpace($RelativeDirectoryPath)) {
@@ -146,14 +146,14 @@ function Test-YamlOnlyDirectory {
 
     $invalidFiles = @(
         $files | Where-Object {
-            [System.IO.Path]::GetExtension($_.Name) -notin @(".yaml", ".yml")
+            [System.IO.Path]::GetExtension($_.Name) -notin @(".yaml", ".yml", ".json")
         }
     )
 
     return $invalidFiles.Count -eq 0
 }
 
-function Assert-YamlOnlyPath {
+function Assert-DeployablePath {
     param([string]$RelativePath)
 
     $resolvedPath = Resolve-RepoRelativePath -RelativePath $RelativePath
@@ -162,8 +162,8 @@ function Assert-YamlOnlyPath {
     $item = Get-Item -LiteralPath $resolvedPath
     if (-not $item.PSIsContainer) {
         $extension = [System.IO.Path]::GetExtension($item.Name)
-        if ($extension -notin @(".yaml", ".yml")) {
-            throw "Non-YAML file is not deployable: $RelativePath"
+        if ($extension -notin @(".yaml", ".yml", ".json")) {
+            throw "Unsupported file is not deployable through guarded deploy: $RelativePath"
         }
         return
     }
@@ -175,7 +175,7 @@ function Assert-YamlOnlyPath {
 
     $invalidFiles = @(
         $files | Where-Object {
-            [System.IO.Path]::GetExtension($_.Name) -notin @(".yaml", ".yml")
+            [System.IO.Path]::GetExtension($_.Name) -notin @(".yaml", ".yml", ".json")
         }
     )
 
@@ -184,7 +184,7 @@ function Assert-YamlOnlyPath {
             Select-Object -First 5 |
             ForEach-Object { $_.FullName.Substring($script:NormalizedSourceRoot.Length + 1) -replace "\\", "/" }
 
-        throw "Directory contains non-YAML files and cannot be deployed as-is: $RelativePath`n$($samplePaths -join "`n")"
+        throw "Directory contains unsupported files and cannot be deployed as-is: $RelativePath`n$($samplePaths -join "`n")"
     }
 }
 
@@ -232,7 +232,7 @@ function Get-SafeDeletedPathSuggestion {
 
     $currentParent = Get-ParentRelativePath -RelativePath $RelativePath
     while (-not [string]::IsNullOrWhiteSpace($currentParent)) {
-        if (Test-YamlOnlyDirectory -RelativeDirectoryPath $currentParent) {
+        if (Test-DeployableDirectory -RelativeDirectoryPath $currentParent) {
             return $currentParent
         }
         $currentParent = Get-ParentRelativePath -RelativePath $currentParent
@@ -273,9 +273,9 @@ function Show-ChangedSinceLastDeployPreview {
         Invoke-Git -Arguments @("diff", "--name-status", "--find-renames", "$lastDeployCommit..HEAD")
     )
 
-    $changedYamlItems = [System.Collections.Generic.List[string]]::new()
-    $existingYamlFiles = [System.Collections.Generic.List[string]]::new()
-    $deletedYamlPaths = [System.Collections.Generic.List[string]]::new()
+    $changedDeployableItems = [System.Collections.Generic.List[string]]::new()
+    $existingDeployableFiles = [System.Collections.Generic.List[string]]::new()
+    $deletedDeployablePaths = [System.Collections.Generic.List[string]]::new()
 
     foreach ($line in $diffLines) {
         if ([string]::IsNullOrWhiteSpace($line)) {
@@ -297,40 +297,40 @@ function Show-ChangedSinceLastDeployPreview {
         switch ($statusCode) {
             "A" {
                 $path = Get-RelativePathForState -RelativePath $parts[1]
-                if (Test-YamlExtension -Path $path) {
-                    $null = $changedYamlItems.Add("A $path")
-                    $null = $existingYamlFiles.Add($path)
+                if (Test-DeployableExtension -Path $path) {
+                    $null = $changedDeployableItems.Add("A $path")
+                    $null = $existingDeployableFiles.Add($path)
                 }
             }
             "C" {
                 if ($parts.Count -ge 3) {
                     $sourcePath = Get-RelativePathForState -RelativePath $parts[1]
                     $targetPath = Get-RelativePathForState -RelativePath $parts[2]
-                    if (Test-YamlExtension -Path $targetPath) {
-                        $null = $changedYamlItems.Add("C $sourcePath -> $targetPath")
-                        $null = $existingYamlFiles.Add($targetPath)
+                    if (Test-DeployableExtension -Path $targetPath) {
+                        $null = $changedDeployableItems.Add("C $sourcePath -> $targetPath")
+                        $null = $existingDeployableFiles.Add($targetPath)
                     }
                 }
                 else {
                     $path = Get-RelativePathForState -RelativePath $parts[1]
-                    if (Test-YamlExtension -Path $path) {
-                        $null = $changedYamlItems.Add("C $path")
-                        $null = $existingYamlFiles.Add($path)
+                    if (Test-DeployableExtension -Path $path) {
+                        $null = $changedDeployableItems.Add("C $path")
+                        $null = $existingDeployableFiles.Add($path)
                     }
                 }
             }
             "D" {
                 $path = Get-RelativePathForState -RelativePath $parts[1]
-                if (Test-YamlExtension -Path $path) {
-                    $null = $changedYamlItems.Add("D $path")
-                    $null = $deletedYamlPaths.Add($path)
+                if (Test-DeployableExtension -Path $path) {
+                    $null = $changedDeployableItems.Add("D $path")
+                    $null = $deletedDeployablePaths.Add($path)
                 }
             }
             "M" {
                 $path = Get-RelativePathForState -RelativePath $parts[1]
-                if (Test-YamlExtension -Path $path) {
-                    $null = $changedYamlItems.Add("M $path")
-                    $null = $existingYamlFiles.Add($path)
+                if (Test-DeployableExtension -Path $path) {
+                    $null = $changedDeployableItems.Add("M $path")
+                    $null = $existingDeployableFiles.Add($path)
                 }
             }
             "R" {
@@ -341,35 +341,35 @@ function Show-ChangedSinceLastDeployPreview {
                 $oldPath = Get-RelativePathForState -RelativePath $parts[1]
                 $newPath = Get-RelativePathForState -RelativePath $parts[2]
 
-                if ((Test-YamlExtension -Path $oldPath) -or (Test-YamlExtension -Path $newPath)) {
-                    $null = $changedYamlItems.Add("R $oldPath -> $newPath")
+                if ((Test-DeployableExtension -Path $oldPath) -or (Test-DeployableExtension -Path $newPath)) {
+                    $null = $changedDeployableItems.Add("R $oldPath -> $newPath")
                 }
 
-                if (Test-YamlExtension -Path $oldPath) {
-                    $null = $deletedYamlPaths.Add($oldPath)
+                if (Test-DeployableExtension -Path $oldPath) {
+                    $null = $deletedDeployablePaths.Add($oldPath)
                 }
 
-                if (Test-YamlExtension -Path $newPath) {
-                    $null = $existingYamlFiles.Add($newPath)
+                if (Test-DeployableExtension -Path $newPath) {
+                    $null = $existingDeployableFiles.Add($newPath)
                 }
             }
         }
     }
 
-    if ($changedYamlItems.Count -eq 0) {
-        Write-Log "No committed YAML changes since the last successful guarded deploy."
+    if ($changedDeployableItems.Count -eq 0) {
+        Write-Log "No committed guarded-deploy file changes since the last successful guarded deploy."
         return
     }
 
-    Write-Log "Committed YAML changes since last deploy: $($changedYamlItems.Count)"
-    foreach ($item in $changedYamlItems) {
+    Write-Log "Committed guarded-deploy file changes since last deploy: $($changedDeployableItems.Count)"
+    foreach ($item in $changedDeployableItems) {
         Write-Log "CHANGE  $item"
     }
 
     $suggestions = [System.Collections.Generic.List[string]]::new()
     $seenSuggestions = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
 
-    $existingFileGroups = $existingYamlFiles |
+    $existingFileGroups = $existingDeployableFiles |
         Sort-Object -Unique |
         Group-Object { Get-ParentRelativePath -RelativePath $_ }
 
@@ -380,7 +380,7 @@ function Show-ChangedSinceLastDeployPreview {
         if (
             $groupFiles.Count -gt 1 -and
             -not [string]::IsNullOrWhiteSpace($parentPath) -and
-            (Test-YamlOnlyDirectory -RelativeDirectoryPath $parentPath)
+            (Test-DeployableDirectory -RelativeDirectoryPath $parentPath)
         ) {
             Add-UniquePath -List $suggestions -Seen $seenSuggestions -Value $parentPath
             continue
@@ -392,7 +392,7 @@ function Show-ChangedSinceLastDeployPreview {
     }
 
     $unresolvedPaths = [System.Collections.Generic.List[string]]::new()
-    foreach ($deletedPath in ($deletedYamlPaths | Sort-Object -Unique)) {
+    foreach ($deletedPath in ($deletedDeployablePaths | Sort-Object -Unique)) {
         $suggestedDirectory = Get-SafeDeletedPathSuggestion -RelativePath $deletedPath
         if ([string]::IsNullOrWhiteSpace($suggestedDirectory)) {
             $null = $unresolvedPaths.Add($deletedPath)
@@ -403,7 +403,7 @@ function Show-ChangedSinceLastDeployPreview {
     }
 
     if ($suggestions.Count -eq 0) {
-        Write-Log "No safe automatic YAML deploy suggestions could be derived."
+        Write-Log "No safe automatic guarded-deploy suggestions could be derived."
     }
     else {
         Write-Log "Suggested guarded deploy paths:"
@@ -413,7 +413,7 @@ function Show-ChangedSinceLastDeployPreview {
     }
 
     if ($unresolvedPaths.Count -gt 0) {
-        Write-Log "Manual review required for YAML deletions/renames without a safe directory suggestion:"
+        Write-Log "Manual review required for guarded-deploy deletions/renames without a safe directory suggestion:"
         foreach ($path in $unresolvedPaths) {
             Write-Log "UNRESOLVED $path"
         }
@@ -505,7 +505,7 @@ function Write-DeployState {
         "commit_short = $(Convert-ToTomlString -Value $shortCommit)"
         "dirty_worktree = $($DirtyWorktree.ToString().ToLowerInvariant())"
         "paths = $(Convert-ToTomlArray -Values $normalizedPaths)"
-        "content_policy = ""yaml-only"""
+        "content_policy = ""yaml-json"""
         "deploy_mode = $(Convert-ToTomlString -Value (Get-DeployMode))"
         "operator = $(Convert-ToTomlString -Value $operator)"
     )
@@ -526,7 +526,7 @@ try {
     }
 
     if (-not $ChangedSinceLastDeploy -and $Paths.Count -eq 0) {
-        throw "No -Paths specified. Refusing to deploy without explicit YAML paths."
+        throw "No -Paths specified. Refusing to deploy without explicit guarded-deploy paths."
     }
 
     $script:NormalizedSourceRoot = Get-NormalizedRootPath -Path $SourceRoot
@@ -554,7 +554,7 @@ try {
     }
 
     foreach ($relativePath in $Paths) {
-        Assert-YamlOnlyPath -RelativePath $relativePath
+        Assert-DeployablePath -RelativePath $relativePath
     }
 
     Write-Log "Deploy guard start"
@@ -562,7 +562,7 @@ try {
     Write-Log "Branch: $branch"
     Write-Log "Commit: $commit"
     Write-Log "Dirty worktree: $dirtyWorktree"
-    Write-Log "YAML path count: $($Paths.Count)"
+    Write-Log "Guarded deploy path count: $($Paths.Count)"
 
     $deployScriptPath = Join-Path $SourceRoot "deploy_ha_samba_healthcheck.ps1"
     Assert-PathExists -Path $deployScriptPath -Label "Deploy script"

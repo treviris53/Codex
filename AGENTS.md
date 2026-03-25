@@ -99,7 +99,7 @@ Primary working directory: `D:\Codex`
 
 ## Validation expectations
 Before proposing a final change:
-- check YAML syntax
+- check syntax for changed YAML / JSON files as appropriate
 - check for accidental `entity_id` renames
 - call out placeholders clearly
 - summarize changed files

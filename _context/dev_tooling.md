@@ -49,8 +49,8 @@ The repository-local VS Code tasks live in:
 
 Current task categories:
 - `yamllint` for current file, workspace, and selected presets
-- guarded deploy preview / diff tasks
-- guarded `WhatIf` deploy tasks
+- guarded deploy preview / diff tasks for supported YAML / JSON deploy paths
+- guarded `WhatIf` deploy tasks for supported YAML / JSON deploy paths
 - guarded live deploy tasks
 
 ## Operational guidance
