@@ -22,7 +22,7 @@ Deployment workflow and environment assumptions for this repository.
 - Use the repository -> deploy-script -> HA workflow as the default path for live changes.
 - Direct runtime inspection is acceptable for validation and debugging; direct runtime mutation should be avoided unless a task explicitly requires it.
 - For guarded live deploys, prefer `deploy_ha_git_guard.ps1` as the entrypoint before the underlying deploy executor.
-- Guarded deploys support `.yaml`, `.yml`, and `.json` files.
+- Guarded deploys support `.yaml`, `.yml`, `.json`, and `.js` files.
 - `deploy_ha_git_guard.ps1 -ChangedSinceLastDeploy` is a read-only preview mode. It derives guarded-deploy suggestions from the last successful deploy state and must not perform activation by itself.
 
 ## Production diagnostics access
@@ -41,7 +41,7 @@ Guard wrapper for production-near use:
 
 ## Required workflow
 1. Review the intended file paths.
-2. For guarded deploys, ensure the selected paths resolve only to supported `.yaml`, `.yml`, or `.json` files.
+2. For guarded deploys, ensure the selected paths resolve only to supported `.yaml`, `.yml`, `.json`, or `.js` files.
 3. Run a diff check with `-DiffOnly`.
 4. Run a dry run with `-WhatIf` when appropriate.
 5. Deploy with backup when changing live configuration.
@@ -68,7 +68,7 @@ Guard wrapper for production-near use:
   - Allowed: targeted inspection of productive logs, traces, state snapshots, and exported runtime diagnostics
   - Not allowed as part of diagnosis: runtime writes, reloads, restarts, helper toggles, ad-hoc service calls, or direct edits on `W:\`
   - Required baseline: separate findings from proposed fixes and explicitly mark any later activation step
-- YAML / JSON-only content change:
+- YAML / JSON / JS-only content change:
   - Required baseline: format-appropriate syntax check and changed-file review
 - Automation / script / template package change:
   - Preferred activation: reload-capable workflow where sufficient
@@ -79,6 +79,8 @@ Guard wrapper for production-near use:
 - Dashboard-only YAML change:
   - Required validation: changed-file review and dashboard consistency review
   - Reload / restart only if the affected subsystem requires it
+- Frontend resource JS change:
+  - Required validation: changed-file review, browser refresh / cache invalidation assessment, and dashboard resource compatibility review
 - Dashboard / frontend JSON change:
   - Required validation: JSON syntax check, changed-file review, and likely browser refresh / resource reload assessment
 - Cross-module or architecture-affecting change:

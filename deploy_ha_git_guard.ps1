@@ -108,7 +108,7 @@ function Get-RelativePathForState {
 function Test-DeployableExtension {
     param([string]$Path)
 
-    return [System.IO.Path]::GetExtension($Path) -in @(".yaml", ".yml", ".json")
+    return [System.IO.Path]::GetExtension($Path) -in @(".yaml", ".yml", ".json", ".js")
 }
 
 function Get-ParentRelativePath {
@@ -146,7 +146,7 @@ function Test-DeployableDirectory {
 
     $invalidFiles = @(
         $files | Where-Object {
-            [System.IO.Path]::GetExtension($_.Name) -notin @(".yaml", ".yml", ".json")
+            [System.IO.Path]::GetExtension($_.Name) -notin @(".yaml", ".yml", ".json", ".js")
         }
     )
 
@@ -162,7 +162,7 @@ function Assert-DeployablePath {
     $item = Get-Item -LiteralPath $resolvedPath
     if (-not $item.PSIsContainer) {
         $extension = [System.IO.Path]::GetExtension($item.Name)
-        if ($extension -notin @(".yaml", ".yml", ".json")) {
+        if ($extension -notin @(".yaml", ".yml", ".json", ".js")) {
             throw "Unsupported file is not deployable through guarded deploy: $RelativePath"
         }
         return
@@ -175,7 +175,7 @@ function Assert-DeployablePath {
 
     $invalidFiles = @(
         $files | Where-Object {
-            [System.IO.Path]::GetExtension($_.Name) -notin @(".yaml", ".yml", ".json")
+            [System.IO.Path]::GetExtension($_.Name) -notin @(".yaml", ".yml", ".json", ".js")
         }
     )
 
@@ -505,7 +505,7 @@ function Write-DeployState {
         "commit_short = $(Convert-ToTomlString -Value $shortCommit)"
         "dirty_worktree = $($DirtyWorktree.ToString().ToLowerInvariant())"
         "paths = $(Convert-ToTomlArray -Values $normalizedPaths)"
-        "content_policy = ""yaml-json"""
+        "content_policy = ""yaml-json-js"""
         "deploy_mode = $(Convert-ToTomlString -Value (Get-DeployMode))"
         "operator = $(Convert-ToTomlString -Value $operator)"
     )

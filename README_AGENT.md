@@ -11,7 +11,7 @@ Key rules:
 - program_map is authoritative
 - job_map is alias layer only
 - For production-near deploys, prefer `deploy_ha_git_guard.ps1` or the VS Code tasks in `.vscode/tasks.json`
-- Guarded deploys support YAML and JSON
+- Guarded deploys support YAML, JSON, and JS
 
 ## Environment Summary
 

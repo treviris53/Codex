@@ -123,9 +123,7 @@ Wetter-Dashboard.
 Das Frontend liest:
 
 - `hass.states`
-- `hass.areas`
-- `hass.entities`
-- `hass.devices`
+- Area-, Device- und Entity-Registry ueber die Home-Assistant-WebSocket-API
 
 ### Schreiben
 
