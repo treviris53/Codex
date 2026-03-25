@@ -1,5 +1,5 @@
 # Dashboard: Sieker Hub
-# Version: 2.0.8
+# Version: 2.0.9
 # Generated: 2026-03-23
 # Notes:
 # - Best-practice oriented hub dashboard.
@@ -200,6 +200,64 @@ button_card_templates:
         - font-weight: 500
         - text-align: center
         - white-space: normal
+  wohnen_quick_card:
+    show_label: false
+    show_state: true
+    tap_action:
+      action: toggle
+    hold_action:
+      action: more-info
+    state_display: >
+      [[[
+        if (entity?.state === 'on') return 'Ein';
+        if (entity?.state === 'off') return 'Aus';
+        return entity?.state ?? '—';
+      ]]]
+    styles:
+      card:
+        - padding: 18px 16px
+        - min-height: 112px
+        - border-radius: 20px
+      grid:
+        - grid-template-areas: '"i n" "i s"'
+        - grid-template-columns: 44px minmax(0, 1fr)
+        - grid-template-rows: min-content min-content
+        - column-gap: 14px
+        - row-gap: 4px
+      img_cell:
+        - width: 44px
+        - height: 44px
+        - justify-self: center
+        - align-self: center
+        - background: rgba(var(--rgb-primary-color), 0.10)
+        - border-radius: 14px
+      icon:
+        - width: 22px
+        - color: var(--primary-color)
+      name:
+        - justify-self: start
+        - align-self: end
+        - font-size: 18px
+        - font-weight: 500
+        - white-space: normal
+        - text-align: left
+        - line-height: 1.15
+      state:
+        - justify-self: start
+        - align-self: start
+        - font-size: 16px
+        - font-weight: 500
+        - text-align: left
+        - color: var(--secondary-text-color)
+    state:
+      - value: 'on'
+        styles:
+          card:
+            - background: rgba(var(--rgb-primary-color), 0.10)
+          img_cell:
+            - background: rgba(var(--rgb-primary-color), 0.18)
+          state:
+            - color: var(--primary-color)
 views:
   - title: Home
     path: home
@@ -510,15 +568,21 @@ views:
             columns: 3
             square: false
             cards:
-              - type: tile
+              - type: custom:button-card
+                template: wohnen_quick_card
                 entity: light.licht_wohnzimmer_haupt
-                name: Wohnzimmer Hauptlicht
-              - type: tile
+                name: Wohnen Licht
+                icon: mdi:ceiling-light
+              - type: custom:button-card
+                template: wohnen_quick_card
                 entity: light.licht_schlafzimmer
-                name: Schlafzimmer Licht
-              - type: tile
+                name: Schlafen Licht
+                icon: mdi:lamp
+              - type: custom:button-card
+                template: wohnen_quick_card
                 entity: switch.0xa4c138442a735c69
-                name: Wohnzimmer Steckdose
+                name: Wohnen Steckdose
+                icon: mdi:power-socket-eu
       - cards:
           - type: heading
             heading: Untermenüs
@@ -527,19 +591,22 @@ views:
             columns: 3
             square: false
             cards:
-              - type: button
+              - type: custom:button-card
+                template: hub_nav_card
                 name: Beleuchtung
                 icon: mdi:lightbulb-group-outline
                 tap_action:
                   action: navigate
                   navigation_path: wohnen-beleuchtung
-              - type: button
+              - type: custom:button-card
+                template: hub_nav_card
                 name: Steckdosen
                 icon: mdi:power-socket-eu
                 tap_action:
                   action: navigate
                   navigation_path: wohnen-steckdosen
-              - type: button
+              - type: custom:button-card
+                template: hub_nav_card
                 name: Szenen
                 icon: mdi:palette-swatch-outline
                 tap_action:

@@ -10,7 +10,7 @@ Verdichtung oder Spezialfunktionen besser tragen als reine Standardkarten.
 
 ## Navigationslogik
 
-- `Home` ist ein Leitstand mit Hausstatus, Handlungsbedarf und Fachmodulen.
+- `Home` ist ein Leitstand mit verdichtetem Hausstatus, Handlungsbedarf und Fachmodulen.
 - `Wohnen` bündelt die manuelle Alltagssteuerung für Beleuchtung, Steckdosen und Szenen.
 - `Räume` ist ein eigener Top-Level-View für Klima- und Umgebungsdaten.
 - Geräte, die keine Raumdaten darstellen, werden als Modul geführt.
@@ -18,8 +18,10 @@ Verdichtung oder Spezialfunktionen besser tragen als reine Standardkarten.
 ## Informationsarchitektur
 
 - `Home` ist ein Leitstand ohne vollständige Raumvorschau und ohne Alltagsbedienung.
+- `Home` nutzt kompakte Status-, Alert- und Navigationskarten statt klassischer Entity-Listen, bleibt aber auf denselben autoritativen Entitäten.
 - `Wohnen` trennt manuelle Wohnfunktionen bewusst von Diagnose- und Technikmodulen.
 - `Räume` ist bewusst nicht Teil der Fachmodule.
+- `Räume` nutzt kuratierte Klima- und Kontextkarten mit bewusst gekürzten, gut lesbaren Raumlabels.
 - Die frühere Keller-Waschmaschinenansicht wurde als eigenes Modul `Waschmaschine` herausgelöst.
 
 ## Fachmodule
@@ -36,6 +38,12 @@ Verdichtung oder Spezialfunktionen besser tragen als reine Standardkarten.
 
 Das Modul `Wohnen` bündelt die früher auf der Startseite verteilte manuelle Bedienung.
 
+Der Top-Level-View ist als kompakte Alltagsoberfläche gedacht:
+
+- `Schnellzugriff` als kompakte Toggle-Karten für die wichtigsten manuellen Wohnaktionen
+- `Untermenüs` als visuell vereinheitlichte Einstiegskarten für Beleuchtung, Steckdosen und Szenen
+- `Einordnung` als kurze operator-orientierte Kontextkarte
+
 ### Unterseiten
 
 - `Beleuchtung` für manuell schaltbare Lichter nach Räumen
@@ -47,12 +55,12 @@ Das Modul `Wohnen` bündelt die früher auf der Startseite verteilte manuelle Be
 Der View `Räume` enthält nur Raum- und Umgebungsdaten:
 
 - Küche
-- Wohnzimmer
-- Schlafzimmer
+- Wohnen
+- Schlafen
 - Bad
 - Flur
 - Gästebad
-- Gästezimmer
+- Gäste
 - Balkon
 
 Die Waschmaschine gehört bewusst nicht mehr in diesen View.
