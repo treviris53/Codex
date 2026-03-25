@@ -1,5 +1,5 @@
 # Dashboard: Sieker Hub
-# Version: 2.0.7
+# Version: 2.0.8
 # Generated: 2026-03-23
 # Notes:
 # - Best-practice oriented hub dashboard.
@@ -108,10 +108,11 @@ button_card_templates:
         - min-height: 88px
         - border-radius: 20px
       grid:
-        - grid-template-areas: '"i n s"'
-        - grid-template-columns: 44px minmax(0, 1fr) auto
-        - align-items: center
+        - grid-template-areas: '"i n" "i s"'
+        - grid-template-columns: 44px minmax(0, 1fr)
+        - grid-template-rows: min-content min-content
         - column-gap: 14px
+        - row-gap: 4px
       img_cell:
         - width: 44px
         - height: 44px
@@ -124,15 +125,18 @@ button_card_templates:
         - color: var(--primary-color)
       name:
         - justify-self: start
+        - align-self: end
         - font-size: 18px
         - font-weight: 500
         - white-space: normal
         - text-align: left
+        - line-height: 1.15
       state:
-        - justify-self: end
+        - justify-self: start
+        - align-self: start
         - font-size: 16px
         - font-weight: 500
-        - text-align: right
+        - text-align: left
         - color: var(--primary-text-color)
   hub_alert_card:
     template: hub_metric_card
@@ -157,6 +161,19 @@ button_card_templates:
             - color: var(--warning-color)
           state:
             - color: var(--warning-color)
+  hub_roborock_alert_card:
+    template: hub_metric_card
+    state:
+      - value: 'on'
+        styles:
+          card:
+            - background: rgba(var(--rgb-primary-color), 0.10)
+          img_cell:
+            - background: rgba(var(--rgb-primary-color), 0.18)
+          icon:
+            - color: var(--primary-color)
+          state:
+            - color: var(--primary-color)
   hub_nav_card:
     show_state: false
     show_label: false
@@ -203,33 +220,86 @@ views:
               - type: custom:button-card
                 template: hub_metric_card
                 entity: input_boolean.anwesend
-                name: Anwesenheit
+                name: Anwesend
                 icon: mdi:account-check-outline
+                state_display: >
+                  [[[
+                    return entity?.state === 'on' ? 'Ja' : 'Nein';
+                  ]]]
               - type: custom:button-card
                 template: hub_metric_card
                 entity: sensor.heizung_sollprofil
-                name: Heizprofil
+                name: Profil
                 icon: mdi:radiator
+                state_display: >
+                  [[[
+                    const raw = entity?.state ?? '—';
+                    const parts = String(raw).split('_');
+                    if (parts.length === 2 && /^\d+$/.test(parts[1])) {
+                      const label = parts[0].charAt(0).toUpperCase() + parts[0].slice(1);
+                      return `${label} ${parts[1]}°`;
+                    }
+                    return String(raw).replaceAll('_', ' ');
+                  ]]]
               - type: custom:button-card
                 template: hub_metric_card
                 entity: sensor.rollladen_open_ts
-                name: Rollläden öffnen
+                name: Öffnen
                 icon: mdi:window-shutter-open
+                state_display: >
+                  [[[
+                    const raw = entity?.state;
+                    const date = raw ? new Date(raw) : null;
+                    if (date && !Number.isNaN(date.getTime())) {
+                      return date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+                    }
+                    return raw ?? '—';
+                  ]]]
               - type: custom:button-card
                 template: hub_metric_card
                 entity: sensor.rollladen_close_ts
-                name: Rollläden schließen
+                name: Schließen
                 icon: mdi:window-shutter
+                state_display: >
+                  [[[
+                    const raw = entity?.state;
+                    const date = raw ? new Date(raw) : null;
+                    if (date && !Number.isNaN(date.getTime())) {
+                      return date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+                    }
+                    return raw ?? '—';
+                  ]]]
               - type: custom:button-card
                 template: hub_metric_card
                 entity: sensor.saros_20_set_status
-                name: Roborock Status
+                name: Roborock
                 icon: mdi:robot-vacuum
+                state_display: >
+                  [[[
+                    const map = {
+                      charging: 'Lädt',
+                      docked: 'Dock',
+                      cleaning: 'Reinigt',
+                      paused: 'Pausiert',
+                      idle: 'Bereit',
+                      returning_home: 'Rückkehr',
+                    };
+                    return map[entity?.state] ?? entity?.state ?? '—';
+                  ]]]
               - type: custom:button-card
                 template: hub_metric_card
                 entity: sensor.eaton_3s850d_batterie_ladung
-                name: USV Akku
+                name: USV
                 icon: mdi:battery-high
+                state_display: >
+                  [[[
+                    const raw = entity?.state;
+                    const value = Number(raw);
+                    if (Number.isFinite(value)) {
+                      return `${value} %`;
+                    }
+                    return raw ?? '—';
+                  ]]]
       - cards:
           - type: heading
             heading: Handlungsbedarf
@@ -256,19 +326,19 @@ views:
                 name: Override West
                 icon: mdi:window-shutter-alert
               - type: custom:button-card
-                template: hub_alert_card
+                template: hub_roborock_alert_card
                 entity: input_boolean.roborock_busy
-                name: Roborock Busy
+                name: Roborock aktiv
                 icon: mdi:robot-vacuum-alert
               - type: custom:button-card
-                template: hub_alert_card
+                template: hub_roborock_alert_card
                 entity: binary_sensor.roborock_program_blocked
-                name: Roborock Blocked
+                name: Roborock blockiert
                 icon: mdi:cancel-octagon-outline
               - type: custom:button-card
                 template: hub_alert_card
                 entity: binary_sensor.steckdose_saison_aktiv
-                name: Balkon Saison
+                name: Saisonbetrieb
                 icon: mdi:power-plug-outline
       - cards:
           - type: heading
@@ -316,7 +386,7 @@ views:
                   navigation_path: roborock
               - type: custom:button-card
                 template: hub_nav_card
-                name: Waschmaschine
+                name: Waschen
                 icon: mdi:washing-machine
                 tap_action:
                   action: navigate
