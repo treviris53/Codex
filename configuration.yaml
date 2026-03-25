@@ -86,7 +86,39 @@ notify:
 # Dashboard Definitionen als yaml Version: 1.0.0
 lovelace:
   mode: storage
+  resource_mode: yaml
+  resources:
+    - url: /hacsfiles/weather-chart-card/weather-chart-card.js
+      type: module
+    - url: /hacsfiles/lovelace-horizon-card/lovelace-horizon-card.js
+      type: module
+    - url: /hacsfiles/lovelace-xiaomi-vacuum-map-card/xiaomi-vacuum-map-card.js
+      type: module
+    - url: /hacsfiles/lovelace-card-mod/card-mod.js
+      type: module
+    - url: /hacsfiles/search-card/search-card.js
+      type: module
+    - url: /hacsfiles/lovelace-card-tools/card-tools.js
+      type: module
+    - url: /hacsfiles/clock-weather-card/clock-weather-card.js
+      type: module
+    - url: /hacsfiles/Bubble-Card/bubble-card.js
+      type: module
+    - url: /hacsfiles/lovelace-auto-entities/auto-entities.js
+      type: module
+    - url: /hacsfiles/button-card/button-card.js
+      type: module
+    - url: /local/community/sieker-operator-hub/sieker-operator-hub.js
+      type: module
   dashboards:
+    operator-hub-dashboard:
+      mode: yaml
+      title: Operator Hub
+      icon: mdi:view-dashboard-edit-outline
+      show_in_sidebar: true
+      require_admin: false
+      filename: dashboards/operator_hub.yaml
+
     roborock-dashboard:
       mode: yaml
       title: Roborock
