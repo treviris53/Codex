@@ -1,5 +1,5 @@
 # Dashboard: Sieker Hub
-# Version: 2.0.4
+# Version: 2.0.5
 # Generated: 2026-03-23
 # Notes:
 # - Best-practice oriented hub dashboard.
@@ -18,18 +18,40 @@ button_card_templates:
       ]]]
     styles:
       card:
-        - padding: 14px
-        - height: 96px
+        - padding: 18px 16px
+        - height: 112px
+        - border-radius: 20px
       grid:
         - grid-template-areas: '"i n" "i l"'
-        - grid-template-columns: 32px 1fr
+        - grid-template-columns: 44px 1fr
         - grid-template-rows: min-content min-content
+        - column-gap: 12px
+        - row-gap: 4px
+      img_cell:
+        - width: 44px
+        - height: 44px
+        - justify-self: center
+        - align-self: center
+        - background: rgba(var(--rgb-primary-color), 0.10)
+        - border-radius: 14px
+      icon:
+        - width: 22px
+        - color: var(--primary-color)
       name:
         - justify-self: start
-        - font-size: 20px
+        - align-self: end
+        - font-size: 18px
+        - font-weight: 500
+        - white-space: normal
+        - text-align: left
+        - line-height: 1.15
       label:
         - justify-self: start
+        - align-self: start
         - font-size: 15px
+        - color: var(--secondary-text-color)
+        - text-align: left
+        - line-height: 1.2
 views:
   - title: Home
     path: home
