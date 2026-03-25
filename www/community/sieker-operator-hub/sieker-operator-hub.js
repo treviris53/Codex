@@ -9,10 +9,142 @@ export const HOME_STATUS_ENTITIES = [
 ];
 
 export const ROOMS_CONFIG = {
-  hidden_areas: [],
-  area_order: [],
-  allowed_domains: ["light", "climate", "cover", "binary_sensor", "sensor"],
-  max_entities_per_room: 4,
+  title: "Raeume",
+  description:
+    "Kompakte Klima- und Umgebungsansicht fuer die heutigen Wohnraeume. Manuelle Alltagsbedienung bleibt bewusst im Modul Wohnen.",
+  rooms: [
+    {
+      id: "kuche",
+      title: "Kueche",
+      icon: "mdi:fridge-outline",
+      caption: "Klima, Balkonzugang und Rolllaeden",
+      summary_entities: [
+        "sensor.kuche_wandthermostat_temperatur",
+        "sensor.kuche_wandthermostat_luftfeuchtigkeit",
+      ],
+      detail_entities: [
+        { entity: "climate.kuche_wandthermostat", name: "Thermostat" },
+        { entity: "binary_sensor.kuche_balkon_turkontakt", name: "Balkontuer" },
+        { entity: "cover.kuche_balkon_rollo", name: "Balkonrollo" },
+        { entity: "cover.kuche_sieker_rollo", name: "Fensterrollo" },
+      ],
+    },
+    {
+      id: "wohnzimmer",
+      title: "Wohnzimmer",
+      icon: "mdi:sofa-outline",
+      caption: "Klima und Zugang",
+      summary_entities: [
+        "sensor.wohnzimmer_wandthermostat_temperatur",
+        "sensor.wohnzimmer_wandthermostat_luftfeuchtigkeit",
+      ],
+      detail_entities: [
+        { entity: "climate.wohnzimmer_wandthermostat", name: "Thermostat" },
+        { entity: "binary_sensor.wohnzimmer_turkontakt", name: "Tuersensor" },
+      ],
+    },
+    {
+      id: "schlafzimmer",
+      title: "Schlafzimmer",
+      icon: "mdi:bed-king-outline",
+      caption: "Klima, Rollo und Lichtsensor",
+      summary_entities: [
+        "sensor.schlazi_wandthermostat_temperatur",
+        "sensor.schlazi_wandthermostat_luftfeuchtigkeit",
+      ],
+      detail_entities: [
+        { entity: "climate.schlazi_wandthermostat", name: "Thermostat" },
+        { entity: "cover.schlazi_rollo", name: "Rollo" },
+        { entity: "sensor.lichtsensor_schlafzimmer_illuminance", name: "Lichtsensor" },
+      ],
+    },
+    {
+      id: "bad",
+      title: "Bad",
+      icon: "mdi:bathtub-outline",
+      caption: "Klima",
+      summary_entities: [
+        "sensor.bad_wandthermostat_temperatur",
+        "sensor.bad_wandthermostat_luftfeuchtigkeit",
+      ],
+      detail_entities: [
+        { entity: "climate.bad_wandthermostat", name: "Thermostat" },
+      ],
+    },
+    {
+      id: "flur",
+      title: "Flur",
+      icon: "mdi:door-open",
+      caption: "Klima",
+      summary_entities: [
+        "sensor.flur_wandthermostat_temperatur",
+        "sensor.flur_wandthermostat_luftfeuchtigkeit",
+      ],
+      detail_entities: [
+        { entity: "climate.flur_wandthermostat", name: "Thermostat" },
+      ],
+    },
+    {
+      id: "gaestebad",
+      title: "Gaestebad",
+      icon: "mdi:shower",
+      caption: "Klima, Zusatzsensor und Rollo",
+      summary_entities: [
+        "sensor.gastebad_wandthermostat_temperatur",
+        "sensor.gastebad_wandthermostat_luftfeuchtigkeit",
+      ],
+      detail_entities: [
+        { entity: "climate.gastebad_wandthermostat", name: "Thermostat" },
+        { entity: "cover.gaste_bad_rollo", name: "Rollo" },
+        { entity: "sensor.0xa4c1384490e4e5ea_temperature", name: "Zusatzsensor Temp" },
+        { entity: "sensor.0xa4c1384490e4e5ea_humidity", name: "Zusatzsensor Feuchte" },
+      ],
+    },
+    {
+      id: "gaestezimmer",
+      title: "Gaestezimmer",
+      icon: "mdi:account-outline",
+      caption: "Klima, Fenster und Rolllaeden",
+      summary_entities: [
+        "sensor.gaste_wandthermostat_temperatur",
+        "sensor.gaste_wandthermostat_luftfeuchtigkeit",
+      ],
+      detail_entities: [
+        { entity: "climate.gaste_wandthermostat", name: "Thermostat" },
+        { entity: "binary_sensor.gaste_fenster_kontakt", name: "Fensterkontakt" },
+        { entity: "cover.gaste_heck_rollo", name: "Heckrollo" },
+        { entity: "cover.gaste_sieker_rollo", name: "Siekerrollo" },
+      ],
+    },
+    {
+      id: "balkon",
+      title: "Balkon",
+      icon: "mdi:weather-partly-cloudy",
+      caption: "Aussenklima und Licht",
+      summary_entities: [
+        "sensor.0x00158d008b61ad80_temperature",
+        "sensor.0x00158d008b61ad80_humidity",
+        "sensor.balkon_lichtsensor_durchschnittliche_beleuchtungsstarke",
+      ],
+      detail_entities: [
+        { entity: "sensor.0x00158d008b61ad80_temperature", name: "Temperatur" },
+        { entity: "sensor.0x00158d008b61ad80_humidity", name: "Luftfeuchte" },
+        { entity: "sensor.0x00158d008b61ad80_pressure", name: "Luftdruck" },
+        { entity: "sensor.balkon_lichtsensor_beleuchtungsstarke", name: "Lux aktuell" },
+      ],
+    },
+  ],
+  environment_panel: {
+    title: "Zugang und Umgebung",
+    description: "Operator-relevante Kontakte und Aussenwerte bleiben separat sichtbar.",
+    entities: [
+      { entity: "binary_sensor.kuche_balkon_turkontakt", name: "Balkontuer" },
+      {
+        entity: "sensor.balkon_lichtsensor_durchschnittliche_beleuchtungsstarke",
+        name: "Balkon Lux (Durchschnitt)",
+      },
+    ],
+  },
 };
 
 export const MODULES = [
@@ -200,10 +332,6 @@ export function getModuleById(moduleId) {
 }
 
 const CARD_VERSION = "0.1.0";
-const DOMAIN_PRIORITY = ["light", "climate", "cover", "binary_sensor", "sensor"];
-const AREA_REGISTRY_WS_TYPE = "config/area_registry/list";
-const DEVICE_REGISTRY_WS_TYPE = "config/device_registry/list";
-const ENTITY_REGISTRY_WS_TYPE = "config/entity_registry/list";
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -300,93 +428,6 @@ function severityForState(entityId, stateObj) {
   return "ok";
 }
 
-function normalizeRegistryMap(items, idKey) {
-  return Object.fromEntries(
-    (items || [])
-      .filter((item) => item?.[idKey])
-      .map((item) => [item[idKey], item]),
-  );
-}
-
-function getAreaEntityIds(registries, areaId) {
-  const entityRegistry = Object.values(registries?.entities || {});
-  const deviceRegistry = registries?.devices || {};
-  const entityIds = [];
-
-  for (const entity of entityRegistry) {
-    if (!entity?.entity_id) {
-      continue;
-    }
-
-    if (entity.hidden_by || entity.disabled_by) {
-      continue;
-    }
-
-    if (entity.entity_category === "config" || entity.entity_category === "diagnostic") {
-      continue;
-    }
-
-    const domain = entity.entity_id.split(".")[0];
-    if (!ROOMS_CONFIG.allowed_domains.includes(domain)) {
-      continue;
-    }
-
-    const isDirectAreaMatch = entity.area_id === areaId;
-    const isDeviceAreaMatch =
-      entity.device_id &&
-      deviceRegistry[entity.device_id] &&
-      deviceRegistry[entity.device_id].area_id === areaId;
-
-    if (isDirectAreaMatch || isDeviceAreaMatch) {
-      entityIds.push(entity.entity_id);
-    }
-  }
-
-  return entityIds.sort((left, right) => {
-    const leftDomain = left.split(".")[0];
-    const rightDomain = right.split(".")[0];
-    const leftPriority = DOMAIN_PRIORITY.indexOf(leftDomain);
-    const rightPriority = DOMAIN_PRIORITY.indexOf(rightDomain);
-
-    if (leftPriority !== rightPriority) {
-      return leftPriority - rightPriority;
-    }
-
-    return left.localeCompare(right, "de");
-  });
-}
-
-function selectRoomCards(registries) {
-  const areas = Object.values(registries?.areas || {});
-  if (!areas.length) {
-    return [];
-  }
-
-  const hiddenAreas = new Set(ROOMS_CONFIG.hidden_areas || []);
-  const orderMap = new Map((ROOMS_CONFIG.area_order || []).map((areaId, index) => [areaId, index]));
-
-  return areas
-    .filter((area) => !hiddenAreas.has(area.area_id))
-    .sort((left, right) => {
-      const leftOrder = orderMap.has(left.area_id) ? orderMap.get(left.area_id) : 999;
-      const rightOrder = orderMap.has(right.area_id) ? orderMap.get(right.area_id) : 999;
-
-      if (leftOrder !== rightOrder) {
-        return leftOrder - rightOrder;
-      }
-
-      return left.name.localeCompare(right.name, "de");
-    })
-    .map((area) => {
-      const entityIds = getAreaEntityIds(registries, area.area_id);
-      return {
-        area,
-        entityIds: entityIds.slice(0, ROOMS_CONFIG.max_entities_per_room),
-        entityCount: entityIds.length,
-      };
-    });
-}
-
 function renderEntityItem(hass, entityId) {
   const stateObj = hass.states[entityId];
   const severity = severityForState(entityId, stateObj);
@@ -398,6 +439,65 @@ function renderEntityItem(hass, entityId) {
         <span class="entity-id">${escapeHtml(entityId)}</span>
       </div>
       <div class="entity-state">${escapeHtml(formatStateValue(entityId, stateObj))}</div>
+    </div>
+  `;
+}
+
+function renderConfiguredEntityItem(hass, entry) {
+  if (!entry?.entity) {
+    return "";
+  }
+
+  const stateObj = hass.states[entry.entity];
+  if (!stateObj) {
+    return "";
+  }
+
+  const severity = severityForState(entry.entity, stateObj);
+  const label = entry.name || friendlyNameForState(stateObj, entry.entity);
+
+  return `
+    <div class="entity-row severity-${severity}">
+      <div class="entity-meta">
+        <span class="entity-name">${escapeHtml(label)}</span>
+      </div>
+      <div class="entity-state">${escapeHtml(formatStateValue(entry.entity, stateObj))}</div>
+    </div>
+  `;
+}
+
+function buildRoomSummary(hass, roomConfig) {
+  const values = (roomConfig.summary_entities || [])
+    .map((entityId) => {
+      const stateObj = hass.states[entityId];
+      if (!stateObj) {
+        return null;
+      }
+
+      return formatStateValue(entityId, stateObj);
+    })
+    .filter((value) => value && value !== "nicht verfuegbar");
+
+  return values.length ? values.join(" · ") : "Keine Kerndaten verfuegbar";
+}
+
+function renderRoomCard(hass, roomConfig) {
+  const detailMarkup = (roomConfig.detail_entities || [])
+    .map((entry) => renderConfiguredEntityItem(hass, entry))
+    .filter(Boolean)
+    .join("");
+
+  return `
+    <div class="room-card">
+      <div class="room-head">
+        <h3>${escapeHtml(roomConfig.title)}</h3>
+        <span class="nav-icon">${escapeHtml(roomConfig.icon || "mdi:floor-plan")}</span>
+      </div>
+      <div class="room-summary">${escapeHtml(buildRoomSummary(hass, roomConfig))}</div>
+      <div class="room-caption">${escapeHtml(roomConfig.caption || "Raumklima")}</div>
+      <div class="entity-list">
+        ${detailMarkup || `<div class="empty-note">Keine kuratierten Kerndaten verfuegbar.</div>`}
+      </div>
     </div>
   `;
 }
@@ -428,10 +528,6 @@ class SiekerOperatorHub extends HTMLElement {
     this._hass = null;
     this._page = "home";
     this._moduleId = "heating";
-    this._registries = { areas: {}, devices: {}, entities: {} };
-    this._registryLoaded = false;
-    this._registryLoading = false;
-    this._registryError = "";
   }
 
   setConfig(config) {
@@ -442,7 +538,6 @@ class SiekerOperatorHub extends HTMLElement {
 
   set hass(hass) {
     this._hass = hass;
-    this._ensureRegistriesLoaded();
     this._render();
   }
 
@@ -473,37 +568,6 @@ class SiekerOperatorHub extends HTMLElement {
     }
 
     await this._hass.callService(domain, action, data || {});
-  }
-
-  async _ensureRegistriesLoaded() {
-    if (!this._hass?.callWS || this._registryLoaded || this._registryLoading) {
-      return;
-    }
-
-    this._registryLoading = true;
-    this._registryError = "";
-    this._render();
-
-    try {
-      const [areas, devices, entities] = await Promise.all([
-        this._hass.callWS({ type: AREA_REGISTRY_WS_TYPE }),
-        this._hass.callWS({ type: DEVICE_REGISTRY_WS_TYPE }),
-        this._hass.callWS({ type: ENTITY_REGISTRY_WS_TYPE }),
-      ]);
-
-      this._registries = {
-        areas: normalizeRegistryMap(areas, "area_id"),
-        devices: normalizeRegistryMap(devices, "id"),
-        entities: normalizeRegistryMap(entities, "entity_id"),
-      };
-      this._registryLoaded = true;
-    } catch (error) {
-      console.error("Sieker Operator Hub: Registry-Daten konnten nicht geladen werden.", error);
-      this._registryError = error?.message || "Registry-Daten konnten nicht geladen werden.";
-    } finally {
-      this._registryLoading = false;
-      this._render();
-    }
   }
 
   _bindEvents() {
@@ -569,65 +633,32 @@ class SiekerOperatorHub extends HTMLElement {
   }
 
   _renderRooms() {
-    if (this._registryLoading) {
-      return `
-        <section class="page-section">
-          <div class="section-head">
-            <h2>Raeume</h2>
-            <p>Area-, Device- und Entity-Registry werden gerade geladen.</p>
-          </div>
-        </section>
-      `;
-    }
+    const roomMarkup = (ROOMS_CONFIG.rooms || [])
+      .map((roomConfig) => renderRoomCard(this._hass, roomConfig))
+      .join("");
 
-    if (this._registryError) {
-      return `
-        <section class="page-section">
-          <div class="section-head">
-            <h2>Raeume</h2>
-            <p>Registry-Daten konnten nicht geladen werden: ${escapeHtml(this._registryError)}</p>
-          </div>
-        </section>
-      `;
-    }
-
-    const roomCards = selectRoomCards(this._registries);
-
-    if (!roomCards.length) {
-      return `
-        <section class="page-section">
-          <div class="section-head">
-            <h2>Raeume</h2>
-            <p>Keine Registry-Daten fuer Areas verfuegbar. Der Raum-View bleibt damit bewusst defensiv.</p>
-          </div>
-        </section>
-      `;
-    }
+    const environmentMarkup = (ROOMS_CONFIG.environment_panel?.entities || [])
+      .map((entry) => renderConfiguredEntityItem(this._hass, entry))
+      .filter(Boolean)
+      .join("");
 
     return `
       <section class="page-section">
         <div class="section-head">
-          <h2>Raeume</h2>
-          <p>Generischer Raumzugriff fuer Alltag und Orientierung. Tiefe Fachlogik bleibt in den Modulen.</p>
+          <h2>${escapeHtml(ROOMS_CONFIG.title || "Raeume")}</h2>
+          <p>${escapeHtml(ROOMS_CONFIG.description || "Raumklima und Umgebung.")}</p>
         </div>
-        <div class="room-grid">
-          ${roomCards
-            .map(
-              ({ area, entityIds, entityCount }) => `
-                <div class="room-card">
-                  <div class="room-head">
-                    <h3>${escapeHtml(area.name)}</h3>
-                    <span>${escapeHtml(String(entityCount))} Entitaeten</span>
-                  </div>
-                  <div class="entity-list">
-                    ${entityIds.length
-                      ? entityIds.map((entityId) => renderEntityItem(this._hass, entityId)).join("")
-                      : `<div class="empty-note">Keine kuratierten Entitaeten im MVP sichtbar.</div>`}
-                  </div>
-                </div>
-              `,
-            )
-            .join("")}
+        <div class="room-grid">${roomMarkup}</div>
+      </section>
+      <section class="page-section">
+        <div class="section-head">
+          <h2>${escapeHtml(ROOMS_CONFIG.environment_panel?.title || "Zugang und Umgebung")}</h2>
+          <p>${escapeHtml(ROOMS_CONFIG.environment_panel?.description || "")}</p>
+        </div>
+        <div class="panel">
+          <div class="entity-list">
+            ${environmentMarkup || `<div class="empty-note">Keine separaten Umgebungsdaten konfiguriert.</div>`}
+          </div>
         </div>
       </section>
     `;
@@ -900,6 +931,18 @@ class SiekerOperatorHub extends HTMLElement {
         margin-bottom: 4px;
       }
 
+      .room-summary {
+        font-size: 1.02rem;
+        font-weight: 700;
+        margin-bottom: 4px;
+      }
+
+      .room-caption {
+        color: var(--secondary-text-color);
+        margin-bottom: 12px;
+        line-height: 1.4;
+      }
+
       .status-id,
       .entity-id {
         font-size: 0.78rem;
@@ -1041,4 +1084,6 @@ if (!window.customCards.some((card) => card.type === "sieker-operator-hub")) {
     description: "MVP custom card shell for the next operator-focused dashboard application.",
   });
 }
+
+
 

@@ -9,7 +9,7 @@ Das Ziel ist ausdruecklich **kein** Vollersatz der bestehenden YAML-Dashboards i
 einem Schritt. Der Operator Hub verbindet stattdessen:
 
 - einen kompakten Haus- und Modul-Hub
-- generische Raumansichten auf Basis der Home-Assistant-Areas
+- eine kuratierte Raumansicht entlang der heutigen Wohn- und Umgebungsraeume
 - kuratierte Fachmodule mit sicheren Einstiegspunkten
 
 Damit dient das Dashboard als neue App-Shell fuer eine spaetere, schrittweise
@@ -49,15 +49,27 @@ Entscheidungen aus Registry-Daten erraten.
 
 ### Rooms
 
-`Rooms` ist eine generische, area-basierte Raumansicht.
+`Rooms` ist eine kuratierte Raumansicht entlang der heutigen Operator-Struktur.
 
-Die Raumansicht ist bewusst auf alltagstaugliche Kernentitaeten begrenzt:
+Sie orientiert sich im MVP an den heute bereits genutzten Raeumen:
 
-- `light`
-- `climate`
-- `cover`
-- `binary_sensor`
-- `sensor`
+- `Kueche`
+- `Wohnzimmer`
+- `Schlafzimmer`
+- `Bad`
+- `Flur`
+- `Gaestebad`
+- `Gaestezimmer`
+- `Balkon`
+
+Der Fokus liegt auf:
+
+- Raumklima
+- Kontakte / Zugang
+- relevante Rollladen- und Umgebungsdaten
+
+Manuelle Alltagsbedienung bleibt bewusst ausserhalb der Raumansicht im
+passenden Bedienkontext wie `Wohnen`.
 
 Tiefere Diagnose-, Service- oder Tuning-Elemente gehoeren nicht in die
 Raumansicht, sondern in Fachmodule.
@@ -123,7 +135,7 @@ Wetter-Dashboard.
 Das Frontend liest:
 
 - `hass.states`
-- Area-, Device- und Entity-Registry ueber die Home-Assistant-WebSocket-API
+- kuratierte, explizit referenzierte Raum- und Modul-Entitaeten
 
 ### Schreiben
 
@@ -163,7 +175,7 @@ Frontend-Toolchain mit `frontend_apps/...` und Build-Ausgabe nach
 - keine Spezialvisualisierungen direkt im neuen Hub
 - keine vollstaendige Modulnavigation fuer alle vorhandenen Fachdomänen
 - keine eigene Build-Pipeline
-- Raumansichten sind bewusst generisch und noch nicht kuratiert pro Raum
+- Raumansichten sind bewusst kompakt und noch nicht als tiefere Subviews ausgebaut
 
 ## Migrationshinweis
 
