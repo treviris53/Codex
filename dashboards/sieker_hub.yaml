@@ -1,5 +1,5 @@
 # Dashboard: Sieker Hub
-# Version: 2.0.9
+# Version: 2.0.10
 # Generated: 2026-03-23
 # Notes:
 # - Best-practice oriented hub dashboard.
@@ -201,7 +201,7 @@ button_card_templates:
         - text-align: center
         - white-space: normal
   wohnen_quick_card:
-    show_label: false
+    show_label: true
     show_state: true
     tap_action:
       action: toggle
@@ -217,6 +217,71 @@ button_card_templates:
       card:
         - padding: 18px 16px
         - min-height: 112px
+        - border-radius: 20px
+      grid:
+        - grid-template-areas: '"i n" "i l" "i s"'
+        - grid-template-columns: 44px minmax(0, 1fr)
+        - grid-template-rows: min-content min-content min-content
+        - column-gap: 14px
+        - row-gap: 2px
+      img_cell:
+        - width: 44px
+        - height: 44px
+        - justify-self: center
+        - align-self: center
+        - background: rgba(var(--rgb-primary-color), 0.10)
+        - border-radius: 14px
+      icon:
+        - width: 22px
+        - color: var(--primary-color)
+      name:
+        - justify-self: start
+        - align-self: end
+        - font-size: 18px
+        - font-weight: 500
+        - white-space: normal
+        - text-align: left
+        - line-height: 1.15
+      label:
+        - justify-self: start
+        - align-self: center
+        - font-size: 15px
+        - color: var(--secondary-text-color)
+        - text-align: left
+        - line-height: 1.1
+      state:
+        - justify-self: start
+        - align-self: start
+        - font-size: 16px
+        - font-weight: 500
+        - text-align: left
+        - color: var(--secondary-text-color)
+    state:
+      - value: 'on'
+        styles:
+          card:
+            - background: rgba(var(--rgb-primary-color), 0.10)
+          img_cell:
+            - background: rgba(var(--rgb-primary-color), 0.18)
+          state:
+            - color: var(--primary-color)
+  wohnen_toggle_card:
+    show_label: false
+    show_state: true
+    tap_action:
+      action: toggle
+    hold_action:
+      action: more-info
+    state_display: >
+      [[[
+        if (entity?.state === 'on') return 'Ein';
+        if (entity?.state === 'off') return 'Aus';
+        return entity?.state ?? '—';
+      ]]]
+    styles:
+      card:
+        - padding: 18px 16px
+        - min-height: 104px
         - border-radius: 20px
       grid:
         - grid-template-areas: '"i n" "i s"'
@@ -258,6 +323,156 @@ button_card_templates:
             - background: rgba(var(--rgb-primary-color), 0.18)
           state:
             - color: var(--primary-color)
+  socket_status_card:
+    show_label: true
+    show_state: true
+    tap_action:
+      action: toggle
+    hold_action:
+      action: more-info
+    state_display: >
+      [[[
+        if (entity?.state === 'on') return 'Ein';
+        if (entity?.state === 'off') return 'Aus';
+        return entity?.state ?? '—';
+      ]]]
+    label: >
+      [[[
+        const powerRaw = states[variables.power_entity]?.state;
+        const energyRaw = states[variables.energy_entity]?.state;
+        const power = Number(powerRaw);
+        const energy = Number(energyRaw);
+        const powerText = Number.isFinite(power) ? `${power.toFixed(0)} W` : '— W';
+        const energyText = Number.isFinite(energy) ? `${energy.toFixed(1)} kWh` : '— kWh';
+        return `${powerText} · ${energyText}`;
+      ]]]
+    styles:
+      card:
+        - padding: 18px 16px
+        - min-height: 112px
+        - border-radius: 20px
+      grid:
+        - grid-template-areas: '"i n" "i l" "i s"'
+        - grid-template-columns: 44px minmax(0, 1fr)
+        - grid-template-rows: min-content min-content min-content
+        - column-gap: 14px
+        - row-gap: 2px
+      img_cell:
+        - width: 44px
+        - height: 44px
+        - justify-self: center
+        - align-self: center
+        - background: rgba(var(--rgb-primary-color), 0.10)
+        - border-radius: 14px
+      icon:
+        - width: 22px
+        - color: var(--primary-color)
+      name:
+        - justify-self: start
+        - align-self: end
+        - font-size: 18px
+        - font-weight: 500
+        - white-space: normal
+        - text-align: left
+      label:
+        - justify-self: start
+        - align-self: center
+        - font-size: 14px
+        - color: var(--secondary-text-color)
+        - text-align: left
+      state:
+        - justify-self: start
+        - align-self: start
+        - font-size: 16px
+        - font-weight: 500
+        - text-align: left
+        - color: var(--secondary-text-color)
+    state:
+      - value: 'on'
+        styles:
+          card:
+            - background: rgba(var(--rgb-primary-color), 0.10)
+          img_cell:
+            - background: rgba(var(--rgb-primary-color), 0.18)
+          state:
+            - color: var(--primary-color)
+  scene_action_card:
+    show_state: false
+    show_label: true
+    hold_action:
+      action: more-info
+    styles:
+      card:
+        - padding: 18px 16px
+        - min-height: 120px
+        - border-radius: 20px
+      grid:
+        - grid-template-areas: '"i" "n" "l"'
+        - grid-template-columns: 1fr
+        - grid-template-rows: 1fr min-content min-content
+        - row-gap: 8px
+      img_cell:
+        - justify-self: center
+        - align-self: end
+        - width: 52px
+        - height: 52px
+        - background: rgba(var(--rgb-primary-color), 0.10)
+        - border-radius: 16px
+      icon:
+        - width: 26px
+        - color: var(--primary-color)
+      name:
+        - justify-self: center
+        - align-self: start
+        - font-size: 20px
+        - font-weight: 600
+        - text-align: center
+      label:
+        - justify-self: center
+        - align-self: start
+        - font-size: 15px
+        - color: var(--secondary-text-color)
+        - text-align: center
+  info_panel_card:
+    show_state: false
+    show_label: true
+    tap_action:
+      action: none
+    styles:
+      card:
+        - padding: 20px 18px
+        - min-height: 168px
+        - border-radius: 20px
+      grid:
+        - grid-template-areas: '"i n" "i l"'
+        - grid-template-columns: 52px 1fr
+        - grid-template-rows: min-content 1fr
+        - column-gap: 16px
+        - row-gap: 8px
+      img_cell:
+        - width: 52px
+        - height: 52px
+        - justify-self: center
+        - align-self: start
+        - background: rgba(var(--rgb-primary-color), 0.10)
+        - border-radius: 16px
+      icon:
+        - width: 26px
+        - color: var(--primary-color)
+      name:
+        - justify-self: start
+        - align-self: end
+        - font-size: 20px
+        - font-weight: 600
+        - text-align: left
+      label:
+        - justify-self: start
+        - align-self: start
+        - font-size: 16px
+        - color: var(--secondary-text-color)
+        - text-align: left
+        - line-height: 1.45
+        - white-space: normal
 views:
   - title: Home
     path: home
@@ -571,17 +786,20 @@ views:
               - type: custom:button-card
                 template: wohnen_quick_card
                 entity: light.licht_wohnzimmer_haupt
-                name: Wohnen Licht
+                name: Licht
+                label: Wohnen
                 icon: mdi:ceiling-light
               - type: custom:button-card
                 template: wohnen_quick_card
                 entity: light.licht_schlafzimmer
-                name: Schlafen Licht
+                name: Licht
+                label: Schlafen
                 icon: mdi:lamp
               - type: custom:button-card
                 template: wohnen_quick_card
                 entity: switch.0xa4c138442a735c69
-                name: Wohnen Steckdose
+                name: Steckdose
+                label: Wohnen
                 icon: mdi:power-socket-eu
       - cards:
           - type: heading
@@ -615,10 +833,13 @@ views:
       - cards:
           - type: heading
             heading: Einordnung
-          - type: markdown
-            content: |
-              `Wohnen` bündelt die manuelle Alltagssteuerung für Licht, allgemeine Steckdosen
-              und Wohnszenen. Automatisierte Fachlogik bleibt in den jeweiligen Modulen.
+          - type: custom:button-card
+            template: info_panel_card
+            name: Wohnen
+            label: >
+              Manuelle Alltagssteuerung für Licht, allgemeine Steckdosen und Wohnszenen.
+              Automatisierte Fachlogik bleibt in den jeweiligen Modulen.
+            icon: mdi:sofa-outline
 
   - title: Beleuchtung
     path: wohnen-beleuchtung
@@ -630,33 +851,62 @@ views:
       - cards:
           - type: heading
             heading: Küche
-          - type: tile
-            entity: light.licht_herd
-            name: Licht Herd
-          - type: tile
-            entity: light.0x086bd7fffe404a82
-            name: Licht Spüle
-          - type: tile
-            entity: light.0x086bd7fffe404a82
-            name: Licht Küche
+            heading_style: title
+          - type: grid
+            columns: 3
+            square: false
+            cards:
+              - type: custom:button-card
+                template: wohnen_toggle_card
+                entity: light.licht_herd
+                name: Herd
+                icon: mdi:stove
+              - type: custom:button-card
+                template: wohnen_toggle_card
+                entity: light.0x086bd7fffe404a82
+                name: Spüle
+                icon: mdi:silverware-fork-knife
+              - type: custom:button-card
+                template: wohnen_toggle_card
+                entity: light.0x086bd7fffe404a82
+                name: Küche
+                icon: mdi:lightbulb-group-outline
       - cards:
           - type: heading
-            heading: Wohnzimmer
-          - type: tile
-            entity: light.vitrinenlicht
-            name: Vitrinenlicht
-          - type: tile
-            entity: light.licht_wohnzimmer_haupt
-            name: Hauptlicht
-          - type: tile
-            entity: light.licht_fernseher
-            name: Fernseher Licht
+            heading: Wohnen
+            heading_style: title
+          - type: grid
+            columns: 3
+            square: false
+            cards:
+              - type: custom:button-card
+                template: wohnen_toggle_card
+                entity: light.vitrinenlicht
+                name: Vitrine
+                icon: mdi:wall-sconce-flat-outline
+              - type: custom:button-card
+                template: wohnen_toggle_card
+                entity: light.licht_wohnzimmer_haupt
+                name: Hauptlicht
+                icon: mdi:ceiling-light
+              - type: custom:button-card
+                template: wohnen_toggle_card
+                entity: light.licht_fernseher
+                name: Fernseher
+                icon: mdi:television-ambient-light
       - cards:
           - type: heading
-            heading: Schlafzimmer
-          - type: tile
-            entity: light.licht_schlafzimmer
-            name: Schlafzimmer Licht
+            heading: Schlafen
+            heading_style: title
+          - type: grid
+            columns: 1
+            square: false
+            cards:
+              - type: custom:button-card
+                template: wohnen_toggle_card
+                entity: light.licht_schlafzimmer
+                name: Schlafzimmer
+                icon: mdi:lamp
 
   - title: Steckdosen
     path: wohnen-steckdosen
@@ -667,79 +917,73 @@ views:
     sections:
       - cards:
           - type: heading
-            heading: Wohnzimmer
-          - type: entities
-            title: Steckdose Wohnzimmer
-            show_header_toggle: false
-            entities:
-              - entity: switch.0xa4c138442a735c69
-                name: Ein/Aus
-              - entity: switch.steckdose_wohnzimmer_child_lock
-                name: Kindersicherung
-              - entity: sensor.0xa4c138442a735c69_power
-                name: Leistung
-              - entity: sensor.0xa4c138442a735c69_energy
-                name: Energie
-          - type: entities
-            title: Steckdose Fernseher
-            show_header_toggle: false
-            entities:
-              - entity: switch.steckdose_fernseher
-                name: Ein/Aus
-              - entity: switch.steckdose_fernseher_child_lock
-                name: Kindersicherung
-              - entity: sensor.steckdose_fernseher_power
-                name: Leistung
-              - entity: sensor.steckdose_fernseher_energy
-                name: Energie
+            heading: Wohnen
+            heading_style: title
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - type: custom:button-card
+                template: socket_status_card
+                entity: switch.0xa4c138442a735c69
+                variables:
+                  power_entity: sensor.0xa4c138442a735c69_power
+                  energy_entity: sensor.0xa4c138442a735c69_energy
+                name: Steckdose
+                icon: mdi:power-socket-eu
+              - type: custom:button-card
+                template: socket_status_card
+                entity: switch.steckdose_fernseher
+                variables:
+                  power_entity: sensor.steckdose_fernseher_power
+                  energy_entity: sensor.steckdose_fernseher_energy
+                name: Fernseher
+                icon: mdi:television
       - cards:
           - type: heading
-            heading: Gästezimmer
-          - type: entities
-            title: Steckdose Computertisch
-            show_header_toggle: false
-            entities:
-              - entity: switch.steckdose_computertisch
-                name: Ein/Aus
-              - entity: switch.steckdose_computertisch_child_lock
-                name: Kindersicherung
-              - entity: sensor.steckdose_computertisch_power
-                name: Leistung
-              - entity: sensor.steckdose_computertisch_energy
-                name: Energie
-          - type: entities
-            title: Steckdose Drucker/Scanner
-            show_header_toggle: false
-            entities:
-              - entity: switch.0xa4c1389840f71629
-                name: Ein/Aus
-              - entity: switch.0xa4c1389840f71629_child_lock
-                name: Kindersicherung
-              - entity: sensor.0xa4c1389840f71629_power
-                name: Leistung
-              - entity: sensor.0xa4c1389840f71629_energy
-                name: Energie
+            heading: Gäste
+            heading_style: title
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - type: custom:button-card
+                template: socket_status_card
+                entity: switch.steckdose_computertisch
+                variables:
+                  power_entity: sensor.steckdose_computertisch_power
+                  energy_entity: sensor.steckdose_computertisch_energy
+                name: Computertisch
+                icon: mdi:desk
+              - type: custom:button-card
+                template: socket_status_card
+                entity: switch.0xa4c1389840f71629
+                variables:
+                  power_entity: sensor.0xa4c1389840f71629_power
+                  energy_entity: sensor.0xa4c1389840f71629_energy
+                name: Drucker/Scanner
+                icon: mdi:printer-outline
       - cards:
           - type: heading
             heading: Kontrollraum
-          - type: entities
-            title: Steckdose Kontrollraum
-            show_header_toggle: false
-            entities:
-              - entity: switch.0xa4c13838e02b32cf
-                name: Ein/Aus
-              - entity: switch.steckdose_kontrollraum_child_lock
-                name: Kindersicherung
-              - entity: sensor.0xa4c13838e02b32cf_power
-                name: Leistung
-              - entity: sensor.0xa4c13838e02b32cf_energy
-                name: Energie
+            heading_style: title
+          - type: custom:button-card
+            template: socket_status_card
+            entity: switch.0xa4c13838e02b32cf
+            variables:
+              power_entity: sensor.0xa4c13838e02b32cf_power
+              energy_entity: sensor.0xa4c13838e02b32cf_energy
+            name: Kontrollraum
+            icon: mdi:server-network
           - type: heading
             heading: Abgrenzung
-          - type: markdown
-            content: |
-              Die Balkon-Steckdose bleibt im eigenen Fachmodul `Steckdose Balkon`,
-              weil dort Automations- und Tuninglogik hinterlegt ist.
+          - type: custom:button-card
+            template: info_panel_card
+            name: Steckdose Balkon
+            label: >
+              Bleibt im eigenen Fachmodul, weil dort Automations- und Tuninglogik
+              hinterlegt ist.
+            icon: mdi:power-socket-de
 
   - title: Szenen
     path: wohnen-szenen
@@ -751,32 +995,67 @@ views:
       - cards:
           - type: heading
             heading: Manuelle Heizungsszenen
+            heading_style: title
           - type: grid
             columns: 3
             square: false
             cards:
-              - type: tile
+              - type: custom:button-card
+                template: scene_action_card
                 entity: scene.heizung_17deg
-                name: Heizung 17°
-              - type: tile
+                name: 17°
+                label: Heizung
+                icon: mdi:home-thermometer-outline
+                tap_action:
+                  action: call-service
+                  service: scene.turn_on
+                  target:
+                    entity_id: scene.heizung_17deg
+              - type: custom:button-card
+                template: scene_action_card
                 entity: scene.heizung_19deg
-                name: Heizung 19°
-              - type: tile
+                name: 19°
+                label: Heizung
+                icon: mdi:home-thermometer-outline
+                tap_action:
+                  action: call-service
+                  service: scene.turn_on
+                  target:
+                    entity_id: scene.heizung_19deg
+              - type: custom:button-card
+                template: scene_action_card
                 entity: scene.heizung_21deg
-                name: Heizung 21°
+                name: 21°
+                label: Heizung
+                icon: mdi:home-thermometer
+                tap_action:
+                  action: call-service
+                  service: scene.turn_on
+                  target:
+                    entity_id: scene.heizung_21deg
       - cards:
           - type: heading
             heading: Rückmeldung
-          - type: entities
-            title: Heizstatus
-            show_header_toggle: false
-            entities:
-              - entity: input_select.heizung_aktives_profil
+            heading_style: title
+          - type: grid
+            columns: 1
+            square: false
+            cards:
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: input_select.heizung_aktives_profil
                 name: Aktives Profil
-              - entity: input_text.heizung_last_scene
+                icon: mdi:radiator
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: input_text.heizung_last_scene
                 name: Letzte Szene
-              - entity: input_datetime.heizung_last_applied
+                icon: mdi:history
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: input_datetime.heizung_last_applied
                 name: Letzte Anwendung
+                icon: mdi:clock-outline
 
   - title: Heizung
     path: heizung
