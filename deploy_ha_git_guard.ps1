@@ -168,9 +168,13 @@ function Assert-DeployablePath {
         return
     }
 
-    $files = Get-ChildItem -LiteralPath $resolvedPath -Recurse -File
+    $files = @(Get-ChildItem -LiteralPath $resolvedPath -Recurse -File)
     if ($files.Count -eq 0) {
-        throw "Directory does not contain any files: $RelativePath"
+        if ($DeleteRemoved) {
+            return
+        }
+
+        throw "Directory does not contain any deployable files: $RelativePath"
     }
 
     $invalidFiles = @(
