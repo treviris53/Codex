@@ -1,0 +1,10 @@
+- title: Räume
+  path: raeume
+  icon: mdi:home-thermometer-outline
+  cards:
+    - type: markdown
+      content: |
+        ## Räume
+
+        Diese V2-Datei ist angelegt und kann nun separat vom restlichen Hub
+        weiterentwickelt werden.

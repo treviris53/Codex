@@ -1,0 +1,90 @@
+- title: Home
+  path: home
+  icon: mdi:view-dashboard-outline
+  cards:
+    - type: markdown
+      content: |
+        # Sieker Hub V2
+
+        Dieses Dashboard ist das neue modulare Grundgeruest fuer den
+        Parallelbetrieb neben dem bestehenden `sieker_hub`.
+
+        Aktuell sind die Views bewusst noch als strukturierte Zielseiten
+        angelegt. Die fachliche Migration erfolgt danach modulweise.
+    - type: grid
+      title: Module
+      columns: 2
+      square: false
+      cards:
+        - type: custom:button-card
+          template: v2_nav_card
+          name: Räume
+          icon: mdi:home-thermometer-outline
+          variables:
+            label: Klima und Umfeld
+          tap_action:
+            action: navigate
+            navigation_path: raeume
+        - type: custom:button-card
+          template: v2_nav_card
+          name: Wohnen
+          icon: mdi:sofa-outline
+          variables:
+            label: Alltag und Szenen
+          tap_action:
+            action: navigate
+            navigation_path: wohnen
+        - type: custom:button-card
+          template: v2_nav_card
+          name: Heizung
+          icon: mdi:radiator
+          variables:
+            label: Betrieb, Service, Tuning
+          tap_action:
+            action: navigate
+            navigation_path: heizung
+        - type: custom:button-card
+          template: v2_nav_card
+          name: Rollläden
+          icon: mdi:window-shutter
+          variables:
+            label: Status und Bedienung
+          tap_action:
+            action: navigate
+            navigation_path: rollladen
+        - type: custom:button-card
+          template: v2_nav_card
+          name: Steckdose Balkon
+          icon: mdi:power-plug-outline
+          variables:
+            label: Saisonlogik
+          tap_action:
+            action: navigate
+            navigation_path: steckdose-balkon
+        - type: custom:button-card
+          template: v2_nav_card
+          name: USV
+          icon: mdi:battery-medium
+          variables:
+            label: Strom und Diagnose
+          tap_action:
+            action: navigate
+            navigation_path: usv
+        - type: custom:button-card
+          template: v2_nav_card
+          name: Waschmaschine
+          icon: mdi:washing-machine
+          variables:
+            label: Geraetestatus
+          tap_action:
+            action: navigate
+            navigation_path: waschmaschine
+        - type: custom:button-card
+          template: v2_nav_card
+          name: Roborock
+          icon: mdi:robot-vacuum
+          variables:
+            label: Programme und Wochenplan
+          tap_action:
+            action: navigate
+            navigation_path: roborock

@@ -1,0 +1,126 @@
+- title: Wartung
+  path: roborock-wartung
+  icon: mdi:tools
+  subview: true
+  type: sections
+  max_columns: 2
+  sections:
+    - cards:
+        - type: heading
+          heading: Reset
+        - type: grid
+          columns: 2
+          square: false
+          cards:
+            - type: custom:button-card
+              template: scene_action_card
+              entity: button.saros_20_set_hauptbursten_verbrauchsmaterial_zurucksetzen
+              name: Hauptbürste
+              label: Zurücksetzen
+              icon: mdi:brush
+              tap_action:
+                action: perform-action
+                perform_action: button.press
+                target:
+                  entity_id: button.saros_20_set_hauptbursten_verbrauchsmaterial_zurucksetzen
+            - type: custom:button-card
+              template: scene_action_card
+              entity: button.saros_20_set_seitenbursten_verbrauchsmaterial_zurucksetzen
+              name: Seitenbürste
+              label: Zurücksetzen
+              icon: mdi:brush-variant
+              tap_action:
+                action: perform-action
+                perform_action: button.press
+                target:
+                  entity_id: button.saros_20_set_seitenbursten_verbrauchsmaterial_zurucksetzen
+            - type: custom:button-card
+              template: scene_action_card
+              entity: button.saros_20_set_luftfilter_verbrauchsmaterial_zurucksetzen
+              name: Luftfilter
+              label: Zurücksetzen
+              icon: mdi:air-filter
+              tap_action:
+                action: perform-action
+                perform_action: button.press
+                target:
+                  entity_id: button.saros_20_set_luftfilter_verbrauchsmaterial_zurucksetzen
+            - type: custom:button-card
+              template: scene_action_card
+              entity: button.saros_20_set_sensor_verbrauchsmaterial_zurucksetzen
+              name: Sensoren
+              label: Zurücksetzen
+              icon: mdi:radar
+              tap_action:
+                action: perform-action
+                perform_action: button.press
+                target:
+                  entity_id: button.saros_20_set_sensor_verbrauchsmaterial_zurucksetzen
+    - cards:
+        - type: heading
+          heading: Verbrauchsmaterial
+        - type: grid
+          columns: 2
+          square: false
+          cards:
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.saros_20_set_verbleibende_zeit_der_hauptburste
+              name: Hauptbürste
+              icon: mdi:brush
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${Math.round(value)} h` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.saros_20_set_verbleibende_zeit_der_seitenburste
+              name: Seitenbürste
+              icon: mdi:brush-variant
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${Math.round(value)} h` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.saros_20_set_verbleibende_filterzeit
+              name: Filter
+              icon: mdi:air-filter
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${Math.round(value)} h` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.saros_20_set_verbleibende_sensorzeit
+              name: Sensoren
+              icon: mdi:radar
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${Math.round(value)} h` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.saros_20_set_dock_schmutzfanger_verbleibend
+              name: Dock Schmutzfänger
+              icon: mdi:filter-variant
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${Math.round(value)} h` : entity?.state ?? '—';
+                ]]]
+    - cards:
+        - type: heading
+          heading: Einordnung
+        - type: custom:button-card
+          template: info_panel_card
+          name: Wartung
+          label: >
+            Wartungs-Resets und Restlaufzeiten bleiben fachlich unverändert. Die
+            Wartungskarte oben färbt sich weiter kritisch, sobald ein
+            Verbrauchsmaterial aufgebraucht ist.
+          icon: mdi:tools

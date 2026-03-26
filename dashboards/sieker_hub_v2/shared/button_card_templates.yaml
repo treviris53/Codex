@@ -1,0 +1,303 @@
+v2_nav_card:
+  show_state: false
+  show_label: true
+  label: >
+    [[[
+      return variables?.label ?? 'Modul oeffnen';
+    ]]]
+  styles:
+    card:
+      - padding: 18px 16px
+      - min-height: 116px
+      - border-radius: 20px
+    grid:
+      - grid-template-areas: '"i" "n" "l"'
+      - grid-template-columns: 1fr
+      - grid-template-rows: 1fr min-content min-content
+      - row-gap: 10px
+    img_cell:
+      - justify-self: center
+      - align-self: end
+      - width: 44px
+      - height: 44px
+      - background: rgba(var(--rgb-primary-color), 0.10)
+      - border-radius: 14px
+    icon:
+      - width: 24px
+      - color: var(--primary-color)
+    name:
+      - justify-self: center
+      - align-self: center
+      - text-align: center
+      - font-size: 16px
+      - font-weight: 600
+      - white-space: normal
+    label:
+      - justify-self: center
+      - align-self: start
+      - text-align: center
+      - color: var(--secondary-text-color)
+      - font-size: 13px
+hub_metric_card:
+  show_label: false
+  show_state: true
+  tap_action:
+    action: more-info
+  state_display: >
+    [[[
+      const value = entity?.state;
+      if (value === 'on') return 'Ein';
+      if (value === 'off') return 'Aus';
+      if (value === 'home') return 'Anwesend';
+      if (value === 'not_home') return 'Abwesend';
+      return value ?? '—';
+    ]]]
+  styles:
+    card:
+      - padding: 18px 16px
+      - min-height: 88px
+      - border-radius: 20px
+    grid:
+      - grid-template-areas: '"i n" "i s"'
+      - grid-template-columns: 44px minmax(0, 1fr)
+      - grid-template-rows: min-content min-content
+      - column-gap: 14px
+      - row-gap: 4px
+    img_cell:
+      - width: 44px
+      - height: 44px
+      - justify-self: center
+      - align-self: center
+      - background: rgba(var(--rgb-primary-color), 0.10)
+      - border-radius: 14px
+    icon:
+      - width: 22px
+      - color: var(--primary-color)
+    name:
+      - justify-self: start
+      - align-self: end
+      - font-size: 18px
+      - font-weight: 500
+      - white-space: normal
+      - text-align: left
+      - line-height: 1.15
+    state:
+      - justify-self: start
+      - align-self: start
+      - font-size: 16px
+      - font-weight: 500
+      - text-align: left
+      - color: var(--primary-text-color)
+hub_roborock_alert_card:
+  template: hub_metric_card
+  state:
+    - value: 'on'
+      styles:
+        card:
+          - background: rgba(var(--rgb-primary-color), 0.10)
+        img_cell:
+          - background: rgba(var(--rgb-primary-color), 0.18)
+        icon:
+          - color: var(--primary-color)
+        state:
+          - color: var(--primary-color)
+hub_nav_card:
+  show_state: false
+  show_label: false
+  styles:
+    card:
+      - padding: 18px 16px
+      - height: 132px
+      - border-radius: 20px
+    grid:
+      - grid-template-areas: '"i" "n"'
+      - grid-template-columns: 1fr
+      - grid-template-rows: 1fr min-content
+      - row-gap: 12px
+    img_cell:
+      - justify-self: center
+      - align-self: end
+    icon:
+      - width: 40px
+      - color: var(--primary-color)
+    name:
+      - justify-self: center
+      - align-self: start
+      - font-size: 16px
+      - font-weight: 500
+      - text-align: center
+      - white-space: normal
+scene_action_card:
+  show_state: false
+  show_label: true
+  hold_action:
+    action: more-info
+  styles:
+    card:
+      - padding: 18px 16px
+      - min-height: 120px
+      - border-radius: 20px
+    grid:
+      - grid-template-areas: '"i" "n" "l"'
+      - grid-template-columns: 1fr
+      - grid-template-rows: 1fr min-content min-content
+      - row-gap: 8px
+    img_cell:
+      - justify-self: center
+      - align-self: end
+      - width: 52px
+      - height: 52px
+      - background: rgba(var(--rgb-primary-color), 0.10)
+      - border-radius: 16px
+    icon:
+      - width: 26px
+      - color: var(--primary-color)
+    name:
+      - justify-self: center
+      - align-self: start
+      - font-size: 20px
+      - font-weight: 600
+      - text-align: center
+    label:
+      - justify-self: center
+      - align-self: start
+      - font-size: 15px
+      - color: var(--secondary-text-color)
+      - text-align: center
+info_panel_card:
+  show_state: false
+  show_label: true
+  tap_action:
+    action: none
+  styles:
+    card:
+      - padding: 20px 18px
+      - min-height: 168px
+      - border-radius: 20px
+    grid:
+      - grid-template-areas: '"i n" "i l"'
+      - grid-template-columns: 52px 1fr
+      - grid-template-rows: min-content 1fr
+      - column-gap: 16px
+      - row-gap: 8px
+    img_cell:
+      - width: 52px
+      - height: 52px
+      - justify-self: center
+      - align-self: start
+      - background: rgba(var(--rgb-primary-color), 0.10)
+      - border-radius: 16px
+    icon:
+      - width: 26px
+      - color: var(--primary-color)
+    name:
+      - justify-self: start
+      - align-self: end
+      - font-size: 20px
+      - font-weight: 600
+      - text-align: left
+    label:
+      - justify-self: start
+      - align-self: start
+      - font-size: 16px
+      - color: var(--secondary-text-color)
+      - text-align: left
+      - line-height: 1.45
+      - white-space: normal
+module_toggle_card:
+  show_label: false
+  show_state: true
+  tap_action:
+    action: toggle
+  hold_action:
+    action: more-info
+  state_display: >
+    [[[
+      if (entity?.state === 'on') return 'Ein';
+      if (entity?.state === 'off') return 'Aus';
+      return entity?.state ?? '—';
+    ]]]
+  styles:
+    card:
+      - padding: 18px 16px
+      - min-height: 104px
+      - border-radius: 20px
+    grid:
+      - grid-template-areas: '"i n" "i s"'
+      - grid-template-columns: 44px minmax(0, 1fr)
+      - grid-template-rows: min-content min-content
+      - column-gap: 14px
+      - row-gap: 4px
+    img_cell:
+      - width: 44px
+      - height: 44px
+      - justify-self: center
+      - align-self: center
+      - background: rgba(var(--rgb-primary-color), 0.10)
+      - border-radius: 14px
+    icon:
+      - width: 22px
+      - color: var(--primary-color)
+    name:
+      - justify-self: start
+      - align-self: end
+      - font-size: 18px
+      - font-weight: 500
+      - white-space: normal
+      - text-align: left
+    state:
+      - justify-self: start
+      - align-self: start
+      - font-size: 16px
+      - font-weight: 500
+      - text-align: left
+      - color: var(--secondary-text-color)
+  state:
+    - value: 'on'
+      styles:
+        card:
+          - background: rgba(var(--rgb-primary-color), 0.10)
+        img_cell:
+          - background: rgba(var(--rgb-primary-color), 0.18)
+        state:
+          - color: var(--primary-color)
+detail_text_card:
+  show_state: false
+  show_label: true
+  tap_action:
+    action: none
+  styles:
+    card:
+      - padding: 18px 16px
+      - min-height: 112px
+      - border-radius: 20px
+    grid:
+      - grid-template-areas: '"i n" "i l"'
+      - grid-template-columns: 44px minmax(0, 1fr)
+      - grid-template-rows: min-content 1fr
+      - column-gap: 14px
+      - row-gap: 6px
+    img_cell:
+      - width: 44px
+      - height: 44px
+      - justify-self: center
+      - align-self: start
+      - background: rgba(var(--rgb-primary-color), 0.10)
+      - border-radius: 14px
+    icon:
+      - width: 22px
+      - color: var(--primary-color)
+    name:
+      - justify-self: start
+      - align-self: end
+      - font-size: 18px
+      - font-weight: 500
+      - text-align: left
+    label:
+      - justify-self: start
+      - align-self: start
+      - font-size: 15px
+      - line-height: 1.35
+      - white-space: normal
+      - text-align: left
+      - color: var(--secondary-text-color)

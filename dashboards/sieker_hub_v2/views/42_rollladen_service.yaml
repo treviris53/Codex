@@ -1,0 +1,9 @@
+- title: Service
+  path: rollladen-service
+  subview: true
+  cards:
+    - type: markdown
+      content: |
+        ## Rollläden / Service
+
+        Platzhalter fuer die modulare Migration.

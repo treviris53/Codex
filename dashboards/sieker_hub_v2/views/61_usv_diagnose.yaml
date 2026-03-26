@@ -1,0 +1,9 @@
+- title: Diagnose
+  path: usv-diagnose
+  subview: true
+  cards:
+    - type: markdown
+      content: |
+        ## USV / Diagnose
+
+        Platzhalter fuer die modulare Migration.

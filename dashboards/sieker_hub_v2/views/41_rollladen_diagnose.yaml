@@ -1,0 +1,9 @@
+- title: Diagnose
+  path: rollladen-diagnose
+  subview: true
+  cards:
+    - type: markdown
+      content: |
+        ## Rollläden / Diagnose
+
+        Platzhalter fuer die modulare Migration.

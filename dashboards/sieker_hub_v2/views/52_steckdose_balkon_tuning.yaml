@@ -1,0 +1,9 @@
+- title: Tuning
+  path: steckdose-balkon-tuning
+  subview: true
+  cards:
+    - type: markdown
+      content: |
+        ## Steckdose Balkon / Tuning
+
+        Platzhalter fuer die modulare Migration.

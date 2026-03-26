@@ -1,0 +1,23 @@
+- title: USV
+  path: usv
+  icon: mdi:battery-medium
+  cards:
+    - type: markdown
+      content: |
+        ## USV
+
+        Die Moduldatei ist angelegt und kann separat weiterentwickelt werden.
+    - type: grid
+      title: Unterseiten
+      columns: 1
+      square: false
+      cards:
+        - type: custom:button-card
+          template: v2_nav_card
+          name: Diagnose
+          icon: mdi:stethoscope
+          variables:
+            label: Platzhalter
+          tap_action:
+            action: navigate
+            navigation_path: usv-diagnose

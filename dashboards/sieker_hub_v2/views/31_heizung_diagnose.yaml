@@ -1,0 +1,9 @@
+- title: Diagnose
+  path: heizung-diagnose
+  subview: true
+  cards:
+    - type: markdown
+      content: |
+        ## Heizung / Diagnose
+
+        Platzhalter fuer die modulare Migration.

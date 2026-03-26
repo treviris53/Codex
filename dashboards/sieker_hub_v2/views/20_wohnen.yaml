@@ -1,0 +1,41 @@
+- title: Wohnen
+  path: wohnen
+  icon: mdi:sofa-outline
+  cards:
+    - type: markdown
+      content: |
+        ## Wohnen
+
+        Der View ist als eigene Moduldatei vorbereitet.
+    - type: grid
+      title: Unterseiten
+      columns: 3
+      square: false
+      cards:
+        - type: custom:button-card
+          template: v2_nav_card
+          name: Beleuchtung
+          icon: mdi:lightbulb-outline
+          variables:
+            label: Platzhalter
+          tap_action:
+            action: navigate
+            navigation_path: wohnen-beleuchtung
+        - type: custom:button-card
+          template: v2_nav_card
+          name: Steckdosen
+          icon: mdi:power-socket-eu
+          variables:
+            label: Platzhalter
+          tap_action:
+            action: navigate
+            navigation_path: wohnen-steckdosen
+        - type: custom:button-card
+          template: v2_nav_card
+          name: Szenen
+          icon: mdi:movie-open-outline
+          variables:
+            label: Platzhalter
+          tap_action:
+            action: navigate
+            navigation_path: wohnen-szenen

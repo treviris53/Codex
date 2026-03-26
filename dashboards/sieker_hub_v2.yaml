@@ -1,0 +1,8 @@
+# Dashboard: Sieker Hub V2
+# Version: 0.1.0
+# Generated: 2026-03-26
+# Notes:
+# - V2-Grundgeruest fuer den modularisierten Parallelbetrieb.
+title: Sieker Hub V2
+button_card_templates: !include dashboards/sieker_hub_v2/shared/button_card_templates.yaml
+views: !include_dir_merge_list dashboards/sieker_hub_v2/views

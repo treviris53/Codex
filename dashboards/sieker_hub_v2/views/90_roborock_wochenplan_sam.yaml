@@ -1,0 +1,41 @@
+- title: Samstag
+  path: roborock-wochenplan-sam
+  icon: mdi:calendar
+  subview: true
+  type: sections
+  max_columns: 1
+  sections:
+    - cards:
+        - type: heading
+          heading: Samstag
+          heading_style: title
+        - type: entities
+          title: Slot 1
+          show_header_toggle: false
+          entities:
+            - entity: input_boolean.roborock_slot_enabled_sat_1
+              name: Aktiv
+            - entity: input_datetime.roborock_time_sat_1
+              name: Uhrzeit
+            - entity: input_text.roborock_jobs_sat_1
+              name: Jobs
+        - type: entities
+          title: Slot 2
+          show_header_toggle: false
+          entities:
+            - entity: input_boolean.roborock_slot_enabled_sat_2
+              name: Aktiv
+            - entity: input_datetime.roborock_time_sat_2
+              name: Uhrzeit
+            - entity: input_text.roborock_jobs_sat_2
+              name: Jobs
+        - type: entities
+          title: Slot 3
+          show_header_toggle: false
+          entities:
+            - entity: input_boolean.roborock_slot_enabled_sat_3
+              name: Aktiv
+            - entity: input_datetime.roborock_time_sat_3
+              name: Uhrzeit
+            - entity: input_text.roborock_jobs_sat_3
+              name: Jobs

@@ -1,0 +1,9 @@
+- title: Steckdosen
+  path: wohnen-steckdosen
+  subview: true
+  cards:
+    - type: markdown
+      content: |
+        ## Wohnen / Steckdosen
+
+        Platzhalter fuer die modulare Migration.

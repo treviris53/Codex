@@ -1,0 +1,9 @@
+- title: Tuning
+  path: heizung-tuning
+  subview: true
+  cards:
+    - type: markdown
+      content: |
+        ## Heizung / Tuning
+
+        Platzhalter fuer die modulare Migration.

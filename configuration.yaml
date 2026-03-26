@@ -111,6 +111,14 @@ lovelace:
       require_admin: false
       filename: dashboards/sieker_hub.yaml
 
+    sieker-hub-v2-dashboard:
+      mode: yaml
+      title: Sieker Hub V2
+      icon: mdi:view-dashboard-outline
+      show_in_sidebar: true
+      require_admin: false
+      filename: dashboards/sieker_hub_v2.yaml
+
     wetter-dashboard:
       mode: yaml
       title: Wetter Aktuell

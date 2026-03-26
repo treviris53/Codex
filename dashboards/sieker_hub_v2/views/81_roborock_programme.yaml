@@ -1,0 +1,126 @@
+- title: Programme
+  path: roborock-programme
+  icon: mdi:playlist-play
+  subview: true
+  type: sections
+  max_columns: 3
+  sections:
+    - cards:
+        - type: heading
+          heading: Programme
+          heading_style: title
+        - type: grid
+          columns: 3
+          square: false
+          cards:
+            - type: custom:button-card
+              template: scene_action_card
+              name: Schlaf saugen
+              label: Schlafzimmer
+              icon: mdi:bed-king-outline
+              tap_action:
+                action: perform-action
+                perform_action: script.roborock_run_named_program
+                data:
+                  program_id: schlaf_saug
+            - type: custom:button-card
+              template: scene_action_card
+              name: Schlaf vac+mop
+              label: Schlafzimmer
+              icon: mdi:bed-king
+              tap_action:
+                action: perform-action
+                perform_action: script.roborock_run_named_program
+                data:
+                  program_id: schlaf_vac_mop
+            - type: custom:button-card
+              template: scene_action_card
+              name: Schlaf saug/wisch
+              label: Schlafzimmer
+              icon: mdi:bed
+              tap_action:
+                action: perform-action
+                perform_action: script.roborock_run_named_program
+                data:
+                  program_id: schlaf_saug_wisch
+            - type: custom:button-card
+              template: scene_action_card
+              name: Flur saugen
+              label: Flur
+              icon: mdi:door-open
+              tap_action:
+                action: perform-action
+                perform_action: script.roborock_run_named_program
+                data:
+                  program_id: flur_saug
+            - type: custom:button-card
+              template: scene_action_card
+              name: Flur vac+mop
+              label: Flur
+              icon: mdi:door
+              tap_action:
+                action: perform-action
+                perform_action: script.roborock_run_named_program
+                data:
+                  program_id: flur_vac_mop
+            - type: custom:button-card
+              template: scene_action_card
+              name: Flur saug/wisch
+              label: Flur
+              icon: mdi:door-sliding
+              tap_action:
+                action: perform-action
+                perform_action: script.roborock_run_named_program
+                data:
+                  program_id: flur_saug_wisch
+            - type: custom:button-card
+              template: scene_action_card
+              name: Wohn saugen
+              label: Wohnen
+              icon: mdi:sofa-outline
+              tap_action:
+                action: perform-action
+                perform_action: script.roborock_run_named_program
+                data:
+                  program_id: wohn_saug
+            - type: custom:button-card
+              template: scene_action_card
+              name: Wohn vac+mop
+              label: Wohnen
+              icon: mdi:sofa-outline
+              tap_action:
+                action: perform-action
+                perform_action: script.roborock_run_named_program
+                data:
+                  program_id: wohn_vac_mop
+            - type: custom:button-card
+              template: scene_action_card
+              name: Wohn saug/wisch
+              label: Wohnen
+              icon: mdi:sofa
+              tap_action:
+                action: perform-action
+                perform_action: script.roborock_run_named_program
+                data:
+                  program_id: wohn_saug_wisch
+            - type: custom:button-card
+              template: scene_action_card
+              name: Haustierbedarf
+              label: Spezial
+              icon: mdi:paw
+              tap_action:
+                action: perform-action
+                perform_action: script.roborock_run_named_program
+                data:
+                  program_id: haustier
+    - cards:
+        - type: heading
+          heading: Einordnung
+        - type: custom:button-card
+          template: info_panel_card
+          name: Einzelprogramme
+          label: >
+            Startet kanonische `program_id`-Programme sicher über
+            `script.roborock_run_named_program`. Alias-Logik bleibt dem
+            Wochenplan vorbehalten.
+          icon: mdi:playlist-play

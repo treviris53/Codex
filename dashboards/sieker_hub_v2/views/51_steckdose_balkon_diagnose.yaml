@@ -1,0 +1,9 @@
+- title: Diagnose
+  path: steckdose-balkon-diagnose
+  subview: true
+  cards:
+    - type: markdown
+      content: |
+        ## Steckdose Balkon / Diagnose
+
+        Platzhalter fuer die modulare Migration.

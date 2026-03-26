@@ -1,0 +1,140 @@
+- title: Diagnose
+  path: roborock-diagnose
+  icon: mdi:bug-outline
+  subview: true
+  type: sections
+  max_columns: 2
+  sections:
+    - cards:
+        - type: heading
+          heading: Betrieb
+        - type: grid
+          columns: 2
+          square: false
+          cards:
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.saros_20_set_status
+              name: Status
+              icon: mdi:robot-vacuum
+              state_display: >
+                [[[
+                  const map = {
+                    charging: 'Lädt',
+                    charging_complete: 'Geladen',
+                    cleaning: 'Reinigt',
+                    returning_home: 'Fährt heim',
+                    docking: 'Dockt an',
+                    paused: 'Pausiert',
+                    idle: 'Bereit',
+                    error: 'Fehler',
+                  };
+                  return map[entity?.state] ?? entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.saros_20_set_batterie
+              name: Batterie
+              icon: mdi:battery-high
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} %` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: binary_sensor.roborock_program_ready
+              name: Startbereit
+              icon: mdi:check-decagram-outline
+            - type: custom:button-card
+              template: hub_roborock_alert_card
+              entity: binary_sensor.roborock_program_blocked
+              name: Blockiert
+              icon: mdi:alert-octagon-outline
+            - type: custom:button-card
+              template: hub_roborock_alert_card
+              entity: input_boolean.roborock_busy
+              name: Busy
+              icon: mdi:progress-clock
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: input_datetime.roborock_busy_since
+              name: Busy Since
+              icon: mdi:clock-outline
+              state_display: >
+                [[[
+                  const raw = entity?.state;
+                  const date = raw ? new Date(raw) : null;
+                  if (!date || Number.isNaN(date.getTime())) return raw ?? '—';
+                  return date.toLocaleString('de-DE', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  });
+                ]]]
+    - cards:
+        - type: heading
+          heading: Verlauf
+        - type: grid
+          columns: 2
+          square: false
+          cards:
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: input_text.roborock_last_slot
+              name: Last Slot
+              icon: mdi:calendar-clock
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: input_text.roborock_last_job
+              name: Last Job
+              icon: mdi:format-list-text
+            - type: custom:button-card
+              template: detail_text_card
+              entity: input_text.roborock_last_program_sequence
+              name: Last Program Sequence
+              icon: mdi:vector-polyline
+              label: >
+                [[[
+                  return entity?.state && entity.state !== '' ? entity.state : '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: input_text.roborock_current_program
+              name: Current Program
+              icon: mdi:playlist-play
+            - type: custom:button-card
+              template: detail_text_card
+              entity: input_text.roborock_last_error
+              name: Last Error
+              icon: mdi:alert-circle-outline
+              label: >
+                [[[
+                  return entity?.state && entity.state !== '' ? entity.state : 'Kein Fehler';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.saros_20_set_aktueller_raum
+              name: Current Room
+              icon: mdi:floor-plan
+    - cards:
+        - type: heading
+          heading: Jobstart
+        - type: custom:button-card
+          template: hub_metric_card
+          entity: script.roborock_execute_job_chain
+          name: Last Job Start
+          icon: mdi:clock-start
+          state_display: >
+            [[[
+              const raw = entity?.attributes?.last_triggered;
+              const date = raw ? new Date(raw) : null;
+              if (!date || Number.isNaN(date.getTime())) return raw ?? '—';
+              return date.toLocaleString('de-DE', {
+                day: '2-digit',
+                month: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+              });
+            ]]]

@@ -1,0 +1,9 @@
+- title: Waschmaschine
+  path: waschmaschine
+  icon: mdi:washing-machine
+  cards:
+    - type: markdown
+      content: |
+        ## Waschmaschine
+
+        Die Moduldatei ist vorbereitet. Die inhaltliche Migration folgt separat.

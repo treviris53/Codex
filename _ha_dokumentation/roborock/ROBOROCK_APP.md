@@ -10,7 +10,7 @@ und dem End-to-End-Datenfluss zwischen Benutzeroberflaeche, Zeitplan und Roboroc
 | --- | --- | --- |
 | Core / Execution Layer | `packages/roborock/roborock_core.yaml` | Verwaltet Busy-Lock, Statusbewertung, Programmausfuehrung, Fehlerbehandlung und manuelle Starts |
 | Scheduler / Job Layer | `packages/roborock/roborock_jobs.yaml` | Verwaltet 21 Wochen-Slots, Job-CSV-Helfer, Bootstrap fuer Standardzeiten und Scheduler-Dispatch |
-| Dashboard / App-UI | `dashboards/roborock.yaml`, `dashboards/sieker_hub.yaml` | Bietet das bestehende Einzel-Dashboard sowie den integrierten Hub-Einstieg mit Programmen, Karte, Diagnose, Wochenplan und Wartung |
+| Dashboard / App-UI | `dashboards/roborock.yaml`, `dashboards/sieker_hub.yaml`, `dashboards/sieker_hub_v2.yaml` | Bietet das bestehende Einzel-Dashboard, den integrierten Hub-Einstieg sowie die modularisierte V2-Variante mit Programmen, Karte, Diagnose, Wochenplan und Wartung |
 
 ## Zweck der App
 
@@ -292,16 +292,17 @@ und validiert danach den echten Wochentag ueber `now().isoweekday()`.
 - keine direkte Hardwaresteuerung im Scheduler selbst
 - Auswertung und Nutzung der 63 Scheduler-Helfer plus globalem Schalter
 
-## Dashboard-Einstiege in `dashboards/roborock.yaml` und `dashboards/sieker_hub.yaml`
+## Dashboard-Einstiege in `dashboards/roborock.yaml`, `dashboards/sieker_hub.yaml` und `dashboards/sieker_hub_v2.yaml`
 
 ### Funktion
 
-Die Roborock-App besitzt zwei Dashboard-Einstiege:
+Die Roborock-App besitzt drei Dashboard-Einstiege:
 
 - `dashboards/roborock.yaml` als bestehendes Einzel-Dashboard
 - `dashboards/sieker_hub.yaml` als integrierter Fachmodul-Einstieg im Sieker-Hub
+- `dashboards/sieker_hub_v2.yaml` als modularisierte Parallelvariante des Hub-Einstiegs
 
-Beide Varianten nutzen ausschliesslich sichere Script-Entrypoints fuer manuelle Programme.
+Alle drei Varianten nutzen ausschliesslich sichere Script-Entrypoints fuer manuelle Programme.
 
 ### Aufbau von `dashboards/roborock.yaml`
 
@@ -323,6 +324,22 @@ Beide Varianten nutzen ausschliesslich sichere Script-Entrypoints fuer manuelle 
 | `path: roborock-diagnose` | Betriebs-, Verlaufs- und Jobstartdaten als Leseflaeche |
 | `path: roborock-wochenplan` | Globaler Scheduler-Schalter, Alias-/ID-Referenz und Wochentagskarten; Tages-Subviews bleiben direkt editierbar |
 | `path: roborock-wartung` | Reset-Buttons und Verbrauchsmaterial-Staende in konsistenter Kartensprache |
+
+### Aufbau von `dashboards/sieker_hub_v2.yaml`
+
+Die V2-Variante bildet denselben fachlichen Roborock-Zuschnitt wie der bestehende
+Hub-Einstieg ab, trennt die Views aber in eigene Quelldateien unter
+`dashboards/sieker_hub_v2/views/`.
+
+| Bereich | Inhalt |
+| --- | --- |
+| `views/80_roborock.yaml` | Verdichteter Top-Level mit Betrieb, letzter Ausfuehrung, Fehlerhinweisen und Navigation |
+| `views/81_roborock_programme.yaml` | Vollstaendige Programmauswahl auf Basis kanonischer `program_id` |
+| `views/82_roborock_karte.yaml` | Kartenansicht als eigene Subview |
+| `views/83_roborock_diagnose.yaml` | Betriebs-, Verlaufs- und Jobstartdaten als Leseflaeche |
+| `views/84_roborock_wochenplan.yaml` | Globaler Scheduler-Schalter, Referenz und Wochentagskarten |
+| `views/85_...` bis `views/91_...` | Direkt editierbare Tages-Subviews fuer Montag bis Sonntag |
+| `views/92_roborock_wartung.yaml` | Reset-Buttons und Verbrauchsmaterial-Staende |
 
 ### Manuelle Programme im Dashboard
 
@@ -353,7 +370,8 @@ Das Dashboard visualisiert unter anderem:
 - `input_text.roborock_current_program`
 - `input_text.roborock_last_error`
 
-Der modernisierte Hub-Einstieg in `dashboards/sieker_hub.yaml` trennt diese
+Die modernisierten Hub-Einstiege in `dashboards/sieker_hub.yaml` und
+`dashboards/sieker_hub_v2.yaml` trennen diese
 Informationen jetzt bewusst in:
 
 - `Betrieb`
@@ -446,6 +464,7 @@ Die Dokumentation wurde gegen den aktuellen Stand aus folgenden Dateien erstellt
 - `D:\Codex\packages\roborock\roborock_jobs.yaml`
 - `D:\Codex\dashboards\roborock.yaml`
 - `D:\Codex\dashboards\sieker_hub.yaml`
+- `D:\Codex\dashboards\sieker_hub_v2.yaml`
 
 ### Checkpunkte
 
@@ -454,7 +473,7 @@ Die Dokumentation wurde gegen den aktuellen Stand aus folgenden Dateien erstellt
 - Job-Alias-`job_map` dokumentiert
 - Scheduler-Struktur mit 7 Tagen x 3 Slots dokumentiert
 - Busy-Lock-, Diagnose- und Fehlerpfade beschrieben
-- Hub-Subviews `roborock*` als neuer Dashboard-Einstieg dokumentiert
+- Hub-Subviews `roborock*` im bestehenden Hub und in der V2-Variante dokumentiert
 - draw.io-kompatible Flussdiagramme erzeugt
 
 ## Einordnung

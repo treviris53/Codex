@@ -1,0 +1,9 @@
+- title: Service
+  path: heizung-service
+  subview: true
+  cards:
+    - type: markdown
+      content: |
+        ## Heizung / Service
+
+        Platzhalter fuer die modulare Migration.

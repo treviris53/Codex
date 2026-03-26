@@ -1,0 +1,71 @@
+- title: Karte
+  path: roborock-karte
+  icon: mdi:map
+  subview: true
+  type: sections
+  max_columns: 1
+  sections:
+    - cards:
+        - type: heading
+          heading: Wohnung
+          heading_style: title
+        - type: custom:xiaomi-vacuum-map-card
+          title: Wohnung
+          entity: vacuum.saros_20_set
+          vacuum_platform: Roborock
+          map_source:
+            camera: image.saros_20_set_map_0_custom
+          calibration_source:
+            camera: true
+          map_modes:
+            - template: vacuum_clean_zone
+            - template: vacuum_goto
+          tiles:
+            - label: Status
+              entity: sensor.saros_20_set_status
+              icon: mdi:information-outline
+            - label: Fehler
+              entity: sensor.saros_20_set_staubsauger_fehler
+              icon: mdi:alert-circle
+            - label: Aktueller Raum
+              entity: sensor.saros_20_set_aktueller_raum
+              icon: mdi:floor-plan
+            - label: Reinigungszeit
+              entity: sensor.saros_20_set_reinigungszeit
+              icon: mdi:timer-outline
+              unit: min
+              multiplier: 1
+              precision: 0
+            - label: Hauptbürste
+              entity: sensor.saros_20_set_verbleibende_zeit_der_hauptburste
+              icon: mdi:brush
+              unit: h
+              multiplier: 1
+              precision: 0
+            - label: Seitenbürste
+              entity: sensor.saros_20_set_verbleibende_zeit_der_seitenburste
+              icon: mdi:brush-variant
+              unit: h
+              multiplier: 1
+              precision: 0
+            - label: Filter
+              entity: sensor.saros_20_set_verbleibende_filterzeit
+              icon: mdi:air-filter
+              unit: h
+              multiplier: 1
+              precision: 0
+            - label: Sensoren
+              entity: sensor.saros_20_set_verbleibende_sensorzeit
+              icon: mdi:radar
+              unit: h
+              multiplier: 1
+              precision: 0
+            - label: Schmutzfänger Dock
+              entity: sensor.saros_20_set_dock_schmutzfanger_verbleibend
+              icon: mdi:filter-variant
+              unit: h
+              multiplier: 1
+              precision: 0
+          grid_options:
+            columns: full
+            rows: auto

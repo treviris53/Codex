@@ -8,6 +8,27 @@ Startseite, Wohnen, Räume und Fachmodule klar nach Bedienzweck.
 Der Hub nutzt bewusst produktive Custom Cards dort, wo sie Navigation,
 Verdichtung oder Spezialfunktionen besser tragen als reine Standardkarten.
 
+## V2-Grundgerüst
+
+Parallel zum bestehenden Hub existiert jetzt auch ein V2-Grundgeruest:
+
+- Dashboard-Einstieg: `sieker-hub-v2-dashboard` in `configuration.yaml`
+- Entry-Point: `dashboards/sieker_hub_v2.yaml`
+- modulare Quellen unter `dashboards/sieker_hub_v2/shared/` und
+  `dashboards/sieker_hub_v2/views/`
+
+Das V2-Dashboard ist bewusst noch kein funktionaler Ersatz fuer den aktuellen
+Hub. Es stellt zunaechst eine lauffaehige Parallelstruktur mit minimalem
+`Home`-View und vorbereiteten Moduldateien bereit, damit die spaetere Migration
+in kleinen, risikoarmen Schritten erfolgen kann.
+
+Stand jetzt:
+
+- das Roborock-Modul ist in V2 bereits funktional aus dem bestehenden Hub
+  gespiegelt
+- die Roborock-Views leben in eigenen Dateien unter
+  `dashboards/sieker_hub_v2/views/80_...` bis `92_...`
+
 ## Navigationslogik
 
 - `Home` ist ein Leitstand mit verdichtetem Hausstatus, Handlungsbedarf und Fachmodulen.

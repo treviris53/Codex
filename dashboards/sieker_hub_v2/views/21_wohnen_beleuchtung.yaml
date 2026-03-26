@@ -1,0 +1,9 @@
+- title: Beleuchtung
+  path: wohnen-beleuchtung
+  subview: true
+  cards:
+    - type: markdown
+      content: |
+        ## Wohnen / Beleuchtung
+
+        Platzhalter fuer die modulare Migration.

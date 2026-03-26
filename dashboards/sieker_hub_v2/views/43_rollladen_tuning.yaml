@@ -1,0 +1,9 @@
+- title: Tuning
+  path: rollladen-tuning
+  subview: true
+  cards:
+    - type: markdown
+      content: |
+        ## Rollläden / Tuning
+
+        Platzhalter fuer die modulare Migration.

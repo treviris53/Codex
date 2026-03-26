@@ -1,0 +1,9 @@
+- title: Szenen
+  path: wohnen-szenen
+  subview: true
+  cards:
+    - type: markdown
+      content: |
+        ## Wohnen / Szenen
+
+        Platzhalter fuer die modulare Migration.
