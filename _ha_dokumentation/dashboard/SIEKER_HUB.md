@@ -28,10 +28,14 @@ Stand jetzt:
   gespiegelt
 - das Heating-Modul ist in V2 bereits funktional aus dem bestehenden Hub
   gespiegelt
+- das Rollläden-Modul ist in V2 bereits funktional aus dem bestehenden Hub
+  gespiegelt
 - die Roborock-Views leben in eigenen Dateien unter
   `dashboards/sieker_hub_v2/views/80_...` bis `92_...`
 - die Heating-Views leben in eigenen Dateien unter
   `dashboards/sieker_hub_v2/views/30_...` bis `33_...`
+- die Rollläden-Views leben in eigenen Dateien unter
+  `dashboards/sieker_hub_v2/views/40_...` bis `43_...`
 
 ## Navigationslogik
 

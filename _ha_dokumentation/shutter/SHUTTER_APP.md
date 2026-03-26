@@ -337,6 +337,9 @@ Wichtige Attribute:
 ### Funktion
 
 Die Shutter-App besitzt im aktuellen Sieker Hub einen klaren Fachmodul-Einstieg.
+Parallel dazu existiert derselbe Zuschnitt jetzt auch modular in
+`dashboards/sieker_hub_v2/views/40_rollladen.yaml` bis
+`dashboards/sieker_hub_v2/views/43_rollladen_tuning.yaml`.
 
 ### Subviews in `sieker_hub.yaml`
 
@@ -371,6 +374,11 @@ Die Shutter-App besitzt im aktuellen Sieker Hub einen klaren Fachmodul-Einstieg.
 | Safe-Einstiege | Manuell ausloesbare Apply-Skripte `Apply Ost`, `Apply West` und `Apply Nord` als direkte Safe-Einstiege |
 | Notfallbedienung | Bewusst getrennter Service-/Notfallbereich fuer Covers |
 | Alle Rollläden | Gemeinsame Steuerung fuer `cover.rollladen_all`, funktional unveraendert |
+
+Hinweis zur V2-Migration:
+
+- Der V2-Service-View verwendet fuer `Apply Ost` den autoritativen Safe-Einstieg
+  `script.rollladen_apply_ost` aus `packages/shutters/rollladen_scripts.yaml`.
 
 ### Inhalte der Hub-Ansicht `rollladen-tuning`
 

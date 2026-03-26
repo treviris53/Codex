@@ -1,41 +1,199 @@
 - title: Rollläden
   path: rollladen
   icon: mdi:window-shutter
-  cards:
-    - type: markdown
-      content: |
-        ## Rollläden
-
-        Der V2-View ist vorbereitet und wartet auf die fachliche Migration.
-    - type: grid
-      title: Unterseiten
-      columns: 3
-      square: false
-      cards:
+  type: sections
+  max_columns: 3
+  sections:
+    - cards:
+        - type: heading
+          heading: Status
+          heading_style: title
+        - type: grid
+          columns: 2
+          square: false
+          cards:
+            - type: custom:button-card
+              template: hub_alert_card
+              entity: input_boolean.rollladen_automation_enabled
+              name: Automatik
+              icon: mdi:window-shutter-auto
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: binary_sensor.rollladen_day_window
+              name: Day Window
+              icon: mdi:white-balance-sunny
+              state_display: >
+                [[[
+                  return entity?.state === 'on' ? 'Aktiv' : 'Aus';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.rollladen_open_ts
+              name: Öffnet um
+              icon: mdi:weather-sunset-up
+              state_display: >
+                [[[
+                  const raw = entity?.state;
+                  const date = raw ? new Date(raw) : null;
+                  if (date && !Number.isNaN(date.getTime())) {
+                    return date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+                  }
+                  return raw ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.rollladen_close_ts
+              name: Schließt um
+              icon: mdi:weather-sunset-down
+              state_display: >
+                [[[
+                  const raw = entity?.state;
+                  const date = raw ? new Date(raw) : null;
+                  if (date && !Number.isNaN(date.getTime())) {
+                    return date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+                  }
+                  return raw ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_alert_card
+              entity: input_boolean.rollladen_override_ost
+              name: Override Ost
+              icon: mdi:window-shutter-alert
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: timer.rollladen_override_ost
+              name: Timer Ost
+              icon: mdi:timer-outline
+            - type: custom:button-card
+              template: hub_alert_card
+              entity: input_boolean.rollladen_override_west
+              name: Override West
+              icon: mdi:window-shutter-alert
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: timer.rollladen_override_west
+              name: Timer West
+              icon: mdi:timer-outline
+    - cards:
+        - type: heading
+          heading: Zielbild
+          heading_style: title
+        - type: grid
+          columns: 2
+          square: false
+          cards:
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.rollladen_ost_target_position
+              name: Ost Ziel
+              icon: mdi:window-shutter-open
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} %` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.rollladen_west_target_position
+              name: West Ziel
+              icon: mdi:window-shutter-open
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} %` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.rollladen_nord_target_position
+              name: Nord Ziel
+              icon: mdi:window-shutter-open
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} %` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.rollladen_ost_debug
+              name: Ost Debug
+              icon: mdi:bug-outline
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.rollladen_west_debug
+              name: West Debug
+              icon: mdi:bug-outline
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.rollladen_nord_debug
+              name: Nord Debug
+              icon: mdi:bug-outline
+    - cards:
+        - type: heading
+          heading: Untermenüs
+          heading_style: title
+        - type: grid
+          columns: 3
+          square: false
+          cards:
+            - type: custom:button-card
+              template: hub_nav_card
+              name: Diagnose
+              icon: mdi:bug-outline
+              tap_action:
+                action: navigate
+                navigation_path: rollladen-diagnose
+            - type: custom:button-card
+              template: hub_nav_card
+              name: Service
+              icon: mdi:tools
+              tap_action:
+                action: navigate
+                navigation_path: rollladen-service
+            - type: custom:button-card
+              template: hub_nav_card
+              name: Tuning
+              icon: mdi:tune
+              tap_action:
+                action: navigate
+                navigation_path: rollladen-tuning
+    - cards:
+        - type: heading
+          heading: Einflussfaktoren
+        - type: grid
+          columns: 2
+          square: false
+          cards:
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: switch.schalt_mess_steckdose_steckdose
+              name: Steckdose Ost
+              icon: mdi:power-socket-de
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: input_boolean.beschattung_ost
+              name: Beschattung Ost
+              icon: mdi:blinds-open
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: input_boolean.beschattung_west
+              name: Beschattung West
+              icon: mdi:blinds-open
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: binary_sensor.kuche_balkon_turkontakt
+              name: Türkontakt
+              icon: mdi:door-sliding-open
+              state_display: >
+                [[[
+                  return entity?.state === 'on' ? 'Offen' : 'Geschlossen';
+                ]]]
+    - cards:
+        - type: heading
+          heading: Einordnung
         - type: custom:button-card
-          template: v2_nav_card
-          name: Diagnose
-          icon: mdi:stethoscope
-          variables:
-            label: Platzhalter
-          tap_action:
-            action: navigate
-            navigation_path: rollladen-diagnose
-        - type: custom:button-card
-          template: v2_nav_card
-          name: Service
-          icon: mdi:tools
-          variables:
-            label: Platzhalter
-          tap_action:
-            action: navigate
-            navigation_path: rollladen-service
-        - type: custom:button-card
-          template: v2_nav_card
-          name: Tuning
-          icon: mdi:tune
-          variables:
-            label: Platzhalter
-          tap_action:
-            action: navigate
-            navigation_path: rollladen-tuning
+          template: info_panel_card
+          name: Rollläden
+          label: >
+            Das Modul bündelt Zeitfenster, Zielpositionen, Overrides und Beschattung.
+            Tuning bleibt bewusst direkt editierbar, Service und Diagnose bleiben getrennt.
+          icon: mdi:window-shutter

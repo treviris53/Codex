@@ -1,9 +1,62 @@
 - title: Tuning
   path: rollladen-tuning
+  icon: mdi:tune
   subview: true
-  cards:
-    - type: markdown
-      content: |
-        ## Rollläden / Tuning
-
-        Platzhalter fuer die modulare Migration.
+  type: sections
+  max_columns: 3
+  sections:
+    - cards:
+        - type: heading
+          heading: Zeitregeln
+        - type: entities
+          title: Automatik
+          show_header_toggle: false
+          entities:
+            - entity: input_boolean.rollladen_automation_enabled
+              name: Rollläden Automatik
+            - entity: binary_sensor.rollladen_day_window
+              name: Day Window
+        - type: entities
+          title: Policies
+          show_header_toggle: false
+          entities:
+            - entity: input_datetime.rollladen_earliest_open
+            - entity: input_datetime.rollladen_latest_open
+            - entity: input_datetime.rollladen_latest_close
+            - entity: input_datetime.rollladen_ost_plug_open_start
+            - entity: input_datetime.rollladen_ost_plug_open_end
+            - entity: input_number.rollladen_offset_morgen_min
+            - entity: input_number.rollladen_offset_abend_min
+    - cards:
+        - type: heading
+          heading: Beschattung
+        - type: entities
+          title: Parameter
+          show_header_toggle: false
+          entities:
+            - entity: input_number.beschattung_azimut_ost_min
+            - entity: input_number.beschattung_azimut_ost_max
+            - entity: input_number.beschattung_azimut_west_min
+            - entity: input_number.beschattung_azimut_west_max
+            - entity: input_number.beschattung_elevation_min
+            - entity: input_number.beschattung_sommer_temp_min
+            - entity: input_number.beschattung_lux_ost_min
+            - entity: input_number.beschattung_lux_west_min
+            - entity: input_number.beschattung_temp_ost_min
+            - entity: input_number.beschattung_temp_west_min
+    - cards:
+        - type: heading
+          heading: Diagnosewerte
+        - type: entities
+          title: Live und Diff
+          show_header_toggle: false
+          entities:
+            - entity: sensor.sun_solar_azimuth
+            - entity: sensor.sun_solar_elevation
+            - entity: sensor.balkon_lichtsensor_durchschnittliche_beleuchtungsstarke
+            - entity: sensor.beschattung_diff_elevation
+            - entity: sensor.beschattung_diff_sommer_temp
+            - entity: sensor.beschattung_diff_lux_ost
+            - entity: sensor.beschattung_diff_lux_west
+            - entity: sensor.beschattung_debug_ost
+            - entity: sensor.beschattung_debug_west

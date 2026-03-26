@@ -1,9 +1,181 @@
 - title: Diagnose
   path: rollladen-diagnose
+  icon: mdi:bug-outline
   subview: true
-  cards:
-    - type: markdown
-      content: |
-        ## Rollläden / Diagnose
-
-        Platzhalter fuer die modulare Migration.
+  type: sections
+  max_columns: 3
+  sections:
+    - cards:
+        - type: heading
+          heading: Status
+        - type: grid
+          columns: 2
+          square: false
+          cards:
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: binary_sensor.rollladen_day_window
+              name: Day Window
+              icon: mdi:white-balance-sunny
+              state_display: >
+                [[[
+                  return entity?.state === 'on' ? 'Aktiv' : 'Aus';
+                ]]]
+            - type: custom:button-card
+              template: hub_alert_card
+              entity: input_boolean.rollladen_automation_enabled
+              name: Automatik
+              icon: mdi:window-shutter-auto
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.rollladen_open_ts
+              name: Öffnet um
+              icon: mdi:weather-sunset-up
+              state_display: >
+                [[[
+                  const raw = entity?.state;
+                  const date = raw ? new Date(raw) : null;
+                  if (date && !Number.isNaN(date.getTime())) {
+                    return date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+                  }
+                  return raw ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.rollladen_close_ts
+              name: Schließt um
+              icon: mdi:weather-sunset-down
+              state_display: >
+                [[[
+                  const raw = entity?.state;
+                  const date = raw ? new Date(raw) : null;
+                  if (date && !Number.isNaN(date.getTime())) {
+                    return date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+                  }
+                  return raw ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: binary_sensor.kuche_balkon_turkontakt
+              name: Türkontakt
+              icon: mdi:door-sliding-open
+              state_display: >
+                [[[
+                  return entity?.state === 'on' ? 'Offen' : 'Geschlossen';
+                ]]]
+    - cards:
+        - type: heading
+          heading: Debug-Sensoren Ost
+        - type: grid
+          columns: 2
+          square: false
+          cards:
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.rollladen_ost_debug
+              name: Ost Debug
+              icon: mdi:window-shutter-alert
+            - type: custom:button-card
+              template: detail_text_card
+              entity: sensor.rollladen_ost_debug
+              name: Ost Grund
+              icon: mdi:text-box-search-outline
+              label: >
+                [[[
+                  return entity?.attributes?.reason ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.rollladen_ost_debug
+              name: Türstatus
+              icon: mdi:door-sliding-open
+              state_display: >
+                [[[
+                  return entity?.attributes?.door_state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.rollladen_ost_debug
+              name: Steckdose
+              icon: mdi:power-socket-de
+              state_display: >
+                [[[
+                  const value = entity?.attributes?.plug_on;
+                  if (value === true) return 'Ein';
+                  if (value === false) return 'Aus';
+                  return value ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.rollladen_ost_debug
+              name: Latest Close
+              icon: mdi:clock-end
+              state_display: >
+                [[[
+                  return entity?.attributes?.latest_close ?? '—';
+                ]]]
+    - cards:
+        - type: heading
+          heading: Debug-Sensoren West / Nord
+        - type: grid
+          columns: 2
+          square: false
+          cards:
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.rollladen_west_debug
+              name: West Debug
+              icon: mdi:window-shutter-alert
+            - type: custom:button-card
+              template: detail_text_card
+              entity: sensor.rollladen_west_debug
+              name: West Grund
+              icon: mdi:text-box-search-outline
+              label: >
+                [[[
+                  return entity?.attributes?.reason ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.rollladen_nord_debug
+              name: Nord Debug
+              icon: mdi:window-shutter-alert
+            - type: custom:button-card
+              template: detail_text_card
+              entity: sensor.rollladen_nord_debug
+              name: Nord Grund
+              icon: mdi:text-box-search-outline
+              label: >
+                [[[
+                  return entity?.attributes?.reason ?? '—';
+                ]]]
+    - cards:
+        - type: heading
+          heading: Historie
+        - type: grid
+          grid_options:
+            columns: full
+            rows: auto
+          columns: 2
+          square: false
+          cards:
+            - type: history-graph
+              title: Zielpositionen (24h)
+              hours_to_show: 24
+              refresh_interval: 60
+              entities:
+                - entity: sensor.rollladen_ost_debug
+                - entity: sensor.rollladen_west_debug
+                - entity: sensor.rollladen_nord_debug
+            - type: history-graph
+              title: Einflussfaktoren (24h)
+              hours_to_show: 24
+              refresh_interval: 60
+              entities:
+                - entity: input_boolean.rollladen_automation_enabled
+                - entity: binary_sensor.rollladen_day_window
+                - entity: switch.schalt_mess_steckdose_steckdose
+                - entity: input_boolean.beschattung_ost
+                - entity: input_boolean.beschattung_west
+                - entity: binary_sensor.kuche_balkon_turkontakt
+      column_span: 2

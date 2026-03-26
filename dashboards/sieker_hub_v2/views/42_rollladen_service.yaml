@@ -1,9 +1,83 @@
 - title: Service
   path: rollladen-service
+  icon: mdi:tools
   subview: true
-  cards:
-    - type: markdown
-      content: |
-        ## Rollläden / Service
-
-        Platzhalter fuer die modulare Migration.
+  type: sections
+  max_columns: 3
+  sections:
+    - cards:
+        - type: heading
+          heading: Safe-Einstiege
+        - type: grid
+          columns: 3
+          square: false
+          cards:
+            - type: custom:button-card
+              template: scene_action_card
+              name: Apply Ost
+              label: Safe Script
+              icon: mdi:window-shutter
+              tap_action:
+                action: call-service
+                service: script.turn_on
+                target:
+                  entity_id: script.rollladen_apply_ost
+            - type: custom:button-card
+              template: scene_action_card
+              name: Apply West
+              label: Safe Script
+              icon: mdi:window-shutter
+              tap_action:
+                action: call-service
+                service: script.turn_on
+                target:
+                  entity_id: script.rollladen_apply_west
+            - type: custom:button-card
+              template: scene_action_card
+              name: Apply Nord
+              label: Safe Script
+              icon: mdi:window-shutter
+              tap_action:
+                action: call-service
+                service: script.turn_on
+                target:
+                  entity_id: script.rollladen_apply_nord
+    - cards:
+        - type: heading
+          heading: Notfallbedienung
+        - type: custom:button-card
+          template: info_panel_card
+          name: Notfallbedienung
+          label: >
+            Dieser Bereich bleibt bewusst als manuelle Service- und Notfallbedienung getrennt.
+            Direkte Cover-Steuerung bleibt unverändert erreichbar.
+          icon: mdi:tools
+        - type: tile
+          entity: cover.rollladen_ost
+          name: Rollladen Ost
+          features:
+            - type: cover-position
+        - type: tile
+          entity: cover.rollladen_west
+          name: Rollladen West
+          features:
+            - type: cover-position
+        - type: tile
+          entity: cover.rollladen_nord
+          name: Rollladen Nord
+          features:
+            - type: cover-position
+    - cards:
+        - type: heading
+          heading: Alle Rollläden
+        - type: custom:button-card
+          template: info_panel_card
+          name: Sammelbedienung
+          label: >
+            Gemeinsame Steuerung fuer alle Rollläden. Die Funktion bleibt unverändert.
+          icon: mdi:window-shutter-cog
+        - type: tile
+          entity: cover.rollladen_all
+          name: Rollläden Alle
+          features:
+            - type: cover-position
