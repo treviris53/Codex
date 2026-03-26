@@ -51,6 +51,12 @@ Die folgenden installierten HACS-Module sind fuer Dashboard-Arbeit besonders rel
 - Wenn eine Dashboard-Datei HACS-Karten nutzt, diese Abhaengigkeit in der Aufgabenanalyse und bei groesseren Redesigns auch in der Doku mitberuecksichtigen.
 - Globale Lovelace-Resource-Umbauten, insbesondere `resource_mode: yaml` oder ein zentraler `resources:`-Block in `configuration.yaml`, gelten als high-risk und duerfen nur mit ausdruecklicher Migration/Validierung geaendert werden.
 
+## Reload-Hinweis fuer modulare YAML-Dashboards
+
+- Aenderungen an einzelnen YAML-Dateien eines modularen Dashboards mit `!include` oder `!include_dir_merge_list` werden im laufenden Home Assistant nicht immer sofort sichtbar.
+- Wenn ein alter View-Stand trotz korrekter Dateien auf `W:\` weiter angezeigt wird, kann fuer solche Dashboard-Strukturen ein Home-Assistant-Core-Neustart noetig sein.
+- Einzeldatei-Dashboards wie `dashboards/sieker_hub.yaml` koennen sich dabei anders verhalten als modulare Dashboard-Einstiege wie `dashboards/sieker_hub_v2.yaml`.
+
 ## Wann diese Datei lesen?
 
 - vor Dashboard-Redesigns

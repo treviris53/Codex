@@ -231,3 +231,5 @@ die anderen modernisierten Module, ohne die Funktion zu aendern.
 - Navigation gegen `configuration.yaml` geprüft
 - Keine bestehenden `entity_id` umbenannt
 - Bei Dashboard-Problemen immer auch globale Lovelace-Resource-Aenderungen in `configuration.yaml` pruefen; ein fehlerhafter globaler Resource-Umbau kann mehrere Subviews gleichzeitig brechen.
+- Beobachtung aus der V2-Migration: Aenderungen an einzelnen View-Dateien unter `dashboards/sieker_hub_v2/views/` wurden im laufenden Betrieb nicht immer sofort uebernommen, obwohl die Dateien auf `W:\` korrekt deployt waren.
+- Fuer `sieker_hub_v2.yaml` mit `!include_dir_merge_list` kann deshalb im Zweifel ein Home-Assistant-Core-Neustart noetig sein; beim monolithischen `sieker_hub.yaml` war das Verhalten direkter.
