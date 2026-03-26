@@ -54,6 +54,10 @@ Der Top-Level-View ist als kompakte Alltagsoberfläche gedacht:
 - `Steckdosen` für allgemeine, bewusst manuell bediente Steckdosen inklusive Leistung, Energie und Kindersicherung
 - `Szenen` für die manuellen Heizungsszenen 17, 19 und 21 Grad
 
+Die Unterseite `Steckdosen` bleibt bewusst direkt editierbar ueber klassische
+Entity-Listen, damit Schalten und Kindersicherung nicht erst ueber `more-info`
+oder eine weitere Ebene erreicht werden muessen.
+
 ## Räume-View
 
 Der View `Räume` enthält nur Raum- und Umgebungsdaten:
@@ -85,6 +89,24 @@ Die detaillierten Rohwerte bleiben im Diagnose-Subview.
 Das Diagnose-Subview ist ebenfalls in kompakte Karten gegliedert und trennt
 `Rohstatus` von `Elektrik`, statt die Werte nur als lange Entity-Liste zu zeigen.
 
+## Steckdose-Balkon-Modul
+
+Das Modul `Steckdose Balkon` bleibt bewusst ein eigenes Fachmodul, weil dort
+Saison-, Zeitfenster- und Helligkeitslogik zusammenlaufen.
+
+Der Top-Level-View ist in fünf Bloecke gegliedert:
+
+- `Übersicht` für Saisonstatus, Steckdose, Dunkelheit und Debug-Zustand
+- `Verlauf` für letzte Aktion und Zeitpunkt
+- `Zeitfenster` für Morgen-/Abendlogik inklusive festem Morgenaus
+- `Untermenüs` für Diagnose und Tuning
+- `Einordnung` als kurze Kontextkarte zur Abgrenzung gegenüber allgemeinen Wohn-Steckdosen
+
+Das Diagnose-Subview zeigt die Debug-Lage als kompakte Karten plus Historie.
+Das Tuning-Subview bleibt bewusst direkt editierbar ueber klassische Helper-
+Listen, damit Zeitfenster und Schwellen nicht erst eine weitere Ebene tiefer
+geaendert werden muessen.
+
 ## Waschmaschinen-Modul
 
 Das Modul `Waschmaschine` bündelt die bisherige Keller-Ansicht als Geräteansicht.
@@ -94,6 +116,9 @@ Der View ist in drei Bloecke gegliedert:
 - `Übersicht` für Maschinenzustand und Fertig
 - `Einstellungen` für Bubble Soak, Waschmittel, Schleudern und Spülgänge
 - `Einordnung` als kurze Kontextkarte zur bewussten Trennung von Raum- und Geräteansicht
+
+Der Block `Einstellungen` bleibt bewusst direkt bedienbar ueber Tiles, damit
+die Geraeteparameter ohne weiteren Tiefensprung geaendert werden koennen.
 
 ### Sichtbare Entitäten
 

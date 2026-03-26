@@ -530,6 +530,45 @@ button_card_templates:
             - background: rgba(var(--rgb-primary-color), 0.18)
           state:
             - color: var(--primary-color)
+  static_metric_card:
+    show_state: false
+    show_label: true
+    tap_action:
+      action: none
+    styles:
+      card:
+        - padding: 18px 16px
+        - min-height: 88px
+        - border-radius: 20px
+      grid:
+        - grid-template-areas: '"i n" "i l"'
+        - grid-template-columns: 44px minmax(0, 1fr)
+        - grid-template-rows: min-content min-content
+        - column-gap: 14px
+        - row-gap: 4px
+      img_cell:
+        - width: 44px
+        - height: 44px
+        - justify-self: center
+        - align-self: center
+        - background: rgba(var(--rgb-primary-color), 0.10)
+        - border-radius: 14px
+      icon:
+        - width: 22px
+        - color: var(--primary-color)
+      name:
+        - justify-self: start
+        - align-self: end
+        - font-size: 18px
+        - font-weight: 500
+        - text-align: left
+      label:
+        - justify-self: start
+        - align-self: start
+        - font-size: 16px
+        - font-weight: 500
+        - color: var(--secondary-text-color)
+        - text-align: left
 views:
   - title: Home
     path: home
@@ -976,62 +1015,74 @@ views:
           - type: heading
             heading: Wohnen
             heading_style: title
-          - type: grid
-            columns: 2
-            square: false
-            cards:
-              - type: custom:button-card
-                template: socket_status_card
-                entity: switch.0xa4c138442a735c69
-                variables:
-                  power_entity: sensor.0xa4c138442a735c69_power
-                  energy_entity: sensor.0xa4c138442a735c69_energy
-                name: Steckdose
-                icon: mdi:power-socket-eu
-              - type: custom:button-card
-                template: socket_status_card
-                entity: switch.steckdose_fernseher
-                variables:
-                  power_entity: sensor.steckdose_fernseher_power
-                  energy_entity: sensor.steckdose_fernseher_energy
-                name: Fernseher
-                icon: mdi:television
+          - type: entities
+            title: Steckdose Wohnen
+            show_header_toggle: false
+            entities:
+              - entity: switch.0xa4c138442a735c69
+                name: Ein/Aus
+              - entity: switch.steckdose_wohnzimmer_child_lock
+                name: Kindersicherung
+              - entity: sensor.0xa4c138442a735c69_power
+                name: Leistung
+              - entity: sensor.0xa4c138442a735c69_energy
+                name: Energie
+          - type: entities
+            title: Steckdose Fernseher
+            show_header_toggle: false
+            entities:
+              - entity: switch.steckdose_fernseher
+                name: Ein/Aus
+              - entity: switch.steckdose_fernseher_child_lock
+                name: Kindersicherung
+              - entity: sensor.steckdose_fernseher_power
+                name: Leistung
+              - entity: sensor.steckdose_fernseher_energy
+                name: Energie
       - cards:
           - type: heading
             heading: Gäste
             heading_style: title
-          - type: grid
-            columns: 2
-            square: false
-            cards:
-              - type: custom:button-card
-                template: socket_status_card
-                entity: switch.steckdose_computertisch
-                variables:
-                  power_entity: sensor.steckdose_computertisch_power
-                  energy_entity: sensor.steckdose_computertisch_energy
-                name: Computertisch
-                icon: mdi:desk
-              - type: custom:button-card
-                template: socket_status_card
-                entity: switch.0xa4c1389840f71629
-                variables:
-                  power_entity: sensor.0xa4c1389840f71629_power
-                  energy_entity: sensor.0xa4c1389840f71629_energy
-                name: Drucker/Scanner
-                icon: mdi:printer-outline
+          - type: entities
+            title: Steckdose Computertisch
+            show_header_toggle: false
+            entities:
+              - entity: switch.steckdose_computertisch
+                name: Ein/Aus
+              - entity: switch.steckdose_computertisch_child_lock
+                name: Kindersicherung
+              - entity: sensor.steckdose_computertisch_power
+                name: Leistung
+              - entity: sensor.steckdose_computertisch_energy
+                name: Energie
+          - type: entities
+            title: Steckdose Drucker/Scanner
+            show_header_toggle: false
+            entities:
+              - entity: switch.0xa4c1389840f71629
+                name: Ein/Aus
+              - entity: switch.0xa4c1389840f71629_child_lock
+                name: Kindersicherung
+              - entity: sensor.0xa4c1389840f71629_power
+                name: Leistung
+              - entity: sensor.0xa4c1389840f71629_energy
+                name: Energie
       - cards:
           - type: heading
             heading: Kontrollraum
             heading_style: title
-          - type: custom:button-card
-            template: socket_status_card
-            entity: switch.0xa4c13838e02b32cf
-            variables:
-              power_entity: sensor.0xa4c13838e02b32cf_power
-              energy_entity: sensor.0xa4c13838e02b32cf_energy
-            name: Kontrollraum
-            icon: mdi:server-network
+          - type: entities
+            title: Steckdose Kontrollraum
+            show_header_toggle: false
+            entities:
+              - entity: switch.0xa4c13838e02b32cf
+                name: Ein/Aus
+              - entity: switch.steckdose_kontrollraum_child_lock
+                name: Kindersicherung
+              - entity: sensor.0xa4c13838e02b32cf_power
+                name: Leistung
+              - entity: sensor.0xa4c13838e02b32cf_energy
+                name: Energie
           - type: heading
             heading: Abgrenzung
           - type: custom:button-card
@@ -1641,38 +1692,123 @@ views:
           - type: heading
             heading: Übersicht
             heading_style: title
-          - type: entities
-            title: Status
-            show_header_toggle: false
-            entities:
-              - entity: binary_sensor.steckdose_saison_aktiv
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - type: custom:button-card
+                template: hub_alert_card
+                entity: binary_sensor.steckdose_saison_aktiv
                 name: Saison aktiv
-              - entity: switch.schalt_mess_steckdose_steckdose
-                name: Steckdose Balkon
-              - entity: binary_sensor.dunkelheit_balkon
+                icon: mdi:sun-clock-outline
+                state_display: >
+                  [[[
+                    return entity?.state === 'on' ? 'Aktiv' : 'Inaktiv';
+                  ]]]
+              - type: custom:button-card
+                template: module_toggle_card
+                entity: switch.schalt_mess_steckdose_steckdose
+                name: Steckdose
+                icon: mdi:power-socket-de
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: binary_sensor.dunkelheit_balkon
                 name: Dunkelheit
-              - entity: sensor.steckdose_balkon_debug
+                icon: mdi:weather-night
+                state_display: >
+                  [[[
+                    return entity?.state === 'on' ? 'Ja' : 'Nein';
+                  ]]]
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.steckdose_balkon_debug
                 name: Debug
-              - entity: input_text.steckdose_balkon_last_action
+                icon: mdi:bug-outline
+      - cards:
+          - type: heading
+            heading: Verlauf
+          - type: grid
+            columns: 1
+            square: false
+            cards:
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: input_text.steckdose_balkon_last_action
                 name: Letzte Aktion
-              - entity: input_datetime.steckdose_balkon_last_action_at
+                icon: mdi:history
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: input_datetime.steckdose_balkon_last_action_at
                 name: Zeitpunkt
+                icon: mdi:clock-outline
+                state_display: >
+                  [[[
+                    const raw = entity?.state;
+                    const date = raw ? new Date(raw) : null;
+                    if (date && !Number.isNaN(date.getTime())) {
+                      return date.toLocaleString('de-DE', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      });
+                    }
+                    return raw ?? '—';
+                  ]]]
       - cards:
           - type: heading
             heading: Zeitfenster
-          - type: entities
-            title: Saison
-            show_header_toggle: false
-            entities:
-              - entity: input_datetime.steckdose_morgens_ein
-                name: Morgens Ein
-              - type: text
-                name: Morgens Aus (fix)
-                text: '08:15'
-              - entity: input_datetime.steckdose_abends_ein
-                name: Abends Ein
-              - entity: input_datetime.steckdose_abends_aus
-                name: Abends Aus
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: input_datetime.steckdose_morgens_ein
+                name: Morgens ein
+                icon: mdi:weather-sunset-up
+                state_display: >
+                  [[[
+                    const raw = entity?.state;
+                    const date = raw ? new Date(`2000-01-01T${raw}`) : null;
+                    if (date && !Number.isNaN(date.getTime())) {
+                      return date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+                    }
+                    return raw ?? '—';
+                  ]]]
+              - type: custom:button-card
+                template: static_metric_card
+                name: Morgens aus
+                label: "08:15"
+                icon: mdi:weather-sunny-off
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: input_datetime.steckdose_abends_ein
+                name: Abends ein
+                icon: mdi:weather-sunset
+                state_display: >
+                  [[[
+                    const raw = entity?.state;
+                    const date = raw ? new Date(`2000-01-01T${raw}`) : null;
+                    if (date && !Number.isNaN(date.getTime())) {
+                      return date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+                    }
+                    return raw ?? '—';
+                  ]]]
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: input_datetime.steckdose_abends_aus
+                name: Abends aus
+                icon: mdi:weather-night
+                state_display: >
+                  [[[
+                    const raw = entity?.state;
+                    const date = raw ? new Date(`2000-01-01T${raw}`) : null;
+                    if (date && !Number.isNaN(date.getTime())) {
+                      return date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+                    }
+                    return raw ?? '—';
+                  ]]]
       - cards:
           - type: heading
             heading: Untermenüs
@@ -1680,18 +1816,30 @@ views:
             columns: 2
             square: false
             cards:
-              - type: button
+              - type: custom:button-card
+                template: hub_nav_card
                 name: Diagnose
                 icon: mdi:bug-outline
                 tap_action:
                   action: navigate
                   navigation_path: steckdose-balkon-diagnose
-              - type: button
+              - type: custom:button-card
+                template: hub_nav_card
                 name: Tuning
                 icon: mdi:tune
                 tap_action:
                   action: navigate
                   navigation_path: steckdose-balkon-tuning
+      - cards:
+          - type: heading
+            heading: Einordnung
+          - type: custom:button-card
+            template: info_panel_card
+            name: Steckdose Balkon
+            label: >
+              Eigenes Fachmodul mit Saison-, Zeitfenster- und Helligkeitslogik.
+              Deshalb bewusst getrennt von den allgemeinen Wohn-Steckdosen.
+            icon: mdi:power-socket-de
 
   - title: Diagnose
     path: steckdose-balkon-diagnose
@@ -1703,44 +1851,79 @@ views:
       - cards:
           - type: heading
             heading: Debug-Sensor
-          - type: entities
-            title: Steckdose Balkon Debug
-            show_header_toggle: false
-            entities:
-              - entity: sensor.steckdose_balkon_debug
+            heading_style: title
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.steckdose_balkon_debug
                 name: State
-              - type: attribute
+                icon: mdi:information-outline
+              - type: custom:button-card
+                template: hub_metric_card
                 entity: sensor.steckdose_balkon_debug
-                attribute: reason
-                name: reason
-              - type: attribute
+                name: Erwartet
+                icon: mdi:target
+                state_display: >
+                  [[[
+                    return entity?.attributes?.expected_state ?? '—';
+                  ]]]
+              - type: custom:button-card
+                template: hub_metric_card
                 entity: sensor.steckdose_balkon_debug
-                attribute: expected_state
-                name: expected_state
-              - type: attribute
+                name: Saison
+                icon: mdi:sun-clock-outline
+                state_display: >
+                  [[[
+                    return entity?.attributes?.season_active ? 'Aktiv' : 'Inaktiv';
+                  ]]]
+              - type: custom:button-card
+                template: hub_metric_card
                 entity: sensor.steckdose_balkon_debug
-                attribute: season_active
-                name: season_active
-              - type: attribute
+                name: Dunkelheit
+                icon: mdi:weather-night
+                state_display: >
+                  [[[
+                    return entity?.attributes?.dunkelheit ? 'Ja' : 'Nein';
+                  ]]]
+              - type: custom:button-card
+                template: hub_metric_card
                 entity: sensor.steckdose_balkon_debug
-                attribute: dunkelheit
-                name: dunkelheit
-              - type: attribute
+                name: Morgenfenster
+                icon: mdi:weather-sunset-up
+                state_display: >
+                  [[[
+                    return entity?.attributes?.within_morning_window ? 'Ja' : 'Nein';
+                  ]]]
+              - type: custom:button-card
+                template: hub_metric_card
                 entity: sensor.steckdose_balkon_debug
-                attribute: within_morning_window
-                name: within_morning_window
-              - type: attribute
+                name: Abendfenster
+                icon: mdi:weather-sunset
+                state_display: >
+                  [[[
+                    return entity?.attributes?.within_evening_window ? 'Ja' : 'Nein';
+                  ]]]
+              - type: custom:button-card
+                template: hub_metric_card
                 entity: sensor.steckdose_balkon_debug
-                attribute: within_evening_window
-                name: within_evening_window
-              - type: attribute
+                name: Letzte Aktion
+                icon: mdi:history
+                state_display: >
+                  [[[
+                    return entity?.attributes?.last_action ?? '—';
+                  ]]]
+              - type: custom:button-card
+                template: hub_metric_card
                 entity: sensor.steckdose_balkon_debug
-                attribute: last_action
-                name: last_action
-              - type: attribute
-                entity: sensor.steckdose_balkon_debug
-                attribute: last_reason
-                name: last_reason
+                name: Grund
+                icon: mdi:text-box-search-outline
+                state_display: >
+                  [[[
+                    return entity?.attributes?.last_reason ?? entity?.attributes?.reason ?? '—';
+                  ]]]
       - cards:
           - type: heading
             heading: Historie
@@ -1770,8 +1953,14 @@ views:
             show_header_toggle: false
             entities:
               - entity: input_datetime.steckdose_morgens_ein
+                name: Morgens ein
+              - type: text
+                name: Morgens aus (fix)
+                text: "08:15"
               - entity: input_datetime.steckdose_abends_ein
+                name: Abends ein
               - entity: input_datetime.steckdose_abends_aus
+                name: Abends aus
       - cards:
           - type: heading
             heading: Helligkeit
@@ -1780,11 +1969,11 @@ views:
             show_header_toggle: false
             entities:
               - entity: sensor.balkon_lichtsensor_durchschnittliche_beleuchtungsstarke
-                name: Lux (Balkon)
+                name: Lux Balkon
               - entity: input_number.dunkelheit_lux_schwelle
                 name: Lux-Schwelle
               - entity: input_number.dunkelheit_lux_hysterese
-                name: Lux-Hysterese
+                name: Hysterese
 
   - title: USV
     path: usv
@@ -2033,23 +2222,22 @@ views:
             columns: 2
             square: false
             cards:
-              - type: custom:button-card
-                template: module_toggle_card
+              - type: tile
                 entity: switch.waschmaschine_bubble_soak
                 name: Bubble Soak
                 icon: mdi:bubble-chart
-              - type: custom:button-card
-                template: hub_metric_card
+                color: amber
+                vertical: false
+                features_position: bottom
+              - type: tile
                 entity: select.waschmaschine_dosiermenge_fur_waschmittel
                 name: Waschmittel
                 icon: mdi:cup-water
-              - type: custom:button-card
-                template: hub_metric_card
+              - type: tile
                 entity: select.waschmaschine_schleuderstufe
                 name: Schleudern
                 icon: mdi:rotate-right
-              - type: custom:button-card
-                template: hub_metric_card
+              - type: tile
                 entity: number.waschmaschine_spulgange
                 name: Spülgänge
                 icon: mdi:waves
