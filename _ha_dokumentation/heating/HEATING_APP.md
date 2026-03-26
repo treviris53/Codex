@@ -255,25 +255,26 @@ Die Heating-App besitzt im aktuellen Sieker Hub zwei Bedienpfade:
 
 | Bereich | Inhalt |
 | --- | --- |
-| Betrieb | Sollprofil, aktives Profil, letzte Anwendung, Override-Status |
+| Betrieb | Sollprofil, aktives Profil, letzte Anwendung, letzte Entscheidung, Override, Urlaub |
 | Eingangslage | Anwesenheit, Winterbetrieb, Vorhersage und Saison |
-| Untermenues | Navigation nach Diagnose, Service und Tuning |
+| Untermenues | Navigation nach Diagnose, Service und Tuning plus Kurz-Historie |
+| Einordnung | Kontextkarte zur Abgrenzung zwischen Uebersicht und direkter Parameterpflege |
 | Kurz-Historie | Profil- und Wetterverlauf ueber 24h |
 
 ### Inhalte der Hub-Ansicht `heizung-diagnose`
 
 | Bereich | Inhalt |
 | --- | --- |
-| Entscheidungen | State und Kernattribute von `sensor.heizung_sollprofil` |
-| Rohwerte | Urlaub, Wetter- und Praesenzinputs |
+| Entscheidungen | Sollprofil, Grund, Entscheidungskette sowie verdichtete Diagnoseattribute von `sensor.heizung_sollprofil` |
+| Rohwerte | Urlaub, Wetter- und Praesenzinputs als kompakte Leseflaeche |
 | Historie | Profilwechsel ueber 7 Tage |
 
 ### Inhalte der Hub-Ansicht `heizung-service`
 
 | Bereich | Inhalt |
 | --- | --- |
-| Anwenden | Sicht auf Sollprofil, aktives Profil, letzte Szene, letzte Anwendung und manuellen Start von `script.heizung_profil_anwenden_pkg` |
-| Betriebsbild | Relevante Override- und Diagnose-Helper |
+| Anwenden | Sicht auf Sollprofil, aktives Profil, letzte Szene, letzte Anwendung und direkten Safe-Start von `script.heizung_profil_anwenden_pkg` |
+| Betriebsbild | Relevante Override- und Diagnose-Helper plus Einordnung des Service-Pfads |
 
 ### Inhalte der Hub-Ansicht `heizung-tuning`
 
@@ -281,7 +282,7 @@ Die Heating-App besitzt im aktuellen Sieker Hub zwei Bedienpfade:
 | --- | --- |
 | Betriebsmodus | Heizungsautomatik und Debug-Logging |
 | Stellschrauben | Abwesenheitsschwelle und Sommer-Schwellwert |
-| Hinweise | Bedienhinweise ohne Aenderung der fachlichen Laufzeitlogik |
+| Hinweise | Bedienhinweise ohne Aenderung der fachlichen Laufzeitlogik; Parameter bleiben direkt editierbar |
 
 ### Inhalte des manuellen Szenen-Einstiegs `wohnen-szenen`
 

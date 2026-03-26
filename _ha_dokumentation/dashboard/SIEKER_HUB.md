@@ -38,6 +38,26 @@ Kleine Geraetemodule wie `USV` und `Waschmaschine` folgen derselben kompakten
 Kartensprache wie `Home`, `Räume` und `Wohnen`, bleiben fachlich aber auf
 Status, Bedienung und Einordnung begrenzt.
 
+## Heizung-Modul
+
+Das Modul `Heizung` bleibt das fachliche Bedienzentrum fuer Sollprofil,
+Eingangslage, Service und Tuning der Heating-App.
+
+Der Top-Level-View ist in vier Bloecke gegliedert:
+
+- `Betrieb` fuer Sollprofil, aktives Profil, letzte Anwendung, letzte Entscheidung, Override und Urlaub
+- `Eingangslage` fuer Anwesenheit, Winterbetrieb, Prognose und Saison
+- `Untermenüs` fuer Diagnose, Service und Tuning plus Kurz-Historie
+- `Einordnung` als Kontextkarte zur Trennung zwischen Uebersicht und direkter Parameterpflege
+
+Das Tuning-Subview bleibt bewusst direkt editierbar ueber klassische Helper-
+Listen, damit Modus und Schwellwerte ohne weiteren Tiefensprung geaendert
+werden koennen.
+
+`Diagnose` ist als Leseflaeche fuer Sollprofil, Gruende, Entscheidungskette und
+Rohwerte verdichtet. `Service` bleibt der schnelle Safe-Einstieg fuer die
+autoritative Profilanwendung, ohne Modus- oder Schwellwertpflege zu verstecken.
+
 ## Wohnen-Modul
 
 Das Modul `Wohnen` bündelt die früher auf der Startseite verteilte manuelle Bedienung.
