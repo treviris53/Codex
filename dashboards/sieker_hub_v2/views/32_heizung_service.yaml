@@ -1,9 +1,103 @@
 - title: Service
   path: heizung-service
   subview: true
-  cards:
-    - type: markdown
-      content: |
-        ## Heizung / Service
-
-        Platzhalter fuer die modulare Migration.
+  icon: mdi:tools
+  type: sections
+  max_columns: 2
+  sections:
+    - cards:
+        - type: heading
+          heading: Anwenden
+        - type: grid
+          columns: 2
+          square: false
+          cards:
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.heizung_sollprofil
+              name: Sollprofil jetzt
+              icon: mdi:radiator
+              state_display: >
+                [[[
+                  const value = entity?.state;
+                  if (value === 'komfort_21') return 'Komfort 21°';
+                  if (value === 'eco_19') return 'Eco 19°';
+                  if (value === 'eco_17') return 'Eco 17°';
+                  return value ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: input_select.heizung_aktives_profil
+              name: Aktives Profil
+              icon: mdi:home-thermometer-outline
+              state_display: >
+                [[[
+                  const value = entity?.state;
+                  if (value === 'komfort_21') return 'Komfort 21°';
+                  if (value === 'eco_19') return 'Eco 19°';
+                  if (value === 'eco_17') return 'Eco 17°';
+                  return value ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: input_text.heizung_last_scene
+              name: Letzte Szene
+              icon: mdi:history
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: input_datetime.heizung_last_applied
+              name: Letzte Anwendung
+              icon: mdi:clock-outline
+              state_display: >
+                [[[
+                  const raw = entity?.state;
+                  const date = raw ? new Date(raw) : null;
+                  if (date && !Number.isNaN(date.getTime())) {
+                    return date.toLocaleString('de-DE', {
+                      day: '2-digit',
+                      month: '2-digit',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    });
+                  }
+                  return raw ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: scene_action_card
+              name: Jetzt anwenden
+              label: Safe Script
+              icon: mdi:play-circle-outline
+              tap_action:
+                action: call-service
+                service: script.turn_on
+                target:
+                  entity_id: script.heizung_profil_anwenden_pkg
+    - cards:
+        - type: heading
+          heading: Betriebsbild
+        - type: grid
+          columns: 1
+          square: false
+          cards:
+            - type: custom:button-card
+              template: hub_alert_card
+              entity: input_boolean.heizung_override
+              name: Override
+              icon: mdi:timer-sand
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: timer.heizung_override
+              name: Override-Timer
+              icon: mdi:timer-outline
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: input_text.heizung_last_action
+              name: Letzte Entscheidung
+              icon: mdi:text-box-check-outline
+            - type: custom:button-card
+              template: info_panel_card
+              name: Service
+              label: >
+                Nutzt den autoritativen Safe-Entry-Point `script.heizung_profil_anwenden_pkg`.
+                Modus und Schwellwerte bleiben im Tuning-Subview.
+              icon: mdi:tools

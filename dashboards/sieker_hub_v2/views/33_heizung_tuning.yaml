@@ -1,9 +1,39 @@
 - title: Tuning
   path: heizung-tuning
   subview: true
-  cards:
-    - type: markdown
-      content: |
-        ## Heizung / Tuning
+  icon: mdi:tune
+  type: sections
+  max_columns: 2
+  sections:
+    - cards:
+        - type: heading
+          heading: Betriebsmodus
+        - type: entities
+          title: Modus
+          show_header_toggle: false
+          entities:
+            - entity: input_boolean.heizung_automatik
+              name: Heizungsautomatik
+            - entity: input_boolean.heizung_debug
+              name: Debug-Logging
+    - cards:
+        - type: heading
+          heading: Stellschrauben
+        - type: entities
+          title: Schwellwerte
+          show_header_toggle: false
+          entities:
+            - entity: input_number.heizung_abwesenheit_stunden
+              name: Abwesenheitsschwelle (h)
+            - entity: input_number.heizung_temperatur_sommer
+              name: Sommer-Schwelle Tagesmax (°C)
+    - cards:
+        - type: heading
+          heading: Hinweise
+        - type: markdown
+          content: |
+            Die Heating-App bleibt bewusst träge.
 
-        Platzhalter fuer die modulare Migration.
+            Sofortige Anwendungen sind weiter Sonderfälle.
+
+            Dieses Dashboard ändert nur die Bedienstruktur, nicht die Laufzeitlogik.

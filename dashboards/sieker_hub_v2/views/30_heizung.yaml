@@ -1,42 +1,180 @@
 - title: Heizung
   path: heizung
   icon: mdi:radiator
-  cards:
-    - type: markdown
-      content: |
-        ## Heizung
-
-        Der V2-View ist vorbereitet und kann nun getrennt vom Monolithen
-        weitergebaut werden.
-    - type: grid
-      title: Unterseiten
-      columns: 3
-      square: false
-      cards:
+  type: sections
+  max_columns: 3
+  sections:
+    - cards:
+        - type: heading
+          heading: Betrieb
+          heading_style: title
+        - type: grid
+          columns: 2
+          square: false
+          cards:
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.heizung_sollprofil
+              name: Sollprofil
+              icon: mdi:radiator
+              state_display: >
+                [[[
+                  const value = entity?.state;
+                  if (value === 'komfort_21') return 'Komfort 21°';
+                  if (value === 'eco_19') return 'Eco 19°';
+                  if (value === 'eco_17') return 'Eco 17°';
+                  return value ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: input_select.heizung_aktives_profil
+              name: Aktiv
+              icon: mdi:home-thermometer-outline
+              state_display: >
+                [[[
+                  const value = entity?.state;
+                  if (value === 'komfort_21') return 'Komfort 21°';
+                  if (value === 'eco_19') return 'Eco 19°';
+                  if (value === 'eco_17') return 'Eco 17°';
+                  return value ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: input_datetime.heizung_last_applied
+              name: Letzte Anwendung
+              icon: mdi:clock-outline
+              state_display: >
+                [[[
+                  const raw = entity?.state;
+                  const date = raw ? new Date(raw) : null;
+                  if (date && !Number.isNaN(date.getTime())) {
+                    return date.toLocaleString('de-DE', {
+                      day: '2-digit',
+                      month: '2-digit',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    });
+                  }
+                  return raw ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: input_text.heizung_last_action
+              name: Letzte Entscheidung
+              icon: mdi:history
+            - type: custom:button-card
+              template: hub_alert_card
+              entity: input_boolean.heizung_override
+              name: Override
+              icon: mdi:timer-sand
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: timer.heizung_override
+              name: Override-Timer
+              icon: mdi:timer-outline
+            - type: custom:button-card
+              template: hub_alert_card
+              entity: input_boolean.heizung_urlaub
+              name: Urlaub
+              icon: mdi:beach
+    - cards:
+        - type: heading
+          heading: Eingangslage
+          heading_style: title
+        - type: grid
+          columns: 2
+          square: false
+          cards:
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: input_boolean.anwesend
+              name: Anwesenheit
+              icon: mdi:account-arrow-right-outline
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: binary_sensor.anwesend_stabil
+              name: Anwesenheit stabil
+              icon: mdi:account-check-outline
+            - type: custom:button-card
+              template: hub_alert_card
+              entity: binary_sensor.winterbetrieb_empfohlen
+              name: Winterbetrieb
+              icon: mdi:snowflake-thermometer
+              state_display: >
+                [[[
+                  return entity?.state === 'on' ? 'Empfohlen' : 'Nicht aktiv';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.hamburg_fu_temp_next12h_max
+              name: Tagesmax
+              icon: mdi:thermometer-chevron-up
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} °C` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.season
+              name: Saison
+              icon: mdi:leaf
+              state_display: >
+                [[[
+                  const value = entity?.state;
+                  const map = {
+                    spring: 'Frühling',
+                    summer: 'Sommer',
+                    autumn: 'Herbst',
+                    winter: 'Winter',
+                  };
+                  return map[value] ?? value ?? '—';
+                ]]]
+    - cards:
+        - type: heading
+          heading: Untermenüs
+          heading_style: title
+        - type: grid
+          columns: 3
+          square: false
+          cards:
+            - type: custom:button-card
+              template: hub_nav_card
+              name: Diagnose
+              icon: mdi:bug-outline
+              tap_action:
+                action: navigate
+                navigation_path: heizung-diagnose
+            - type: custom:button-card
+              template: hub_nav_card
+              name: Service
+              icon: mdi:tools
+              tap_action:
+                action: navigate
+                navigation_path: heizung-service
+            - type: custom:button-card
+              template: hub_nav_card
+              name: Tuning
+              icon: mdi:tune
+              tap_action:
+                action: navigate
+                navigation_path: heizung-tuning
+        - type: history-graph
+          title: Profil und Wetter (24h)
+          hours_to_show: 24
+          refresh_interval: 60
+          entities:
+            - entity: sensor.heizung_sollprofil
+            - entity: input_select.heizung_aktives_profil
+            - entity: binary_sensor.winterbetrieb_empfohlen
+            - entity: sensor.hamburg_fu_temp_next12h_max
+    - cards:
+        - type: heading
+          heading: Einordnung
         - type: custom:button-card
-          template: v2_nav_card
-          name: Diagnose
-          icon: mdi:stethoscope
-          variables:
-            label: Platzhalter
-          tap_action:
-            action: navigate
-            navigation_path: heizung-diagnose
-        - type: custom:button-card
-          template: v2_nav_card
-          name: Service
-          icon: mdi:tools
-          variables:
-            label: Platzhalter
-          tap_action:
-            action: navigate
-            navigation_path: heizung-service
-        - type: custom:button-card
-          template: v2_nav_card
-          name: Tuning
-          icon: mdi:tune
-          variables:
-            label: Platzhalter
-          tap_action:
-            action: navigate
-            navigation_path: heizung-tuning
+          template: info_panel_card
+          name: Heizung
+          label: >
+            Das Modul zeigt Sollprofil, Eingangslage und Eingriffe verdichtet an.
+            Fachliche Stellschrauben bleiben bewusst im Tuning-Subview direkt editierbar.
+          icon: mdi:radiator

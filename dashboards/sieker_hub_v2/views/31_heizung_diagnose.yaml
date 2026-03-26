@@ -1,9 +1,182 @@
 - title: Diagnose
   path: heizung-diagnose
   subview: true
-  cards:
-    - type: markdown
-      content: |
-        ## Heizung / Diagnose
-
-        Platzhalter fuer die modulare Migration.
+  icon: mdi:bug-outline
+  type: sections
+  max_columns: 3
+  sections:
+    - cards:
+        - type: heading
+          heading: Entscheidungen
+        - type: grid
+          columns: 1
+          square: false
+          cards:
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.heizung_sollprofil
+              name: Sollprofil
+              icon: mdi:radiator
+              state_display: >
+                [[[
+                  const value = entity?.state;
+                  if (value === 'komfort_21') return 'Komfort 21°';
+                  if (value === 'eco_19') return 'Eco 19°';
+                  if (value === 'eco_17') return 'Eco 17°';
+                  return value ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: detail_text_card
+              entity: sensor.heizung_sollprofil
+              name: Grund
+              icon: mdi:text-box-search-outline
+              label: >
+                [[[
+                  return entity?.attributes?.grund ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: detail_text_card
+              entity: sensor.heizung_sollprofil
+              name: Entscheidungskette
+              icon: mdi:source-branch
+              label: >
+                [[[
+                  return entity?.attributes?.decision_chain ?? '—';
+                ]]]
+        - type: grid
+          columns: 2
+          square: false
+          cards:
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.heizung_sollprofil
+              name: Tagesmax DWD
+              icon: mdi:weather-partly-cloudy
+              state_display: >
+                [[[
+                  const value = Number(entity?.attributes?.tx_dwd);
+                  return Number.isFinite(value) ? `${value} °C` : entity?.attributes?.tx_dwd ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.heizung_sollprofil
+              name: Sommer-Schwelle
+              icon: mdi:thermometer-high
+              state_display: >
+                [[[
+                  const value = Number(entity?.attributes?.sommer_schwellwert);
+                  return Number.isFinite(value) ? `${value} °C` : entity?.attributes?.sommer_schwellwert ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.heizung_sollprofil
+              name: Anwesenheit stabil
+              icon: mdi:account-check-outline
+              state_display: >
+                [[[
+                  return entity?.attributes?.anwesend_stabil ? 'Ja' : 'Nein';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.heizung_sollprofil
+              name: Winter empfohlen
+              icon: mdi:snowflake-thermometer
+              state_display: >
+                [[[
+                  return entity?.attributes?.winterbetrieb_empfohlen ? 'Ja' : 'Nein';
+                ]]]
+    - cards:
+        - type: heading
+          heading: Rohwerte
+        - type: grid
+          columns: 2
+          square: false
+          cards:
+            - type: custom:button-card
+              template: hub_alert_card
+              entity: input_boolean.heizung_urlaub
+              name: Urlaub
+              icon: mdi:beach
+            - type: custom:button-card
+              template: hub_alert_card
+              entity: input_boolean.heizung_debug
+              name: Debug
+              icon: mdi:bug-outline
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: input_boolean.anwesend
+              name: Anwesenheit
+              icon: mdi:account-arrow-right-outline
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: binary_sensor.anwesend_stabil
+              name: Anwesenheit stabil
+              icon: mdi:account-check-outline
+            - type: custom:button-card
+              template: hub_alert_card
+              entity: binary_sensor.winterbetrieb_empfohlen
+              name: Winterbetrieb
+              icon: mdi:snowflake-thermometer
+              state_display: >
+                [[[
+                  return entity?.state === 'on' ? 'Empfohlen' : 'Nicht aktiv';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.hamburg_fu_temp_next12h_max
+              name: Tagesmax
+              icon: mdi:thermometer-chevron-up
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} °C` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.aussentemperatur_mittel_24h
+              name: Außen 24h
+              icon: mdi:thermometer-lines
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} °C` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.aussentemperatur_mittel_72h
+              name: Außen 72h
+              icon: mdi:thermometer-lines
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} °C` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.season
+              name: Saison
+              icon: mdi:leaf
+              state_display: >
+                [[[
+                  const value = entity?.state;
+                  const map = {
+                    spring: 'Frühling',
+                    summer: 'Sommer',
+                    autumn: 'Herbst',
+                    winter: 'Winter',
+                  };
+                  return map[value] ?? value ?? '—';
+                ]]]
+    - cards:
+        - type: heading
+          heading: Historie
+        - type: history-graph
+          title: Profilwechsel (7 Tage)
+          hours_to_show: 168
+          refresh_interval: 300
+          entities:
+            - entity: sensor.heizung_sollprofil
+            - entity: input_select.heizung_aktives_profil
+            - entity: input_boolean.heizung_urlaub
+            - entity: binary_sensor.winterbetrieb_empfohlen
+            - entity: binary_sensor.anwesend_stabil

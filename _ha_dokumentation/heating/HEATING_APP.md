@@ -13,7 +13,7 @@ Dashboard-Einstiegen und dem End-to-End-Datenfluss zwischen Entscheidung und The
 | Execution Layer | `packages/heating/heating_scripts.yaml` | Wendet Profile ueber autoritative Szenen auf die Climates an |
 | Automation Layer | `packages/heating/heating_automations.yaml` | Steuert geplante Anwendungen, Sonderfaelle und Override-Lifecycle |
 | Scene Layer | `packages/heating/heating_scenes.yaml` | Definiert die autoritativen Runtime-Szenen fuer 17, 19 und 21 Grad |
-| Dashboard / UI | `dashboards/sieker_hub.yaml` | Bietet den aktuellen Hub mit Übersicht, Diagnose, Service, Tuning und manuellen Heizungsszenen unter `Wohnen > Szenen` |
+| Dashboard / UI | `dashboards/sieker_hub.yaml`, `dashboards/sieker_hub_v2.yaml` | Bietet den aktuellen Hub sowie die modularisierte V2-Variante mit Übersicht, Diagnose, Service, Tuning und manuellen Heizungsszenen unter `Wohnen > Szenen` |
 
 ## Zweck der App
 
@@ -234,22 +234,29 @@ relevanter Climate-Entities fuer jeweils 5 Sekunden. Ein Override wird nur geset
 5. Nach `timer.finished` wird das Override wieder ausgeschaltet.
 6. Anschliessend wird das aktuelle Sollprofil erneut angewendet.
 
-## Dashboard-Einstiege in `dashboards/sieker_hub.yaml`
+## Dashboard-Einstiege in `dashboards/sieker_hub.yaml` und `dashboards/sieker_hub_v2.yaml`
 
 ### Funktion
 
-Die Heating-App besitzt im aktuellen Sieker Hub zwei Bedienpfade:
+Die Heating-App besitzt im aktuellen Hub und in der V2-Variante zwei Bedienpfade:
 
 - das Fachmodul `heizung`
 - den manuellen Szenen-Einstieg `wohnen-szenen`
 
-### Fachmodul-Subviews in `sieker_hub.yaml`
+### Fachmodul-Subviews in `sieker_hub.yaml` und `sieker_hub_v2.yaml`
 
 - `path: heizung`
 - `path: heizung-diagnose`
 - `path: heizung-service`
 - `path: heizung-tuning`
 - `path: wohnen-szenen`
+
+In `dashboards/sieker_hub_v2.yaml` liegen die Heating-Views modular unter:
+
+- `dashboards/sieker_hub_v2/views/30_heizung.yaml`
+- `dashboards/sieker_hub_v2/views/31_heizung_diagnose.yaml`
+- `dashboards/sieker_hub_v2/views/32_heizung_service.yaml`
+- `dashboards/sieker_hub_v2/views/33_heizung_tuning.yaml`
 
 ### Inhalte des Fachmoduls `heizung`
 
@@ -369,13 +376,14 @@ Die Dokumentation wurde gegen den aktuellen Stand aus folgenden Dateien erstellt
 - `D:\Codex\packages\heating\heating_automations.yaml`
 - `D:\Codex\packages\heating\heating_scenes.yaml`
 - `D:\Codex\dashboards\sieker_hub.yaml`
+- `D:\Codex\dashboards\sieker_hub_v2.yaml`
 
 ### Checkpunkte
 
 - Helper-, Template-, Script-, Automation- und Scene-Layer gelesen
 - Sollprofil-Reihenfolge dokumentiert
 - Override-Erkennung und Timer-Lifecycle dokumentiert
-- Hub-Subviews `heizung`, `heizung-diagnose`, `heizung-service` und `heizung-tuning` aufgenommen
+- Hub-Subviews `heizung`, `heizung-diagnose`, `heizung-service` und `heizung-tuning` in bestehendem Hub und V2 aufgenommen
 - Manuellen Szenen-Einstieg `wohnen-szenen` aufgenommen
 - draw.io-kompatible Flussdiagramme erzeugt
 
