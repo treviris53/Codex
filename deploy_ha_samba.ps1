@@ -29,6 +29,24 @@ function Assert-PathExists {
     }
 }
 
+function Get-NormalizedRelativePath {
+    param([string]$RelativePath)
+    return (($RelativePath -replace "\\", "/").Trim("/")).ToLowerInvariant()
+}
+
+function Assert-HacsManagedPathNotTargeted {
+    param([string]$RelativePath)
+
+    $normalizedPath = Get-NormalizedRelativePath -RelativePath $RelativePath
+    if (
+        ($normalizedPath -eq "www") -or
+        ($normalizedPath -eq "www/community") -or
+        $normalizedPath.StartsWith("www/community/")
+    ) {
+        throw "Deploy path targets HACS-managed frontend assets and is blocked by policy: $RelativePath"
+    }
+}
+
 function New-BackupPath {
     param([string]$RelativePath)
     $stamp = Get-Date -Format 'yyyyMMdd_HHmmss'
@@ -162,6 +180,7 @@ try {
 
     foreach ($relativePath in $Paths) {
         Write-Log "Deploy path: $relativePath"
+        Assert-HacsManagedPathNotTargeted -RelativePath $relativePath
         Deploy-Path -RelativePath $relativePath
     }
 

@@ -24,6 +24,7 @@ Deployment workflow and environment assumptions for this repository.
 - For guarded live deploys, prefer `deploy_ha_git_guard.ps1` as the entrypoint before the underlying deploy executor.
 - Guarded deploys support `.yaml`, `.yml`, `.json`, and `.js` files.
 - `deploy_ha_git_guard.ps1 -ChangedSinceLastDeploy` is a read-only preview mode. It derives guarded-deploy suggestions from the last successful deploy state and must not perform activation by itself.
+- HACS-managed frontend assets under `www/community/` are not repository deploy targets and must not be mirrored or cleaned via the deploy scripts.
 
 ## Production diagnostics access
 - Read-only access to productive logs, traces, and runtime diagnostics is allowed when it materially improves debugging or validation.
