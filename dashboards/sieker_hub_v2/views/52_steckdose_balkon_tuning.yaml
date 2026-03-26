@@ -1,9 +1,36 @@
 - title: Tuning
   path: steckdose-balkon-tuning
+  icon: mdi:tune
   subview: true
-  cards:
-    - type: markdown
-      content: |
-        ## Steckdose Balkon / Tuning
-
-        Platzhalter fuer die modulare Migration.
+  type: sections
+  max_columns: 2
+  sections:
+    - cards:
+        - type: heading
+          heading: Zeitfenster
+        - type: entities
+          title: Saison
+          show_header_toggle: false
+          entities:
+            - entity: input_datetime.steckdose_morgens_ein
+              name: Morgens ein
+            - type: text
+              name: Morgens aus (fix)
+              text: "08:15"
+            - entity: input_datetime.steckdose_abends_ein
+              name: Abends ein
+            - entity: input_datetime.steckdose_abends_aus
+              name: Abends aus
+    - cards:
+        - type: heading
+          heading: Helligkeit
+        - type: entities
+          title: Schwellen
+          show_header_toggle: false
+          entities:
+            - entity: sensor.balkon_lichtsensor_durchschnittliche_beleuchtungsstarke
+              name: Lux Balkon
+            - entity: input_number.dunkelheit_lux_schwelle
+              name: Lux-Schwelle
+            - entity: input_number.dunkelheit_lux_hysterese
+              name: Hysterese

@@ -17,10 +17,9 @@ Parallel zum bestehenden Hub existiert jetzt auch ein V2-Grundgeruest:
 - modulare Quellen unter `dashboards/sieker_hub_v2/shared/` und
   `dashboards/sieker_hub_v2/views/`
 
-Das V2-Dashboard ist bewusst noch kein funktionaler Ersatz fuer den aktuellen
-Hub. Es stellt zunaechst eine lauffaehige Parallelstruktur mit minimalem
-`Home`-View und vorbereiteten Moduldateien bereit, damit die spaetere Migration
-in kleinen, risikoarmen Schritten erfolgen kann.
+Das V2-Dashboard ist als parallele, modulare Variante des aktuellen Hubs
+aufgebaut. Der Fokus lag zunaechst auf der risikoarmen Migration der
+bestehenden Fachmodule in einzelne View-Dateien.
 
 Stand jetzt:
 
@@ -30,12 +29,16 @@ Stand jetzt:
   gespiegelt
 - das Rollläden-Modul ist in V2 bereits funktional aus dem bestehenden Hub
   gespiegelt
+- die restlichen Modul- und Alltags-Views `Räume`, `Wohnen`, `Steckdose Balkon`,
+  `USV` und `Waschmaschine` sind ebenfalls funktional in V2 gespiegelt
 - die Roborock-Views leben in eigenen Dateien unter
   `dashboards/sieker_hub_v2/views/80_...` bis `92_...`
 - die Heating-Views leben in eigenen Dateien unter
   `dashboards/sieker_hub_v2/views/30_...` bis `33_...`
 - die Rollläden-Views leben in eigenen Dateien unter
   `dashboards/sieker_hub_v2/views/40_...` bis `43_...`
+- `Räume`, `Wohnen`, `Steckdose Balkon`, `USV` und `Waschmaschine` leben in
+  eigenen Dateien unter `10_...`, `20_...`, `50_...`, `60_...` und `70_...`
 
 ## Navigationslogik
 

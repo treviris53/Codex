@@ -1,9 +1,71 @@
 - title: Szenen
   path: wohnen-szenen
+  icon: mdi:palette-swatch-outline
   subview: true
-  cards:
-    - type: markdown
-      content: |
-        ## Wohnen / Szenen
-
-        Platzhalter fuer die modulare Migration.
+  type: sections
+  max_columns: 3
+  sections:
+    - cards:
+        - type: heading
+          heading: Manuelle Heizungsszenen
+          heading_style: title
+        - type: grid
+          columns: 3
+          square: false
+          cards:
+            - type: custom:button-card
+              template: scene_action_card
+              entity: scene.heizung_17deg
+              name: 17°
+              label: Heizung
+              icon: mdi:home-thermometer-outline
+              tap_action:
+                action: call-service
+                service: scene.turn_on
+                target:
+                  entity_id: scene.heizung_17deg
+            - type: custom:button-card
+              template: scene_action_card
+              entity: scene.heizung_19deg
+              name: 19°
+              label: Heizung
+              icon: mdi:home-thermometer-outline
+              tap_action:
+                action: call-service
+                service: scene.turn_on
+                target:
+                  entity_id: scene.heizung_19deg
+            - type: custom:button-card
+              template: scene_action_card
+              entity: scene.heizung_21deg
+              name: 21°
+              label: Heizung
+              icon: mdi:home-thermometer
+              tap_action:
+                action: call-service
+                service: scene.turn_on
+                target:
+                  entity_id: scene.heizung_21deg
+    - cards:
+        - type: heading
+          heading: Rückmeldung
+          heading_style: title
+        - type: grid
+          columns: 1
+          square: false
+          cards:
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: input_select.heizung_aktives_profil
+              name: Aktives Profil
+              icon: mdi:radiator
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: input_text.heizung_last_scene
+              name: Letzte Szene
+              icon: mdi:history
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: input_datetime.heizung_last_applied
+              name: Letzte Anwendung
+              icon: mdi:clock-outline

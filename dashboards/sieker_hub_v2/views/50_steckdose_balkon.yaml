@@ -1,32 +1,158 @@
 - title: Steckdose Balkon
   path: steckdose-balkon
-  icon: mdi:power-plug-outline
-  cards:
-    - type: markdown
-      content: |
-        ## Steckdose Balkon
-
-        Der V2-View ist vorbereitet und kann modulweise ausgebaut werden.
-    - type: grid
-      title: Unterseiten
-      columns: 2
-      square: false
-      cards:
+  icon: mdi:power-socket-de
+  type: sections
+  max_columns: 3
+  sections:
+    - cards:
+        - type: heading
+          heading: Übersicht
+          heading_style: title
+        - type: grid
+          columns: 2
+          square: false
+          cards:
+            - type: custom:button-card
+              template: hub_alert_card
+              entity: binary_sensor.steckdose_saison_aktiv
+              name: Saison aktiv
+              icon: mdi:sun-clock-outline
+              state_display: >
+                [[[
+                  return entity?.state === 'on' ? 'Aktiv' : 'Inaktiv';
+                ]]]
+            - type: custom:button-card
+              template: module_toggle_card
+              entity: switch.schalt_mess_steckdose_steckdose
+              name: Steckdose
+              icon: mdi:power-socket-de
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: binary_sensor.dunkelheit_balkon
+              name: Dunkelheit
+              icon: mdi:weather-night
+              state_display: >
+                [[[
+                  return entity?.state === 'on' ? 'Ja' : 'Nein';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.steckdose_balkon_debug
+              name: Debug
+              icon: mdi:bug-outline
+    - cards:
+        - type: heading
+          heading: Verlauf
+        - type: grid
+          columns: 1
+          square: false
+          cards:
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: input_text.steckdose_balkon_last_action
+              name: Letzte Aktion
+              icon: mdi:history
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: input_datetime.steckdose_balkon_last_action_at
+              name: Zeitpunkt
+              icon: mdi:clock-outline
+              state_display: >
+                [[[
+                  const raw = entity?.state;
+                  const date = raw ? new Date(raw) : null;
+                  if (date && !Number.isNaN(date.getTime())) {
+                    return date.toLocaleString('de-DE', {
+                      day: '2-digit',
+                      month: '2-digit',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    });
+                  }
+                  return raw ?? '—';
+                ]]]
+    - cards:
+        - type: heading
+          heading: Zeitfenster
+        - type: grid
+          columns: 2
+          square: false
+          cards:
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: input_datetime.steckdose_morgens_ein
+              name: Morgens ein
+              icon: mdi:weather-sunset-up
+              state_display: >
+                [[[
+                  const raw = entity?.state;
+                  const date = raw ? new Date(`2000-01-01T${raw}`) : null;
+                  if (date && !Number.isNaN(date.getTime())) {
+                    return date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+                  }
+                  return raw ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: static_metric_card
+              name: Morgens aus
+              label: "08:15"
+              icon: mdi:weather-sunny-off
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: input_datetime.steckdose_abends_ein
+              name: Abends ein
+              icon: mdi:weather-sunset
+              state_display: >
+                [[[
+                  const raw = entity?.state;
+                  const date = raw ? new Date(`2000-01-01T${raw}`) : null;
+                  if (date && !Number.isNaN(date.getTime())) {
+                    return date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+                  }
+                  return raw ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: input_datetime.steckdose_abends_aus
+              name: Abends aus
+              icon: mdi:weather-night
+              state_display: >
+                [[[
+                  const raw = entity?.state;
+                  const date = raw ? new Date(`2000-01-01T${raw}`) : null;
+                  if (date && !Number.isNaN(date.getTime())) {
+                    return date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+                  }
+                  return raw ?? '—';
+                ]]]
+    - cards:
+        - type: heading
+          heading: Untermenüs
+        - type: grid
+          columns: 2
+          square: false
+          cards:
+            - type: custom:button-card
+              template: hub_nav_card
+              name: Diagnose
+              icon: mdi:bug-outline
+              tap_action:
+                action: navigate
+                navigation_path: steckdose-balkon-diagnose
+            - type: custom:button-card
+              template: hub_nav_card
+              name: Tuning
+              icon: mdi:tune
+              tap_action:
+                action: navigate
+                navigation_path: steckdose-balkon-tuning
+    - cards:
+        - type: heading
+          heading: Einordnung
         - type: custom:button-card
-          template: v2_nav_card
-          name: Diagnose
-          icon: mdi:stethoscope
-          variables:
-            label: Platzhalter
-          tap_action:
-            action: navigate
-            navigation_path: steckdose-balkon-diagnose
-        - type: custom:button-card
-          template: v2_nav_card
-          name: Tuning
-          icon: mdi:tune
-          variables:
-            label: Platzhalter
-          tap_action:
-            action: navigate
-            navigation_path: steckdose-balkon-tuning
+          template: info_panel_card
+          name: Steckdose Balkon
+          label: >
+            Eigenes Fachmodul mit Saison-, Zeitfenster- und Helligkeitslogik.
+            Deshalb bewusst getrennt von den allgemeinen Wohn-Steckdosen.
+          icon: mdi:power-socket-de

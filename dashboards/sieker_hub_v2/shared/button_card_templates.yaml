@@ -38,6 +38,89 @@ v2_nav_card:
       - text-align: center
       - color: var(--secondary-text-color)
       - font-size: 13px
+room_climate_card:
+  show_state: false
+  show_label: true
+  tap_action:
+    action: more-info
+  label: >
+    [[[
+      const temp = states[variables.temp_entity]?.state ?? '—';
+      const hum = states[variables.humidity_entity]?.state ?? '—';
+      return `${temp} °C · ${hum} %`;
+    ]]]
+  styles:
+    card:
+      - padding: 18px 16px
+      - height: 112px
+      - border-radius: 20px
+    grid:
+      - grid-template-areas: '"i n" "i l"'
+      - grid-template-columns: 44px 1fr
+      - grid-template-rows: min-content min-content
+      - column-gap: 12px
+      - row-gap: 4px
+    img_cell:
+      - width: 44px
+      - height: 44px
+      - justify-self: center
+      - align-self: center
+      - background: rgba(var(--rgb-primary-color), 0.10)
+      - border-radius: 14px
+    icon:
+      - width: 22px
+      - color: var(--primary-color)
+    name:
+      - justify-self: start
+      - align-self: end
+      - font-size: 18px
+      - font-weight: 500
+      - white-space: normal
+      - text-align: left
+      - line-height: 1.15
+    label:
+      - justify-self: start
+      - align-self: start
+      - font-size: 15px
+      - color: var(--secondary-text-color)
+      - text-align: left
+      - line-height: 1.2
+room_context_card:
+  show_label: false
+  show_state: true
+  tap_action:
+    action: more-info
+  styles:
+    card:
+      - padding: 18px 16px
+      - min-height: 88px
+      - border-radius: 20px
+    grid:
+      - grid-template-areas: '"i n s"'
+      - grid-template-columns: 44px minmax(0, 1fr) auto
+      - align-items: center
+      - column-gap: 14px
+    img_cell:
+      - width: 44px
+      - height: 44px
+      - justify-self: center
+      - align-self: center
+      - background: rgba(var(--rgb-primary-color), 0.10)
+      - border-radius: 14px
+    icon:
+      - width: 22px
+      - color: var(--primary-color)
+    name:
+      - justify-self: start
+      - font-size: 18px
+      - font-weight: 500
+      - white-space: normal
+      - text-align: left
+    state:
+      - justify-self: end
+      - font-size: 16px
+      - font-weight: 500
+      - text-align: right
 hub_metric_card:
   show_label: false
   show_state: true
@@ -150,6 +233,129 @@ hub_nav_card:
       - font-weight: 500
       - text-align: center
       - white-space: normal
+wohnen_quick_card:
+  show_label: true
+  show_state: true
+  tap_action:
+    action: toggle
+  hold_action:
+    action: more-info
+  state_display: >
+    [[[
+      if (entity?.state === 'on') return 'Ein';
+      if (entity?.state === 'off') return 'Aus';
+      return entity?.state ?? '—';
+    ]]]
+  styles:
+    card:
+      - padding: 18px 16px
+      - min-height: 112px
+      - border-radius: 20px
+    grid:
+      - grid-template-areas: '"i n" "i l" "i s"'
+      - grid-template-columns: 44px minmax(0, 1fr)
+      - grid-template-rows: min-content min-content min-content
+      - column-gap: 14px
+      - row-gap: 2px
+    img_cell:
+      - width: 44px
+      - height: 44px
+      - justify-self: center
+      - align-self: center
+      - background: rgba(var(--rgb-primary-color), 0.10)
+      - border-radius: 14px
+    icon:
+      - width: 22px
+      - color: var(--primary-color)
+    name:
+      - justify-self: start
+      - align-self: end
+      - font-size: 18px
+      - font-weight: 500
+      - white-space: normal
+      - text-align: left
+      - line-height: 1.15
+    label:
+      - justify-self: start
+      - align-self: center
+      - font-size: 15px
+      - color: var(--secondary-text-color)
+      - text-align: left
+      - line-height: 1.1
+    state:
+      - justify-self: start
+      - align-self: start
+      - font-size: 16px
+      - font-weight: 500
+      - text-align: left
+      - color: var(--secondary-text-color)
+  state:
+    - value: 'on'
+      styles:
+        card:
+          - background: rgba(var(--rgb-primary-color), 0.10)
+        img_cell:
+          - background: rgba(var(--rgb-primary-color), 0.18)
+        state:
+          - color: var(--primary-color)
+wohnen_toggle_card:
+  show_label: false
+  show_state: true
+  tap_action:
+    action: toggle
+  hold_action:
+    action: more-info
+  state_display: >
+    [[[
+      if (entity?.state === 'on') return 'Ein';
+      if (entity?.state === 'off') return 'Aus';
+      return entity?.state ?? '—';
+    ]]]
+  styles:
+    card:
+      - padding: 18px 16px
+      - min-height: 104px
+      - border-radius: 20px
+    grid:
+      - grid-template-areas: '"i n" "i s"'
+      - grid-template-columns: 44px minmax(0, 1fr)
+      - grid-template-rows: min-content min-content
+      - column-gap: 14px
+      - row-gap: 4px
+    img_cell:
+      - width: 44px
+      - height: 44px
+      - justify-self: center
+      - align-self: center
+      - background: rgba(var(--rgb-primary-color), 0.10)
+      - border-radius: 14px
+    icon:
+      - width: 22px
+      - color: var(--primary-color)
+    name:
+      - justify-self: start
+      - align-self: end
+      - font-size: 18px
+      - font-weight: 500
+      - white-space: normal
+      - text-align: left
+      - line-height: 1.15
+    state:
+      - justify-self: start
+      - align-self: start
+      - font-size: 16px
+      - font-weight: 500
+      - text-align: left
+      - color: var(--secondary-text-color)
+  state:
+    - value: 'on'
+      styles:
+        card:
+          - background: rgba(var(--rgb-primary-color), 0.10)
+        img_cell:
+          - background: rgba(var(--rgb-primary-color), 0.18)
+        state:
+          - color: var(--primary-color)
 scene_action_card:
   show_state: false
   show_label: true
@@ -284,6 +490,45 @@ module_toggle_card:
           - background: rgba(var(--rgb-primary-color), 0.18)
         state:
           - color: var(--primary-color)
+static_metric_card:
+  show_state: false
+  show_label: true
+  tap_action:
+    action: none
+  styles:
+    card:
+      - padding: 18px 16px
+      - min-height: 88px
+      - border-radius: 20px
+    grid:
+      - grid-template-areas: '"i n" "i l"'
+      - grid-template-columns: 44px minmax(0, 1fr)
+      - grid-template-rows: min-content min-content
+      - column-gap: 14px
+      - row-gap: 4px
+    img_cell:
+      - width: 44px
+      - height: 44px
+      - justify-self: center
+      - align-self: center
+      - background: rgba(var(--rgb-primary-color), 0.10)
+      - border-radius: 14px
+    icon:
+      - width: 22px
+      - color: var(--primary-color)
+    name:
+      - justify-self: start
+      - align-self: end
+      - font-size: 18px
+      - font-weight: 500
+      - text-align: left
+    label:
+      - justify-self: start
+      - align-self: start
+      - font-size: 16px
+      - font-weight: 500
+      - color: var(--secondary-text-color)
+      - text-align: left
 detail_text_card:
   show_state: false
   show_label: true

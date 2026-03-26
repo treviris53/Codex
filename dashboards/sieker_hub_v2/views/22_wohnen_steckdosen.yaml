@@ -1,9 +1,88 @@
 - title: Steckdosen
   path: wohnen-steckdosen
+  icon: mdi:power-socket-eu
   subview: true
-  cards:
-    - type: markdown
-      content: |
-        ## Wohnen / Steckdosen
-
-        Platzhalter fuer die modulare Migration.
+  type: sections
+  max_columns: 3
+  sections:
+    - cards:
+        - type: heading
+          heading: Wohnen
+          heading_style: title
+        - type: entities
+          title: Steckdose Wohnen
+          show_header_toggle: false
+          entities:
+            - entity: switch.0xa4c138442a735c69
+              name: Ein/Aus
+            - entity: switch.steckdose_wohnzimmer_child_lock
+              name: Kindersicherung
+            - entity: sensor.0xa4c138442a735c69_power
+              name: Leistung
+            - entity: sensor.0xa4c138442a735c69_energy
+              name: Energie
+        - type: entities
+          title: Steckdose Fernseher
+          show_header_toggle: false
+          entities:
+            - entity: switch.steckdose_fernseher
+              name: Ein/Aus
+            - entity: switch.steckdose_fernseher_child_lock
+              name: Kindersicherung
+            - entity: sensor.steckdose_fernseher_power
+              name: Leistung
+            - entity: sensor.steckdose_fernseher_energy
+              name: Energie
+    - cards:
+        - type: heading
+          heading: Gäste
+          heading_style: title
+        - type: entities
+          title: Steckdose Computertisch
+          show_header_toggle: false
+          entities:
+            - entity: switch.steckdose_computertisch
+              name: Ein/Aus
+            - entity: switch.steckdose_computertisch_child_lock
+              name: Kindersicherung
+            - entity: sensor.steckdose_computertisch_power
+              name: Leistung
+            - entity: sensor.steckdose_computertisch_energy
+              name: Energie
+        - type: entities
+          title: Steckdose Drucker/Scanner
+          show_header_toggle: false
+          entities:
+            - entity: switch.0xa4c1389840f71629
+              name: Ein/Aus
+            - entity: switch.0xa4c1389840f71629_child_lock
+              name: Kindersicherung
+            - entity: sensor.0xa4c1389840f71629_power
+              name: Leistung
+            - entity: sensor.0xa4c1389840f71629_energy
+              name: Energie
+    - cards:
+        - type: heading
+          heading: Kontrollraum
+          heading_style: title
+        - type: entities
+          title: Steckdose Kontrollraum
+          show_header_toggle: false
+          entities:
+            - entity: switch.0xa4c13838e02b32cf
+              name: Ein/Aus
+            - entity: switch.steckdose_kontrollraum_child_lock
+              name: Kindersicherung
+            - entity: sensor.0xa4c13838e02b32cf_power
+              name: Leistung
+            - entity: sensor.0xa4c13838e02b32cf_energy
+              name: Energie
+        - type: heading
+          heading: Abgrenzung
+        - type: custom:button-card
+          template: info_panel_card
+          name: Steckdose Balkon
+          label: >
+            Bleibt im eigenen Fachmodul, weil dort Automations- und Tuninglogik
+            hinterlegt ist.
+          icon: mdi:power-socket-de

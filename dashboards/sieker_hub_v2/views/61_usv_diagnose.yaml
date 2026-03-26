@@ -1,9 +1,102 @@
 - title: Diagnose
   path: usv-diagnose
+  icon: mdi:bug-outline
   subview: true
-  cards:
-    - type: markdown
-      content: |
-        ## USV / Diagnose
-
-        Platzhalter fuer die modulare Migration.
+  type: sections
+  max_columns: 2
+  sections:
+    - cards:
+        - type: heading
+          heading: Rohstatus
+          heading_style: title
+        - type: grid
+          columns: 1
+          square: false
+          cards:
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.eaton_3s850d_status
+              name: Status
+              icon: mdi:information-outline
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.eaton_3s850d_statusdaten
+              name: Statusdaten
+              icon: mdi:information-variant-circle-outline
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.eaton_3s850d_batterie_ladung
+              name: Akku
+              icon: mdi:battery-high
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} %` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.eaton_3s850d_batterielaufzeit
+              name: Laufzeit
+              icon: mdi:timer-outline
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} min` : entity?.state ?? '—';
+                ]]]
+    - cards:
+        - type: heading
+          heading: Elektrik
+        - type: grid
+          columns: 1
+          square: false
+          cards:
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.eaton_3s850d_last
+              name: Last
+              icon: mdi:gauge
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} %` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.eaton_3s850d_wirkleistung
+              name: Leistung
+              icon: mdi:flash-outline
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} W` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.eaton_3s850d_ausgangsspannung
+              name: Spannung
+              icon: mdi:sine-wave
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} V` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.eaton_3s850d_sollwert_fur_schwache_batterie
+              name: Batterie-Schwelle
+              icon: mdi:battery-alert-variant-outline
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} %` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.eaton_3s850d_piepser_status
+              name: Piepser
+              icon: mdi:bullhorn-outline
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: timer.os_timer_ups
+              name: Shutdown
+              icon: mdi:timer-alert-outline

@@ -1,10 +1,96 @@
 - title: Räume
   path: raeume
-  icon: mdi:home-thermometer-outline
-  cards:
-    - type: markdown
-      content: |
-        ## Räume
-
-        Diese V2-Datei ist angelegt und kann nun separat vom restlichen Hub
-        weiterentwickelt werden.
+  icon: mdi:floor-plan
+  type: sections
+  max_columns: 3
+  sections:
+    - cards:
+        - type: heading
+          heading: Raumklima
+          heading_style: title
+        - type: grid
+          columns: 3
+          square: false
+          cards:
+            - type: custom:button-card
+              template: room_climate_card
+              entity: climate.kuche_wandthermostat
+              variables:
+                temp_entity: sensor.kuche_wandthermostat_temperatur
+                humidity_entity: sensor.kuche_wandthermostat_luftfeuchtigkeit
+              name: Küche
+              icon: mdi:thermometer
+            - type: custom:button-card
+              template: room_climate_card
+              entity: climate.wohnzimmer_wandthermostat
+              variables:
+                temp_entity: sensor.wohnzimmer_wandthermostat_temperatur
+                humidity_entity: sensor.wohnzimmer_wandthermostat_luftfeuchtigkeit
+              name: Wohnen
+              icon: mdi:thermometer
+            - type: custom:button-card
+              template: room_climate_card
+              entity: climate.schlazi_wandthermostat
+              variables:
+                temp_entity: sensor.schlazi_wandthermostat_temperatur
+                humidity_entity: sensor.schlazi_wandthermostat_luftfeuchtigkeit
+              name: Schlafen
+              icon: mdi:thermometer
+            - type: custom:button-card
+              template: room_climate_card
+              entity: climate.bad_wandthermostat
+              variables:
+                temp_entity: sensor.bad_wandthermostat_temperatur
+                humidity_entity: sensor.bad_wandthermostat_luftfeuchtigkeit
+              name: Bad
+              icon: mdi:thermometer
+            - type: custom:button-card
+              template: room_climate_card
+              entity: climate.flur_wandthermostat
+              variables:
+                temp_entity: sensor.flur_wandthermostat_temperatur
+                humidity_entity: sensor.flur_wandthermostat_luftfeuchtigkeit
+              name: Flur
+              icon: mdi:thermometer
+            - type: custom:button-card
+              template: room_climate_card
+              entity: climate.gastebad_wandthermostat
+              variables:
+                temp_entity: sensor.gastebad_wandthermostat_temperatur
+                humidity_entity: sensor.gastebad_wandthermostat_luftfeuchtigkeit
+              name: Gästebad
+              icon: mdi:thermometer
+            - type: custom:button-card
+              template: room_climate_card
+              entity: climate.gaste_wandthermostat
+              variables:
+                temp_entity: sensor.gaste_wandthermostat_temperatur
+                humidity_entity: sensor.gaste_wandthermostat_luftfeuchtigkeit
+              name: Gäste
+              icon: mdi:thermometer
+            - type: custom:button-card
+              template: room_climate_card
+              entity: sensor.0x00158d008b61ad80_temperature
+              variables:
+                temp_entity: sensor.0x00158d008b61ad80_temperature
+                humidity_entity: sensor.0x00158d008b61ad80_humidity
+              name: Balkon
+              icon: mdi:weather-partly-cloudy
+    - cards:
+        - type: heading
+          heading: Kontakte und Umgebung
+          heading_style: title
+        - type: grid
+          columns: 1
+          square: false
+          cards:
+            - type: custom:button-card
+              template: room_context_card
+              entity: binary_sensor.kuche_balkon_turkontakt
+              name: Balkontür
+              icon: mdi:door-sliding
+            - type: custom:button-card
+              template: room_context_card
+              entity: sensor.balkon_lichtsensor_durchschnittliche_beleuchtungsstarke
+              name: Balkon Lux
+              icon: mdi:white-balance-sunny

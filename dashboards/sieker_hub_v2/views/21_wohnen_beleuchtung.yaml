@@ -1,9 +1,66 @@
 - title: Beleuchtung
   path: wohnen-beleuchtung
+  icon: mdi:lightbulb-group-outline
   subview: true
-  cards:
-    - type: markdown
-      content: |
-        ## Wohnen / Beleuchtung
-
-        Platzhalter fuer die modulare Migration.
+  type: sections
+  max_columns: 3
+  sections:
+    - cards:
+        - type: heading
+          heading: Küche
+          heading_style: title
+        - type: grid
+          columns: 3
+          square: false
+          cards:
+            - type: custom:button-card
+              template: wohnen_toggle_card
+              entity: light.licht_herd
+              name: Herd
+              icon: mdi:stove
+            - type: custom:button-card
+              template: wohnen_toggle_card
+              entity: light.0x086bd7fffe404a82
+              name: Spüle
+              icon: mdi:silverware-fork-knife
+            - type: custom:button-card
+              template: wohnen_toggle_card
+              entity: light.0x086bd7fffe404a82
+              name: Küche
+              icon: mdi:lightbulb-group-outline
+    - cards:
+        - type: heading
+          heading: Wohnen
+          heading_style: title
+        - type: grid
+          columns: 3
+          square: false
+          cards:
+            - type: custom:button-card
+              template: wohnen_toggle_card
+              entity: light.vitrinenlicht
+              name: Vitrine
+              icon: mdi:wall-sconce-flat-outline
+            - type: custom:button-card
+              template: wohnen_toggle_card
+              entity: light.licht_wohnzimmer_haupt
+              name: Hauptlicht
+              icon: mdi:ceiling-light
+            - type: custom:button-card
+              template: wohnen_toggle_card
+              entity: light.licht_fernseher
+              name: Fernseher
+              icon: mdi:television-ambient-light
+    - cards:
+        - type: heading
+          heading: Schlafen
+          heading_style: title
+        - type: grid
+          columns: 1
+          square: false
+          cards:
+            - type: custom:button-card
+              template: wohnen_toggle_card
+              entity: light.licht_schlafzimmer
+              name: Schlafzimmer
+              icon: mdi:lamp

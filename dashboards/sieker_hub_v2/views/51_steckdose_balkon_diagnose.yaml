@@ -1,9 +1,96 @@
 - title: Diagnose
   path: steckdose-balkon-diagnose
+  icon: mdi:bug-outline
   subview: true
-  cards:
-    - type: markdown
-      content: |
-        ## Steckdose Balkon / Diagnose
-
-        Platzhalter fuer die modulare Migration.
+  type: sections
+  max_columns: 3
+  sections:
+    - cards:
+        - type: heading
+          heading: Debug-Sensor
+          heading_style: title
+        - type: grid
+          columns: 2
+          square: false
+          cards:
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.steckdose_balkon_debug
+              name: State
+              icon: mdi:information-outline
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.steckdose_balkon_debug
+              name: Erwartet
+              icon: mdi:target
+              state_display: >
+                [[[
+                  return entity?.attributes?.expected_state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.steckdose_balkon_debug
+              name: Saison
+              icon: mdi:sun-clock-outline
+              state_display: >
+                [[[
+                  return entity?.attributes?.season_active ? 'Aktiv' : 'Inaktiv';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.steckdose_balkon_debug
+              name: Dunkelheit
+              icon: mdi:weather-night
+              state_display: >
+                [[[
+                  return entity?.attributes?.dunkelheit ? 'Ja' : 'Nein';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.steckdose_balkon_debug
+              name: Morgenfenster
+              icon: mdi:weather-sunset-up
+              state_display: >
+                [[[
+                  return entity?.attributes?.within_morning_window ? 'Ja' : 'Nein';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.steckdose_balkon_debug
+              name: Abendfenster
+              icon: mdi:weather-sunset
+              state_display: >
+                [[[
+                  return entity?.attributes?.within_evening_window ? 'Ja' : 'Nein';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.steckdose_balkon_debug
+              name: Letzte Aktion
+              icon: mdi:history
+              state_display: >
+                [[[
+                  return entity?.attributes?.last_action ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.steckdose_balkon_debug
+              name: Grund
+              icon: mdi:text-box-search-outline
+              state_display: >
+                [[[
+                  return entity?.attributes?.last_reason ?? entity?.attributes?.reason ?? '—';
+                ]]]
+    - cards:
+        - type: heading
+          heading: Historie
+        - type: history-graph
+          title: Debug vs Inputs (24h)
+          hours_to_show: 24
+          refresh_interval: 60
+          entities:
+            - entity: switch.schalt_mess_steckdose_steckdose
+            - entity: sensor.steckdose_balkon_debug
+            - entity: binary_sensor.steckdose_saison_aktiv
+            - entity: binary_sensor.dunkelheit_balkon
+            - entity: sensor.balkon_helligkeit_lux

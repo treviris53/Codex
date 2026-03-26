@@ -1,9 +1,74 @@
 - title: Waschmaschine
   path: waschmaschine
   icon: mdi:washing-machine
-  cards:
-    - type: markdown
-      content: |
-        ## Waschmaschine
-
-        Die Moduldatei ist vorbereitet. Die inhaltliche Migration folgt separat.
+  type: sections
+  max_columns: 3
+  sections:
+    - cards:
+        - type: heading
+          heading: Übersicht
+          heading_style: title
+        - type: grid
+          columns: 1
+          square: false
+          cards:
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.waschmaschine_maschinenzustand
+              name: Maschinenzustand
+              icon: mdi:washing-machine
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.waschmaschine_fertigstellungszeit
+              name: Fertig
+              icon: mdi:clock-check-outline
+              state_display: >
+                [[[
+                  const raw = entity?.state;
+                  const date = raw ? new Date(raw) : null;
+                  if (date && !Number.isNaN(date.getTime())) {
+                    return date.toLocaleString('de-DE', {
+                      day: '2-digit',
+                      month: '2-digit',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    });
+                  }
+                  return raw ?? '—';
+                ]]]
+    - cards:
+        - type: heading
+          heading: Einstellungen
+        - type: grid
+          columns: 2
+          square: false
+          cards:
+            - type: tile
+              entity: switch.waschmaschine_bubble_soak
+              name: Bubble Soak
+              icon: mdi:bubble-chart
+              color: amber
+              vertical: false
+              features_position: bottom
+            - type: tile
+              entity: select.waschmaschine_dosiermenge_fur_waschmittel
+              name: Waschmittel
+              icon: mdi:cup-water
+            - type: tile
+              entity: select.waschmaschine_schleuderstufe
+              name: Schleudern
+              icon: mdi:rotate-right
+            - type: tile
+              entity: number.waschmaschine_spulgange
+              name: Spülgänge
+              icon: mdi:waves
+    - cards:
+        - type: heading
+          heading: Einordnung
+        - type: custom:button-card
+          template: info_panel_card
+          name: Waschmaschine
+          label: >
+            Bündelt die frühere Keller-Ansicht bewusst als Gerät statt als Raum.
+            Die eigentlichen Raumdaten bleiben im separaten View Räume.
+          icon: mdi:washing-machine
