@@ -473,6 +473,63 @@ button_card_templates:
         - text-align: left
         - line-height: 1.45
         - white-space: normal
+  module_toggle_card:
+    show_label: false
+    show_state: true
+    tap_action:
+      action: toggle
+    hold_action:
+      action: more-info
+    state_display: >
+      [[[
+        if (entity?.state === 'on') return 'Ein';
+        if (entity?.state === 'off') return 'Aus';
+        return entity?.state ?? '—';
+      ]]]
+    styles:
+      card:
+        - padding: 18px 16px
+        - min-height: 104px
+        - border-radius: 20px
+      grid:
+        - grid-template-areas: '"i n" "i s"'
+        - grid-template-columns: 44px minmax(0, 1fr)
+        - grid-template-rows: min-content min-content
+        - column-gap: 14px
+        - row-gap: 4px
+      img_cell:
+        - width: 44px
+        - height: 44px
+        - justify-self: center
+        - align-self: center
+        - background: rgba(var(--rgb-primary-color), 0.10)
+        - border-radius: 14px
+      icon:
+        - width: 22px
+        - color: var(--primary-color)
+      name:
+        - justify-self: start
+        - align-self: end
+        - font-size: 18px
+        - font-weight: 500
+        - white-space: normal
+        - text-align: left
+      state:
+        - justify-self: start
+        - align-self: start
+        - font-size: 16px
+        - font-weight: 500
+        - text-align: left
+        - color: var(--secondary-text-color)
+    state:
+      - value: 'on'
+        styles:
+          card:
+            - background: rgba(var(--rgb-primary-color), 0.10)
+          img_cell:
+            - background: rgba(var(--rgb-primary-color), 0.18)
+          state:
+            - color: var(--primary-color)
 views:
   - title: Home
     path: home
@@ -1746,42 +1803,87 @@ views:
                 entity: sensor.eaton_3s850d_statusdaten
           - type: gauge
             entity: sensor.eaton_3s850d_batterie_ladung
-            name: Akku-Ladung
+            name: Akku
             needle: true
             severity:
               green: 60
               yellow: 25
               red: 0
-          - type: tile
-            entity: sensor.eaton_3s850d_batterielaufzeit
-            name: Akkulaufzeit
-          - type: tile
-            entity: sensor.eaton_3s850d_last
-            name: Last
-          - type: tile
-            entity: sensor.eaton_3s850d_wirkleistung
-            name: Leistung
+          - type: grid
+            columns: 1
+            square: false
+            cards:
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.eaton_3s850d_batterielaufzeit
+                name: Laufzeit
+                icon: mdi:timer-outline
+                state_display: >
+                  [[[
+                    const value = Number(entity?.state);
+                    return Number.isFinite(value) ? `${value} min` : entity?.state ?? '—';
+                  ]]]
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.eaton_3s850d_last
+                name: Last
+                icon: mdi:gauge
+                state_display: >
+                  [[[
+                    const value = Number(entity?.state);
+                    return Number.isFinite(value) ? `${value} %` : entity?.state ?? '—';
+                  ]]]
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.eaton_3s850d_wirkleistung
+                name: Leistung
+                icon: mdi:flash-outline
+                state_display: >
+                  [[[
+                    const value = Number(entity?.state);
+                    return Number.isFinite(value) ? `${value} W` : entity?.state ?? '—';
+                  ]]]
       - cards:
           - type: heading
             heading: Ausgang
-          - type: tile
-            entity: sensor.eaton_3s850d_ausgangsspannung
-            name: Spannung
-          - type: tile
-            entity: sensor.eaton_3s850d_piepser_status
-            name: Piepser
-          - type: tile
-            entity: timer.os_timer_ups
-            name: Shutdown Timer
+          - type: grid
+            columns: 1
+            square: false
+            cards:
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.eaton_3s850d_ausgangsspannung
+                name: Spannung
+                icon: mdi:sine-wave
+                state_display: >
+                  [[[
+                    const value = Number(entity?.state);
+                    return Number.isFinite(value) ? `${value} V` : entity?.state ?? '—';
+                  ]]]
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.eaton_3s850d_piepser_status
+                name: Piepser
+                icon: mdi:bullhorn-outline
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: timer.os_timer_ups
+                name: Shutdown
+                icon: mdi:timer-alert-outline
       - cards:
           - type: heading
-            heading: Untermenü
-          - type: button
-            name: Diagnose
-            icon: mdi:bug-outline
-            tap_action:
-              action: navigate
-              navigation_path: usv-diagnose
+            heading: Untermenüs
+          - type: grid
+            columns: 1
+            square: false
+            cards:
+              - type: custom:button-card
+                template: hub_nav_card
+                name: Diagnose
+                icon: mdi:bug-outline
+                tap_action:
+                  action: navigate
+                  navigation_path: usv-diagnose
 
   - title: Diagnose
     path: usv-diagnose
@@ -1793,20 +1895,98 @@ views:
       - cards:
           - type: heading
             heading: Rohstatus
-          - type: entities
-            title: USV
-            show_header_toggle: false
-            entities:
-              - entity: sensor.eaton_3s850d_status
-              - entity: sensor.eaton_3s850d_statusdaten
-              - entity: sensor.eaton_3s850d_batterie_ladung
-              - entity: sensor.eaton_3s850d_batterielaufzeit
-              - entity: sensor.eaton_3s850d_last
-              - entity: sensor.eaton_3s850d_wirkleistung
-              - entity: sensor.eaton_3s850d_ausgangsspannung
-              - entity: sensor.eaton_3s850d_sollwert_fur_schwache_batterie
-              - entity: sensor.eaton_3s850d_piepser_status
-              - entity: timer.os_timer_ups
+            heading_style: title
+          - type: grid
+            columns: 1
+            square: false
+            cards:
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.eaton_3s850d_status
+                name: Status
+                icon: mdi:information-outline
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.eaton_3s850d_statusdaten
+                name: Statusdaten
+                icon: mdi:information-variant-circle-outline
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.eaton_3s850d_batterie_ladung
+                name: Akku
+                icon: mdi:battery-high
+                state_display: >
+                  [[[
+                    const value = Number(entity?.state);
+                    return Number.isFinite(value) ? `${value} %` : entity?.state ?? '—';
+                  ]]]
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.eaton_3s850d_batterielaufzeit
+                name: Laufzeit
+                icon: mdi:timer-outline
+                state_display: >
+                  [[[
+                    const value = Number(entity?.state);
+                    return Number.isFinite(value) ? `${value} min` : entity?.state ?? '—';
+                  ]]]
+      - cards:
+          - type: heading
+            heading: Elektrik
+          - type: grid
+            columns: 1
+            square: false
+            cards:
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.eaton_3s850d_last
+                name: Last
+                icon: mdi:gauge
+                state_display: >
+                  [[[
+                    const value = Number(entity?.state);
+                    return Number.isFinite(value) ? `${value} %` : entity?.state ?? '—';
+                  ]]]
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.eaton_3s850d_wirkleistung
+                name: Leistung
+                icon: mdi:flash-outline
+                state_display: >
+                  [[[
+                    const value = Number(entity?.state);
+                    return Number.isFinite(value) ? `${value} W` : entity?.state ?? '—';
+                  ]]]
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.eaton_3s850d_ausgangsspannung
+                name: Spannung
+                icon: mdi:sine-wave
+                state_display: >
+                  [[[
+                    const value = Number(entity?.state);
+                    return Number.isFinite(value) ? `${value} V` : entity?.state ?? '—';
+                  ]]]
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.eaton_3s850d_sollwert_fur_schwache_batterie
+                name: Batterie-Schwelle
+                icon: mdi:battery-alert-variant-outline
+                state_display: >
+                  [[[
+                    const value = Number(entity?.state);
+                    return Number.isFinite(value) ? `${value} %` : entity?.state ?? '—';
+                  ]]]
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.eaton_3s850d_piepser_status
+                name: Piepser
+                icon: mdi:bullhorn-outline
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: timer.os_timer_ups
+                name: Shutdown
+                icon: mdi:timer-alert-outline
 
   - title: Waschmaschine
     path: waschmaschine
@@ -1818,14 +1998,34 @@ views:
           - type: heading
             heading: Übersicht
             heading_style: title
-          - type: entities
-            title: Status
-            show_header_toggle: false
-            entities:
-              - entity: sensor.waschmaschine_maschinenzustand
+          - type: grid
+            columns: 1
+            square: false
+            cards:
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.waschmaschine_maschinenzustand
                 name: Maschinenzustand
-              - entity: sensor.waschmaschine_fertigstellungszeit
-                name: Fertigstellungszeit
+                icon: mdi:washing-machine
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.waschmaschine_fertigstellungszeit
+                name: Fertig
+                icon: mdi:clock-check-outline
+                state_display: >
+                  [[[
+                    const raw = entity?.state;
+                    const date = raw ? new Date(raw) : null;
+                    if (date && !Number.isNaN(date.getTime())) {
+                      return date.toLocaleString('de-DE', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      });
+                    }
+                    return raw ?? '—';
+                  ]]]
       - cards:
           - type: heading
             heading: Einstellungen
@@ -1833,24 +2033,36 @@ views:
             columns: 2
             square: false
             cards:
-              - type: tile
+              - type: custom:button-card
+                template: module_toggle_card
                 entity: switch.waschmaschine_bubble_soak
-                color: amber
-                vertical: false
-                features_position: bottom
-              - type: tile
+                name: Bubble Soak
+                icon: mdi:bubble-chart
+              - type: custom:button-card
+                template: hub_metric_card
                 entity: select.waschmaschine_dosiermenge_fur_waschmittel
-              - type: tile
+                name: Waschmittel
+                icon: mdi:cup-water
+              - type: custom:button-card
+                template: hub_metric_card
                 entity: select.waschmaschine_schleuderstufe
-              - type: tile
+                name: Schleudern
+                icon: mdi:rotate-right
+              - type: custom:button-card
+                template: hub_metric_card
                 entity: number.waschmaschine_spulgange
+                name: Spülgänge
+                icon: mdi:waves
       - cards:
           - type: heading
             heading: Einordnung
-          - type: markdown
-            content: |
-              Dieses Modul bündelt die frühere Keller-Waschmaschinenansicht bewusst als Gerät
-              statt als Raum. Die eigentlichen Raumdaten bleiben im separaten View `Räume`.
+          - type: custom:button-card
+            template: info_panel_card
+            name: Waschmaschine
+            label: >
+              Bündelt die frühere Keller-Ansicht bewusst als Gerät statt als Raum.
+              Die eigentlichen Raumdaten bleiben im separaten View Räume.
+            icon: mdi:washing-machine
 
   - title: Roborock
     path: roborock

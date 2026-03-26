@@ -34,6 +34,10 @@ Verdichtung oder Spezialfunktionen besser tragen als reine Standardkarten.
 - Waschmaschine
 - Roborock
 
+Kleine Geraetemodule wie `USV` und `Waschmaschine` folgen derselben kompakten
+Kartensprache wie `Home`, `Räume` und `Wohnen`, bleiben fachlich aber auf
+Status, Bedienung und Einordnung begrenzt.
+
 ## Wohnen-Modul
 
 Das Modul `Wohnen` bündelt die früher auf der Startseite verteilte manuelle Bedienung.
@@ -65,9 +69,31 @@ Der View `Räume` enthält nur Raum- und Umgebungsdaten:
 
 Die Waschmaschine gehört bewusst nicht mehr in diesen View.
 
+## USV-Modul
+
+Das Modul `USV` bündelt den produktiven Betriebszustand der Eaton-USV als
+kompakten Geräte-View.
+
+Der View ist in drei Bloecke gegliedert:
+
+- `Übersicht` mit Akku-Gauge sowie kompakten Karten für Laufzeit, Last und Leistung
+- `Ausgang` für Spannung, Piepser und Shutdown-Timer
+- `Untermenüs` für den Diagnose-Einstieg
+
+Die detaillierten Rohwerte bleiben im Diagnose-Subview.
+
+Das Diagnose-Subview ist ebenfalls in kompakte Karten gegliedert und trennt
+`Rohstatus` von `Elektrik`, statt die Werte nur als lange Entity-Liste zu zeigen.
+
 ## Waschmaschinen-Modul
 
 Das Modul `Waschmaschine` bündelt die bisherige Keller-Ansicht als Geräteansicht.
+
+Der View ist in drei Bloecke gegliedert:
+
+- `Übersicht` für Maschinenzustand und Fertig
+- `Einstellungen` für Bubble Soak, Waschmittel, Schleudern und Spülgänge
+- `Einordnung` als kurze Kontextkarte zur bewussten Trennung von Raum- und Geräteansicht
 
 ### Sichtbare Entitäten
 
