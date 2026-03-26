@@ -9,6 +9,7 @@ ha_runtime_snapshot/
 _ha_debug/
 _codex_vorlagen/
 _vergleich/
+_archive/
 
 # Home Assistant internal runtime/state
 .storage/

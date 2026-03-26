@@ -1,90 +1,197 @@
 - title: Home
   path: home
   icon: mdi:view-dashboard-outline
-  cards:
-    - type: markdown
-      content: |
-        # Sieker Hub V2
-
-        Dieses Dashboard ist das neue modulare Grundgeruest fuer den
-        Parallelbetrieb neben dem bestehenden `sieker_hub`.
-
-        Aktuell sind die Views bewusst noch als strukturierte Zielseiten
-        angelegt. Die fachliche Migration erfolgt danach modulweise.
-    - type: grid
-      title: Module
-      columns: 2
-      square: false
-      cards:
-        - type: custom:button-card
-          template: v2_nav_card
-          name: Räume
-          icon: mdi:home-thermometer-outline
-          variables:
-            label: Klima und Umfeld
-          tap_action:
-            action: navigate
-            navigation_path: raeume
-        - type: custom:button-card
-          template: v2_nav_card
-          name: Wohnen
-          icon: mdi:sofa-outline
-          variables:
-            label: Alltag und Szenen
-          tap_action:
-            action: navigate
-            navigation_path: wohnen
-        - type: custom:button-card
-          template: v2_nav_card
-          name: Heizung
-          icon: mdi:radiator
-          variables:
-            label: Betrieb, Service, Tuning
-          tap_action:
-            action: navigate
-            navigation_path: heizung
-        - type: custom:button-card
-          template: v2_nav_card
-          name: Rollläden
-          icon: mdi:window-shutter
-          variables:
-            label: Status und Bedienung
-          tap_action:
-            action: navigate
-            navigation_path: rollladen
-        - type: custom:button-card
-          template: v2_nav_card
-          name: Steckdose Balkon
-          icon: mdi:power-plug-outline
-          variables:
-            label: Saisonlogik
-          tap_action:
-            action: navigate
-            navigation_path: steckdose-balkon
-        - type: custom:button-card
-          template: v2_nav_card
-          name: USV
-          icon: mdi:battery-medium
-          variables:
-            label: Strom und Diagnose
-          tap_action:
-            action: navigate
-            navigation_path: usv
-        - type: custom:button-card
-          template: v2_nav_card
-          name: Waschmaschine
-          icon: mdi:washing-machine
-          variables:
-            label: Geraetestatus
-          tap_action:
-            action: navigate
-            navigation_path: waschmaschine
-        - type: custom:button-card
-          template: v2_nav_card
-          name: Roborock
-          icon: mdi:robot-vacuum
-          variables:
-            label: Programme und Wochenplan
-          tap_action:
-            action: navigate
-            navigation_path: roborock
+  type: sections
+  max_columns: 3
+  sections:
+    - cards:
+        - type: heading
+          heading: Hausstatus
+          heading_style: title
+        - type: heading
+          heading: Lagebild
+        - type: grid
+          columns: 2
+          square: false
+          cards:
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: input_boolean.anwesend
+              name: Anwesend
+              icon: mdi:account-check-outline
+              state_display: >
+                [[[
+                  return entity?.state === 'on' ? 'Ja' : 'Nein';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.heizung_sollprofil
+              name: Profil
+              icon: mdi:radiator
+              state_display: >
+                [[[
+                  const raw = entity?.state ?? '—';
+                  const parts = String(raw).split('_');
+                  if (parts.length === 2 && /^\d+$/.test(parts[1])) {
+                    const label = parts[0].charAt(0).toUpperCase() + parts[0].slice(1);
+                    return `${label} ${parts[1]}°`;
+                  }
+                  return String(raw).replaceAll('_', ' ');
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.rollladen_open_ts
+              name: Öffnen
+              icon: mdi:window-shutter-open
+              state_display: >
+                [[[
+                  const raw = entity?.state;
+                  const date = raw ? new Date(raw) : null;
+                  if (date && !Number.isNaN(date.getTime())) {
+                    return date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+                  }
+                  return raw ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.rollladen_close_ts
+              name: Schließen
+              icon: mdi:window-shutter
+              state_display: >
+                [[[
+                  const raw = entity?.state;
+                  const date = raw ? new Date(raw) : null;
+                  if (date && !Number.isNaN(date.getTime())) {
+                    return date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+                  }
+                  return raw ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.saros_20_set_status
+              name: Roborock
+              icon: mdi:robot-vacuum
+              state_display: >
+                [[[
+                  const map = {
+                    charging: 'Lädt',
+                    docked: 'Dock',
+                    cleaning: 'Reinigt',
+                    paused: 'Pausiert',
+                    idle: 'Bereit',
+                    returning_home: 'Rückkehr',
+                  };
+                  return map[entity?.state] ?? entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.eaton_3s850d_batterie_ladung
+              name: USV
+              icon: mdi:battery-high
+              state_display: >
+                [[[
+                  const raw = entity?.state;
+                  const value = Number(raw);
+                  if (Number.isFinite(value)) {
+                    return `${value} %`;
+                  }
+                  return raw ?? '—';
+                ]]]
+    - cards:
+        - type: heading
+          heading: Handlungsbedarf
+          heading_style: title
+        - type: heading
+          heading: Abweichungen
+        - type: grid
+          columns: 2
+          square: false
+          cards:
+            - type: custom:button-card
+              template: hub_alert_card
+              entity: input_boolean.heizung_override
+              name: Heizung Override
+              icon: mdi:radiator-disabled
+            - type: custom:button-card
+              template: hub_alert_card
+              entity: input_boolean.rollladen_override_ost
+              name: Override Ost
+              icon: mdi:window-shutter-alert
+            - type: custom:button-card
+              template: hub_alert_card
+              entity: input_boolean.rollladen_override_west
+              name: Override West
+              icon: mdi:window-shutter-alert
+            - type: custom:button-card
+              template: hub_roborock_alert_card
+              entity: input_boolean.roborock_busy
+              name: Roborock aktiv
+              icon: mdi:robot-vacuum-alert
+            - type: custom:button-card
+              template: hub_roborock_alert_card
+              entity: binary_sensor.roborock_program_blocked
+              name: Roborock blockiert
+              icon: mdi:cancel-octagon-outline
+            - type: custom:button-card
+              template: hub_alert_card
+              entity: binary_sensor.steckdose_saison_aktiv
+              name: Saisonbetrieb
+              icon: mdi:power-plug-outline
+    - cards:
+        - type: heading
+          heading: Fachmodule
+          heading_style: title
+          icon: mdi:view-dashboard
+        - type: grid
+          columns: 3
+          square: false
+          cards:
+            - type: custom:button-card
+              template: hub_nav_card
+              name: Heizung
+              icon: mdi:radiator
+              tap_action:
+                action: navigate
+                navigation_path: heizung
+            - type: custom:button-card
+              template: hub_nav_card
+              name: Rollläden
+              icon: mdi:window-shutter
+              tap_action:
+                action: navigate
+                navigation_path: rollladen
+            - type: custom:button-card
+              template: hub_nav_card
+              name: Steckdose Balkon
+              icon: mdi:power-socket-de
+              tap_action:
+                action: navigate
+                navigation_path: steckdose-balkon
+            - type: custom:button-card
+              template: hub_nav_card
+              name: USV
+              icon: mdi:generator-mobile
+              tap_action:
+                action: navigate
+                navigation_path: usv
+            - type: custom:button-card
+              template: hub_nav_card
+              name: Roborock
+              icon: mdi:robot-vacuum
+              tap_action:
+                action: navigate
+                navigation_path: roborock
+            - type: custom:button-card
+              template: hub_nav_card
+              name: Waschen
+              icon: mdi:washing-machine
+              tap_action:
+                action: navigate
+                navigation_path: waschmaschine
+            - type: custom:button-card
+              template: hub_nav_card
+              name: Wohnen
+              icon: mdi:sofa-outline
+              tap_action:
+                action: navigate
+                navigation_path: wohnen

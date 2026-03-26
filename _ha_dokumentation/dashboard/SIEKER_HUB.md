@@ -23,6 +23,8 @@ bestehenden Fachmodule in einzelne View-Dateien.
 
 Stand jetzt:
 
+- der `Home`-View ist in V2 als verdichteter Leitstand aus dem bestehenden Hub
+  gespiegelt
 - das Roborock-Modul ist in V2 bereits funktional aus dem bestehenden Hub
   gespiegelt
 - das Heating-Modul ist in V2 bereits funktional aus dem bestehenden Hub
