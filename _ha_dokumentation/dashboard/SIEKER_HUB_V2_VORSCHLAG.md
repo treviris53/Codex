@@ -140,8 +140,8 @@ Moeglicher Einstieg:
 
 ```yaml
 title: Sieker Hub Neu
-button_card_templates: !include dashboards/sieker_hub_v2/shared/button_card_templates.yaml
-views: !include_dir_merge_list dashboards/sieker_hub_v2/views
+button_card_templates: !include sieker_hub_v2/shared/button_card_templates.yaml
+views: !include_dir_merge_list sieker_hub_v2/views
 ```
 
 Falls sich der Dashboard-Loader in dieser HA-Instanz bei `views` nicht robust

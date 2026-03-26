@@ -4,5 +4,5 @@
 # Notes:
 # - V2-Grundgeruest fuer den modularisierten Parallelbetrieb.
 title: Sieker Hub V2
-button_card_templates: !include dashboards/sieker_hub_v2/shared/button_card_templates.yaml
-views: !include_dir_merge_list dashboards/sieker_hub_v2/views
+button_card_templates: !include sieker_hub_v2/shared/button_card_templates.yaml
+views: !include_dir_merge_list sieker_hub_v2/views
