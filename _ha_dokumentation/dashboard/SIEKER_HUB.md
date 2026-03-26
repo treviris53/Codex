@@ -171,6 +171,31 @@ die Geraeteparameter ohne weiteren Tiefensprung geaendert werden koennen.
 - `select.waschmaschine_schleuderstufe`
 - `number.waschmaschine_spulgange`
 
+## Roborock-Modul
+
+Das Modul `Roborock` bleibt das fachliche Bedienzentrum fuer sichere
+Einzelprogramme, Wochenplan, Kartenansicht, Diagnose und Wartung.
+
+Der Top-Level-View ist in vier Bloecke gegliedert:
+
+- `Betrieb` fuer Status, Batterie, Busy- und Blocked-Zustand
+- `Letzte Ausführung` fuer Slot, Job, Programmfolge und aktuellen Raum
+- `Hinweise` fuer Fehlertext und kurze fachliche Einordnung
+- `Untermenüs` fuer Programme, Karte, Diagnose, Wochenplan und Wartung
+
+Die Unterseite `Programme` nutzt weiter ausschließlich sichere Starts ueber
+`script.roborock_run_named_program`.
+
+Die Unterseite `Karte` bleibt bewusst nahe an der bestehenden
+`xiaomi-vacuum-map-card`, weil dort Spezialfunktion wichtiger ist als reine
+Designvereinheitlichung.
+
+`Diagnose` ist als Leseflaeche fuer Betrieb, Verlauf und Jobstart verdichtet.
+`Wochenplan` zeigt einen kompakten globalen Schalter plus Wochentagskarten,
+waehrend die einzelnen Tages-Subviews bewusst direkt editierbar bleiben.
+`Wartung` zeigt Resets und Verbrauchsmaterial in derselben Kartensprache wie
+die anderen modernisierten Module, ohne die Funktion zu aendern.
+
 ## Validierung
 
 - YAML mit `D:\Codex\.venv\Scripts\yamllint.cmd`

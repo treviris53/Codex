@@ -317,12 +317,12 @@ Beide Varianten nutzen ausschliesslich sichere Script-Entrypoints fuer manuelle 
 
 | Bereich | Inhalt |
 | --- | --- |
-| `path: roborock` | Kompakte Uebersicht mit Status, Busy/Blocked, letzter Ausfuehrung und Navigation |
-| `path: roborock-programme` | Vollstaendige Programmauswahl auf Basis kanonischer `program_id` ohne Alias-Hinweistexte |
+| `path: roborock` | Verdichteter Top-Level mit Betrieb, letzter Ausfuehrung, Fehlerhinweisen und Navigation |
+| `path: roborock-programme` | Vollstaendige Programmauswahl auf Basis kanonischer `program_id` in kompakter Kartenform |
 | `path: roborock-karte` | Kartenansicht als eigene Subview |
-| `path: roborock-diagnose` | Betriebs- und Diagnose-Helfer |
-| `path: roborock-wochenplan` | Globaler Schalter, Alias-/ID-Referenz und Wochentagskarten mit Statusfarbe und Kurztext |
-| `path: roborock-wartung` | Reset-Buttons und Verbrauchsmaterial-Staende |
+| `path: roborock-diagnose` | Betriebs-, Verlaufs- und Jobstartdaten als Leseflaeche |
+| `path: roborock-wochenplan` | Globaler Scheduler-Schalter, Alias-/ID-Referenz und Wochentagskarten; Tages-Subviews bleiben direkt editierbar |
+| `path: roborock-wartung` | Reset-Buttons und Verbrauchsmaterial-Staende in konsistenter Kartensprache |
 
 ### Manuelle Programme im Dashboard
 
@@ -352,6 +352,21 @@ Das Dashboard visualisiert unter anderem:
 - `input_text.roborock_last_program_sequence`
 - `input_text.roborock_current_program`
 - `input_text.roborock_last_error`
+
+Der modernisierte Hub-Einstieg in `dashboards/sieker_hub.yaml` trennt diese
+Informationen jetzt bewusst in:
+
+- `Betrieb`
+- `Letzte Ausfuehrung`
+- `Hinweise`
+- `Diagnose`
+
+Die fachliche Funktion bleibt dabei unveraendert; geaendert wurde nur die
+operator-orientierte Darstellung.
+
+Die technischen Trace-Felder bleiben im Hub bewusst in der englischen
+Benennung (`Last Slot`, `Last Job`, `Last Program Sequence`, `Current Program`),
+damit sie direkt zur internen Job- und Programmlogik passen.
 
 ## End-to-End-Datenfluss
 

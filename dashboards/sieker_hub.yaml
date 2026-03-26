@@ -1,5 +1,5 @@
 # Dashboard: Sieker Hub
-# Version: 2.0.14
+# Version: 2.0.15
 # Generated: 2026-03-23
 # Notes:
 # - Best-practice oriented hub dashboard.
@@ -2820,87 +2820,185 @@ views:
     sections:
       - cards:
           - type: heading
-            heading: Übersicht
+            heading: Betrieb
             heading_style: title
-            badges:
-              - type: entity
-                entity: binary_sensor.roborock_program_ready
-              - type: entity
-                entity: binary_sensor.roborock_program_blocked
-              - type: entity
-                entity: input_boolean.roborock_busy
-          - type: entities
-            title: Status
-            show_header_toggle: false
-            entities:
-              - entity: sensor.saros_20_set_status
-                name: Status
-              - entity: sensor.saros_20_set_batterie
-                name: Batterie
-              - entity: sensor.saros_20_set_staubsauger_fehler
-                name: Fehlertext
-              - entity: input_text.roborock_current_program
-                name: Aktuelles Programm
-              - entity: input_text.roborock_last_error
-                name: Letzter Fehler
-      - cards:
-          - type: heading
-            heading: Letzte Ausführung
-          - type: entities
-            title: Verlauf
-            show_header_toggle: false
-            entities:
-              - entity: input_text.roborock_last_slot
-                name: Letzter Slot
-              - entity: input_text.roborock_last_job
-                name: Letzter Job
-              - entity: input_text.roborock_last_program_sequence
-                name: Letzte Programmfolge
-              - entity: sensor.saros_20_set_aktueller_raum
-                name: Aktueller Raum
-      - cards:
-          - type: heading
-            heading: Untermenüs
           - type: grid
             columns: 2
             square: false
             cards:
-              - type: button
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.saros_20_set_status
+                name: Status
+                icon: mdi:robot-vacuum
+                state_display: >
+                  [[[
+                    const map = {
+                      charging: 'Lädt',
+                      charging_complete: 'Geladen',
+                      cleaning: 'Reinigt',
+                      returning_home: 'Fährt heim',
+                      docking: 'Dockt an',
+                      paused: 'Pausiert',
+                      idle: 'Bereit',
+                      error: 'Fehler',
+                    };
+                    return map[entity?.state] ?? entity?.state ?? '—';
+                  ]]]
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.saros_20_set_batterie
+                name: Batterie
+                icon: mdi:battery-high
+                state_display: >
+                  [[[
+                    const value = Number(entity?.state);
+                    return Number.isFinite(value) ? `${value} %` : entity?.state ?? '—';
+                  ]]]
+              - type: custom:button-card
+                template: hub_roborock_alert_card
+                entity: input_boolean.roborock_busy
+                name: Roborock aktiv
+                icon: mdi:progress-clock
+              - type: custom:button-card
+                template: hub_roborock_alert_card
+                entity: binary_sensor.roborock_program_blocked
+                name: Roborock blockiert
+                icon: mdi:alert-octagon-outline
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: input_text.roborock_current_program
+                name: Current Program
+                icon: mdi:playlist-play
+                state_display: >
+                  [[[
+                    return entity?.state && entity.state !== '' ? entity.state : '—';
+                  ]]]
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: input_datetime.roborock_busy_since
+                name: Busy Since
+                icon: mdi:clock-outline
+                state_display: >
+                  [[[
+                    const raw = entity?.state;
+                    const date = raw ? new Date(raw) : null;
+                    if (!date || Number.isNaN(date.getTime())) return raw ?? '—';
+                    return date.toLocaleString('de-DE', {
+                      day: '2-digit',
+                      month: '2-digit',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    });
+                  ]]]
+      - cards:
+          - type: heading
+            heading: Letzte Ausführung
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: input_text.roborock_last_slot
+                name: Last Slot
+                icon: mdi:calendar-clock
+                state_display: >
+                  [[[
+                    return entity?.state && entity.state !== '' ? entity.state : '—';
+                  ]]]
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: input_text.roborock_last_job
+                name: Last Job
+                icon: mdi:format-list-text
+                state_display: >
+                  [[[
+                    return entity?.state && entity.state !== '' ? entity.state : '—';
+                  ]]]
+              - type: custom:button-card
+                template: detail_text_card
+                entity: input_text.roborock_last_program_sequence
+                name: Last Program Sequence
+                icon: mdi:vector-polyline
+                label: >
+                  [[[
+                    return entity?.state && entity.state !== '' ? entity.state : '—';
+                  ]]]
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.saros_20_set_aktueller_raum
+                name: Current Room
+                icon: mdi:floor-plan
+                state_display: >
+                  [[[
+                    return entity?.state && entity.state !== '' ? entity.state : '—';
+                  ]]]
+      - cards:
+          - type: heading
+            heading: Hinweise
+          - type: custom:button-card
+            template: detail_text_card
+            entity: sensor.saros_20_set_staubsauger_fehler
+            name: Error Text
+            icon: mdi:alert-circle-outline
+            label: >
+              [[[
+                return entity?.state && entity.state !== 'none' && entity.state !== 'None'
+                  ? entity.state
+                  : states['input_text.roborock_last_error']?.state || 'Kein Fehler';
+              ]]]
+          - type: custom:button-card
+            template: info_panel_card
+            name: Roborock
+            label: >
+              Startet Einzelprogramme sicher über `script.roborock_run_named_program`.
+              Wochenplan und Diagnose bleiben getrennt, die Kartenansicht nutzt weiter
+              die bestehende Map-Card.
+            icon: mdi:robot-vacuum
+      - cards:
+          - type: heading
+            heading: Untermenüs
+          - type: grid
+            columns: 3
+            square: false
+            cards:
+              - type: custom:button-card
+                template: hub_nav_card
                 name: Programme
                 icon: mdi:playlist-play
                 tap_action:
                   action: navigate
                   navigation_path: roborock-programme
-              - type: button
+              - type: custom:button-card
+                template: hub_nav_card
                 name: Karte
                 icon: mdi:map
                 tap_action:
                   action: navigate
                   navigation_path: roborock-karte
-              - type: button
+              - type: custom:button-card
+                template: hub_nav_card
                 name: Diagnose
                 icon: mdi:bug-outline
                 tap_action:
                   action: navigate
                   navigation_path: roborock-diagnose
-              - type: button
+              - type: custom:button-card
+                template: hub_nav_card
                 name: Wochenplan
                 icon: mdi:calendar-clock
                 tap_action:
                   action: navigate
                   navigation_path: roborock-wochenplan
               - type: custom:button-card
+                template: hub_nav_card
                 name: Wartung
                 icon: mdi:tools
                 show_state: false
                 tap_action:
                   action: navigate
                   navigation_path: roborock-wartung
-                styles:
-                  card:
-                    - height: 168px
-                  name:
-                    - font-size: 22px
                 state:
                   - operator: template
                     value: >
@@ -2919,11 +3017,12 @@ views:
                       ]]]
                     styles:
                       card:
-                        - background-color: var(--error-color)
+                        - background-color: rgba(var(--rgb-error-color), 0.14)
+                        - border: 1px solid rgba(var(--rgb-error-color), 0.28)
                       icon:
-                        - color: white
+                        - color: var(--error-color)
                       name:
-                        - color: white
+                        - color: var(--error-color)
 
   - title: Programme
     path: roborock-programme
@@ -2940,86 +3039,117 @@ views:
             columns: 3
             square: false
             cards:
-              - type: button
+              - type: custom:button-card
+                template: scene_action_card
                 name: Schlaf saugen
+                label: Schlafzimmer
                 icon: mdi:bed-king-outline
                 tap_action:
                   action: perform-action
                   perform_action: script.roborock_run_named_program
                   data:
                     program_id: schlaf_saug
-              - type: button
+              - type: custom:button-card
+                template: scene_action_card
                 name: Schlaf vac+mop
+                label: Schlafzimmer
                 icon: mdi:bed-king
                 tap_action:
                   action: perform-action
                   perform_action: script.roborock_run_named_program
                   data:
                     program_id: schlaf_vac_mop
-              - type: button
+              - type: custom:button-card
+                template: scene_action_card
                 name: Schlaf saug/wisch
+                label: Schlafzimmer
                 icon: mdi:bed
                 tap_action:
                   action: perform-action
                   perform_action: script.roborock_run_named_program
                   data:
                     program_id: schlaf_saug_wisch
-              - type: button
+              - type: custom:button-card
+                template: scene_action_card
                 name: Flur saugen
+                label: Flur
                 icon: mdi:door-open
                 tap_action:
                   action: perform-action
                   perform_action: script.roborock_run_named_program
                   data:
                     program_id: flur_saug
-              - type: button
+              - type: custom:button-card
+                template: scene_action_card
                 name: Flur vac+mop
+                label: Flur
                 icon: mdi:door
                 tap_action:
                   action: perform-action
                   perform_action: script.roborock_run_named_program
                   data:
                     program_id: flur_vac_mop
-              - type: button
+              - type: custom:button-card
+                template: scene_action_card
                 name: Flur saug/wisch
+                label: Flur
                 icon: mdi:door-sliding
                 tap_action:
                   action: perform-action
                   perform_action: script.roborock_run_named_program
                   data:
                     program_id: flur_saug_wisch
-              - type: button
+              - type: custom:button-card
+                template: scene_action_card
                 name: Wohn saugen
+                label: Wohnen
                 icon: mdi:sofa-outline
                 tap_action:
                   action: perform-action
                   perform_action: script.roborock_run_named_program
                   data:
                     program_id: wohn_saug
-              - type: button
+              - type: custom:button-card
+                template: scene_action_card
                 name: Wohn vac+mop
+                label: Wohnen
                 icon: mdi:sofa-outline
                 tap_action:
                   action: perform-action
                   perform_action: script.roborock_run_named_program
                   data:
                     program_id: wohn_vac_mop
-              - type: button
+              - type: custom:button-card
+                template: scene_action_card
                 name: Wohn saug/wisch
+                label: Wohnen
                 icon: mdi:sofa
                 tap_action:
                   action: perform-action
                   perform_action: script.roborock_run_named_program
                   data:
                     program_id: wohn_saug_wisch
-              - type: button
+              - type: custom:button-card
+                template: scene_action_card
                 name: Haustierbedarf
+                label: Spezial
                 icon: mdi:paw
                 tap_action:
                   action: perform-action
                   perform_action: script.roborock_run_named_program
                   data:
                     program_id: haustier
+      - cards:
+          - type: heading
+            heading: Einordnung
+          - type: custom:button-card
+            template: info_panel_card
+            name: Einzelprogramme
+            label: >
+              Startet kanonische `program_id`-Programme sicher über
+              `script.roborock_run_named_program`. Alias-Logik bleibt dem
+              Wochenplan vorbehalten.
+            icon: mdi:playlist-play
 
   - title: Karte
     path: roborock-karte
@@ -3102,39 +3232,137 @@ views:
     sections:
       - cards:
           - type: heading
-            heading: Diagnose
-          - type: entities
-            title: Betriebsdaten
-            show_header_toggle: false
-            entities:
-              - entity: sensor.saros_20_set_status
+            heading: Betrieb
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.saros_20_set_status
                 name: Status
-              - entity: sensor.saros_20_set_batterie
+                icon: mdi:robot-vacuum
+                state_display: >
+                  [[[
+                    const map = {
+                      charging: 'Lädt',
+                      charging_complete: 'Geladen',
+                      cleaning: 'Reinigt',
+                      returning_home: 'Fährt heim',
+                      docking: 'Dockt an',
+                      paused: 'Pausiert',
+                      idle: 'Bereit',
+                      error: 'Fehler',
+                    };
+                    return map[entity?.state] ?? entity?.state ?? '—';
+                  ]]]
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.saros_20_set_batterie
                 name: Batterie
-              - entity: sensor.saros_20_set_staubsauger_fehler
-                name: Fehlertext
-              - entity: binary_sensor.roborock_program_ready
+                icon: mdi:battery-high
+                state_display: >
+                  [[[
+                    const value = Number(entity?.state);
+                    return Number.isFinite(value) ? `${value} %` : entity?.state ?? '—';
+                  ]]]
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: binary_sensor.roborock_program_ready
                 name: Startbereit
-              - entity: binary_sensor.roborock_program_blocked
+                icon: mdi:check-decagram-outline
+              - type: custom:button-card
+                template: hub_roborock_alert_card
+                entity: binary_sensor.roborock_program_blocked
                 name: Blockiert
-              - entity: input_boolean.roborock_busy
+                icon: mdi:alert-octagon-outline
+              - type: custom:button-card
+                template: hub_roborock_alert_card
+                entity: input_boolean.roborock_busy
                 name: Busy
-              - entity: input_datetime.roborock_busy_since
-                name: Busy seit
-              - type: attribute
-                entity: script.roborock_execute_job_chain
-                attribute: last_triggered
-                name: Letzter Job-Start
-              - entity: input_text.roborock_last_slot
-                name: Letzter Slot
-              - entity: input_text.roborock_last_job
-                name: Letzter Job
-              - entity: input_text.roborock_last_program_sequence
-                name: Letzte Programmfolge
-              - entity: input_text.roborock_current_program
-                name: Aktuelles Programm
-              - entity: input_text.roborock_last_error
-                name: Letzter Fehler
+                icon: mdi:progress-clock
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: input_datetime.roborock_busy_since
+                name: Busy Since
+                icon: mdi:clock-outline
+                state_display: >
+                  [[[
+                    const raw = entity?.state;
+                    const date = raw ? new Date(raw) : null;
+                    if (!date || Number.isNaN(date.getTime())) return raw ?? '—';
+                    return date.toLocaleString('de-DE', {
+                      day: '2-digit',
+                      month: '2-digit',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    });
+                  ]]]
+      - cards:
+          - type: heading
+            heading: Verlauf
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: input_text.roborock_last_slot
+                name: Last Slot
+                icon: mdi:calendar-clock
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: input_text.roborock_last_job
+                name: Last Job
+                icon: mdi:format-list-text
+              - type: custom:button-card
+                template: detail_text_card
+                entity: input_text.roborock_last_program_sequence
+                name: Last Program Sequence
+                icon: mdi:vector-polyline
+                label: >
+                  [[[
+                    return entity?.state && entity.state !== '' ? entity.state : '—';
+                  ]]]
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: input_text.roborock_current_program
+                name: Current Program
+                icon: mdi:playlist-play
+              - type: custom:button-card
+                template: detail_text_card
+                entity: input_text.roborock_last_error
+                name: Last Error
+                icon: mdi:alert-circle-outline
+                label: >
+                  [[[
+                    return entity?.state && entity.state !== '' ? entity.state : 'Kein Fehler';
+                  ]]]
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.saros_20_set_aktueller_raum
+                name: Current Room
+                icon: mdi:floor-plan
+      - cards:
+          - type: heading
+            heading: Jobstart
+          - type: custom:button-card
+            template: hub_metric_card
+            entity: script.roborock_execute_job_chain
+            name: Last Job Start
+            icon: mdi:clock-start
+            state_display: >
+              [[[
+                const raw = entity?.attributes?.last_triggered;
+                const date = raw ? new Date(raw) : null;
+                if (!date || Number.isNaN(date.getTime())) return raw ?? '—';
+                return date.toLocaleString('de-DE', {
+                  day: '2-digit',
+                  month: '2-digit',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                });
+              ]]]
 
   - title: Wochenplan
     path: roborock-wochenplan
@@ -3147,12 +3375,11 @@ views:
           - type: heading
             heading: Wochenplan
             heading_style: title
-          - type: entities
-            title: Global
-            show_header_toggle: false
-            entities:
-              - entity: input_boolean.roborock_schedule_enabled
-                name: Zeitplan aktiv
+          - type: custom:button-card
+            template: module_toggle_card
+            entity: input_boolean.roborock_schedule_enabled
+            name: Zeitplan aktiv
+            icon: mdi:calendar-check-outline
       - cards:
           - type: heading
             heading: Wochentage
@@ -3562,21 +3789,22 @@ views:
 
       - cards:
           - type: heading
-            heading: Aliase und IDs
-          - type: markdown
-            content: |
-              **Legacy Job-Aliase**
-
-              `schlaf_s`, `schlaf_vm`, `schlaf_sw`, `flur_s`,
-              `flur_vm`, `flur_sw`, `wohn_s`, `wohn_vm`,
-              `wohn_sw`, `haustier`
-
-              **Kanonische Programm-IDs**
-
+            heading: Referenz
+          - type: custom:button-card
+            template: detail_text_card
+            name: Legacy Job-Aliase
+            icon: mdi:label-multiple-outline
+            label: >
+              `schlaf_s`, `schlaf_vm`, `schlaf_sw`, `flur_s`, `flur_vm`,
+              `flur_sw`, `wohn_s`, `wohn_vm`, `wohn_sw`, `haustier`
+          - type: custom:button-card
+            template: detail_text_card
+            name: Kanonische Programm-IDs
+            icon: mdi:identifier
+            label: >
               `schlaf_saug`, `schlaf_vac_mop`, `schlaf_saug_wisch`,
               `flur_saug`, `flur_vac_mop`, `flur_saug_wisch`,
-              `wohn_saug`, `wohn_vac_mop`, `wohn_saug_wisch`,
-              `haustier`
+              `wohn_saug`, `wohn_vac_mop`, `wohn_saug_wisch`, `haustier`
 
   - title: Montag
     path: roborock-wochenplan-mon
@@ -3881,33 +4109,120 @@ views:
     sections:
       - cards:
           - type: heading
-            heading: Wartung
-          - type: entities
-            title: Reset
-            show_header_toggle: false
-            entities:
-              - entity: button.saros_20_set_hauptbursten_verbrauchsmaterial_zurucksetzen
-                name: Hauptbürste zurücksetzen
-              - entity: button.saros_20_set_seitenbursten_verbrauchsmaterial_zurucksetzen
-                name: Seitenbürste zurücksetzen
-              - entity: button.saros_20_set_luftfilter_verbrauchsmaterial_zurucksetzen
-                name: Luftfilter zurücksetzen
-              - entity: button.saros_20_set_sensor_verbrauchsmaterial_zurucksetzen
-                name: Sensoren zurücksetzen
+            heading: Reset
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - type: custom:button-card
+                template: scene_action_card
+                entity: button.saros_20_set_hauptbursten_verbrauchsmaterial_zurucksetzen
+                name: Hauptbürste
+                label: Zurücksetzen
+                icon: mdi:brush
+                tap_action:
+                  action: perform-action
+                  perform_action: button.press
+                  target:
+                    entity_id: button.saros_20_set_hauptbursten_verbrauchsmaterial_zurucksetzen
+              - type: custom:button-card
+                template: scene_action_card
+                entity: button.saros_20_set_seitenbursten_verbrauchsmaterial_zurucksetzen
+                name: Seitenbürste
+                label: Zurücksetzen
+                icon: mdi:brush-variant
+                tap_action:
+                  action: perform-action
+                  perform_action: button.press
+                  target:
+                    entity_id: button.saros_20_set_seitenbursten_verbrauchsmaterial_zurucksetzen
+              - type: custom:button-card
+                template: scene_action_card
+                entity: button.saros_20_set_luftfilter_verbrauchsmaterial_zurucksetzen
+                name: Luftfilter
+                label: Zurücksetzen
+                icon: mdi:air-filter
+                tap_action:
+                  action: perform-action
+                  perform_action: button.press
+                  target:
+                    entity_id: button.saros_20_set_luftfilter_verbrauchsmaterial_zurucksetzen
+              - type: custom:button-card
+                template: scene_action_card
+                entity: button.saros_20_set_sensor_verbrauchsmaterial_zurucksetzen
+                name: Sensoren
+                label: Zurücksetzen
+                icon: mdi:radar
+                tap_action:
+                  action: perform-action
+                  perform_action: button.press
+                  target:
+                    entity_id: button.saros_20_set_sensor_verbrauchsmaterial_zurucksetzen
       - cards:
           - type: heading
             heading: Verbrauchsmaterial
-          - type: entities
-            title: Restlaufzeiten
-            show_header_toggle: false
-            entities:
-              - entity: sensor.saros_20_set_verbleibende_zeit_der_hauptburste
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.saros_20_set_verbleibende_zeit_der_hauptburste
                 name: Hauptbürste
-              - entity: sensor.saros_20_set_verbleibende_zeit_der_seitenburste
+                icon: mdi:brush
+                state_display: >
+                  [[[
+                    const value = Number(entity?.state);
+                    return Number.isFinite(value) ? `${Math.round(value)} h` : entity?.state ?? '—';
+                  ]]]
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.saros_20_set_verbleibende_zeit_der_seitenburste
                 name: Seitenbürste
-              - entity: sensor.saros_20_set_verbleibende_filterzeit
+                icon: mdi:brush-variant
+                state_display: >
+                  [[[
+                    const value = Number(entity?.state);
+                    return Number.isFinite(value) ? `${Math.round(value)} h` : entity?.state ?? '—';
+                  ]]]
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.saros_20_set_verbleibende_filterzeit
                 name: Filter
-              - entity: sensor.saros_20_set_verbleibende_sensorzeit
+                icon: mdi:air-filter
+                state_display: >
+                  [[[
+                    const value = Number(entity?.state);
+                    return Number.isFinite(value) ? `${Math.round(value)} h` : entity?.state ?? '—';
+                  ]]]
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.saros_20_set_verbleibende_sensorzeit
                 name: Sensoren
-              - entity: sensor.saros_20_set_dock_schmutzfanger_verbleibend
+                icon: mdi:radar
+                state_display: >
+                  [[[
+                    const value = Number(entity?.state);
+                    return Number.isFinite(value) ? `${Math.round(value)} h` : entity?.state ?? '—';
+                  ]]]
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.saros_20_set_dock_schmutzfanger_verbleibend
                 name: Dock Schmutzfänger
+                icon: mdi:filter-variant
+                state_display: >
+                  [[[
+                    const value = Number(entity?.state);
+                    return Number.isFinite(value) ? `${Math.round(value)} h` : entity?.state ?? '—';
+                  ]]]
+      - cards:
+          - type: heading
+            heading: Einordnung
+          - type: custom:button-card
+            template: info_panel_card
+            name: Wartung
+            label: >
+              Wartungs-Resets und Restlaufzeiten bleiben fachlich unverändert. Die
+              Wartungskarte oben färbt sich weiter kritisch, sobald ein
+              Verbrauchsmaterial aufgebraucht ist.
+            icon: mdi:tools
