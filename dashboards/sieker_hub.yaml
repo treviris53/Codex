@@ -1,5 +1,5 @@
 # Dashboard: Sieker Hub
-# Version: 2.0.11
+# Version: 2.0.14
 # Generated: 2026-03-23
 # Notes:
 # - Best-practice oriented hub dashboard.
@@ -1723,47 +1723,125 @@ views:
           - type: heading
             heading: Status
             heading_style: title
-            badges:
-              - type: entity
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - type: custom:button-card
+                template: hub_alert_card
                 entity: input_boolean.rollladen_automation_enabled
-              - type: entity
+                name: Automatik
+                icon: mdi:window-shutter-auto
+              - type: custom:button-card
+                template: hub_metric_card
                 entity: binary_sensor.rollladen_day_window
-          - type: entities
-            title: Übersicht
-            show_header_toggle: false
-            entities:
-              - entity: sensor.rollladen_open_ts
+                name: Day Window
+                icon: mdi:white-balance-sunny
+                state_display: >
+                  [[[
+                    return entity?.state === 'on' ? 'Aktiv' : 'Aus';
+                  ]]]
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.rollladen_open_ts
                 name: Öffnet um
-              - entity: sensor.rollladen_close_ts
+                icon: mdi:weather-sunset-up
+                state_display: >
+                  [[[
+                    const raw = entity?.state;
+                    const date = raw ? new Date(raw) : null;
+                    if (date && !Number.isNaN(date.getTime())) {
+                      return date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+                    }
+                    return raw ?? '—';
+                  ]]]
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.rollladen_close_ts
                 name: Schließt um
-              - entity: input_boolean.rollladen_override_ost
+                icon: mdi:weather-sunset-down
+                state_display: >
+                  [[[
+                    const raw = entity?.state;
+                    const date = raw ? new Date(raw) : null;
+                    if (date && !Number.isNaN(date.getTime())) {
+                      return date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+                    }
+                    return raw ?? '—';
+                  ]]]
+              - type: custom:button-card
+                template: hub_alert_card
+                entity: input_boolean.rollladen_override_ost
                 name: Override Ost
-              - entity: timer.rollladen_override_ost
+                icon: mdi:window-shutter-alert
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: timer.rollladen_override_ost
                 name: Timer Ost
-              - entity: input_boolean.rollladen_override_west
+                icon: mdi:timer-outline
+              - type: custom:button-card
+                template: hub_alert_card
+                entity: input_boolean.rollladen_override_west
                 name: Override West
-              - entity: timer.rollladen_override_west
+                icon: mdi:window-shutter-alert
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: timer.rollladen_override_west
                 name: Timer West
+                icon: mdi:timer-outline
       - cards:
           - type: heading
             heading: Zielbild
             heading_style: title
-          - type: entities
-            title: Zielpositionen
-            show_header_toggle: false
-            entities:
-              - entity: sensor.rollladen_ost_target_position
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.rollladen_ost_target_position
                 name: Ost Ziel
-              - entity: sensor.rollladen_west_target_position
+                icon: mdi:window-shutter-open
+                state_display: >
+                  [[[
+                    const value = Number(entity?.state);
+                    return Number.isFinite(value) ? `${value} %` : entity?.state ?? '—';
+                  ]]]
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.rollladen_west_target_position
                 name: West Ziel
-              - entity: sensor.rollladen_nord_target_position
+                icon: mdi:window-shutter-open
+                state_display: >
+                  [[[
+                    const value = Number(entity?.state);
+                    return Number.isFinite(value) ? `${value} %` : entity?.state ?? '—';
+                  ]]]
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.rollladen_nord_target_position
                 name: Nord Ziel
-              - entity: sensor.rollladen_ost_debug
+                icon: mdi:window-shutter-open
+                state_display: >
+                  [[[
+                    const value = Number(entity?.state);
+                    return Number.isFinite(value) ? `${value} %` : entity?.state ?? '—';
+                  ]]]
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.rollladen_ost_debug
                 name: Ost Debug
-              - entity: sensor.rollladen_west_debug
+                icon: mdi:bug-outline
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.rollladen_west_debug
                 name: West Debug
-              - entity: sensor.rollladen_nord_debug
+                icon: mdi:bug-outline
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.rollladen_nord_debug
                 name: Nord Debug
+                icon: mdi:bug-outline
       - cards:
           - type: heading
             heading: Untermenüs
@@ -1772,36 +1850,68 @@ views:
             columns: 3
             square: false
             cards:
-              - type: button
+              - type: custom:button-card
+                template: hub_nav_card
                 name: Diagnose
                 icon: mdi:bug-outline
                 tap_action:
                   action: navigate
                   navigation_path: rollladen-diagnose
-              - type: button
+              - type: custom:button-card
+                template: hub_nav_card
                 name: Service
                 icon: mdi:tools
                 tap_action:
                   action: navigate
                   navigation_path: rollladen-service
-              - type: button
+              - type: custom:button-card
+                template: hub_nav_card
                 name: Tuning
                 icon: mdi:tune
                 tap_action:
                   action: navigate
                   navigation_path: rollladen-tuning
-          - type: entities
-            title: Einflussfaktoren
-            show_header_toggle: false
-            entities:
-              - entity: switch.schalt_mess_steckdose_steckdose
+      - cards:
+          - type: heading
+            heading: Einflussfaktoren
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: switch.schalt_mess_steckdose_steckdose
                 name: Steckdose Ost
-              - entity: input_boolean.beschattung_ost
+                icon: mdi:power-socket-de
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: input_boolean.beschattung_ost
                 name: Beschattung Ost
-              - entity: input_boolean.beschattung_west
+                icon: mdi:blinds-open
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: input_boolean.beschattung_west
                 name: Beschattung West
-              - entity: binary_sensor.kuche_balkon_turkontakt
+                icon: mdi:blinds-open
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: binary_sensor.kuche_balkon_turkontakt
                 name: Türkontakt
+                icon: mdi:door-sliding-open
+                state_display: >
+                  [[[
+                    return entity?.state === 'on' ? 'Offen' : 'Geschlossen';
+                  ]]]
+      - cards:
+          - type: heading
+            heading: Einordnung
+          - type: custom:button-card
+            template: info_panel_card
+            name: Rollläden
+            label: >
+              Das Modul bündelt Zeitfenster, Zielpositionen, Overrides und Beschattung.
+              Tuning bleibt bewusst direkt editierbar, Service und Diagnose bleiben getrennt.
+            icon: mdi:window-shutter
 
   - title: Diagnose
     path: rollladen-diagnose
@@ -1813,81 +1923,177 @@ views:
       - cards:
           - type: heading
             heading: Status
-          - type: entities
-            title: Überblick
-            show_header_toggle: false
-            entities:
-              - entity: binary_sensor.rollladen_day_window
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: binary_sensor.rollladen_day_window
                 name: Day Window
-              - entity: sensor.rollladen_open_ts
-                name: Open TS
-              - entity: sensor.rollladen_close_ts
-                name: Close TS
-              - entity: binary_sensor.kuche_balkon_turkontakt
+                icon: mdi:white-balance-sunny
+                state_display: >
+                  [[[
+                    return entity?.state === 'on' ? 'Aktiv' : 'Aus';
+                  ]]]
+              - type: custom:button-card
+                template: hub_alert_card
+                entity: input_boolean.rollladen_automation_enabled
+                name: Automatik
+                icon: mdi:window-shutter-auto
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.rollladen_open_ts
+                name: Öffnet um
+                icon: mdi:weather-sunset-up
+                state_display: >
+                  [[[
+                    const raw = entity?.state;
+                    const date = raw ? new Date(raw) : null;
+                    if (date && !Number.isNaN(date.getTime())) {
+                      return date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+                    }
+                    return raw ?? '—';
+                  ]]]
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.rollladen_close_ts
+                name: Schließt um
+                icon: mdi:weather-sunset-down
+                state_display: >
+                  [[[
+                    const raw = entity?.state;
+                    const date = raw ? new Date(raw) : null;
+                    if (date && !Number.isNaN(date.getTime())) {
+                      return date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+                    }
+                    return raw ?? '—';
+                  ]]]
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: binary_sensor.kuche_balkon_turkontakt
                 name: Türkontakt
+                icon: mdi:door-sliding-open
+                state_display: >
+                  [[[
+                    return entity?.state === 'on' ? 'Offen' : 'Geschlossen';
+                  ]]]
       - cards:
           - type: heading
-            heading: Debug-Sensoren
-          - type: entities
-            title: Ost
-            show_header_toggle: false
-            entities:
-              - entity: sensor.rollladen_ost_debug
-                name: Zielposition / Status
-              - type: attribute
+            heading: Debug-Sensoren Ost
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - type: custom:button-card
+                template: hub_metric_card
                 entity: sensor.rollladen_ost_debug
-                attribute: reason
-                name: reason
-              - type: attribute
+                name: Ost Debug
+                icon: mdi:window-shutter-alert
+              - type: custom:button-card
+                template: detail_text_card
                 entity: sensor.rollladen_ost_debug
-                attribute: door_state
-                name: door_state
-              - type: attribute
+                name: Ost Grund
+                icon: mdi:text-box-search-outline
+                label: >
+                  [[[
+                    return entity?.attributes?.reason ?? '—';
+                  ]]]
+              - type: custom:button-card
+                template: hub_metric_card
                 entity: sensor.rollladen_ost_debug
-                attribute: plug_on
-                name: plug_on
-              - type: attribute
+                name: Türstatus
+                icon: mdi:door-sliding-open
+                state_display: >
+                  [[[
+                    return entity?.attributes?.door_state ?? '—';
+                  ]]]
+              - type: custom:button-card
+                template: hub_metric_card
                 entity: sensor.rollladen_ost_debug
-                attribute: latest_close
-                name: latest_close
-          - type: entities
-            title: West / Nord
-            show_header_toggle: false
-            entities:
-              - entity: sensor.rollladen_west_debug
-                name: West Debug
-              - type: attribute
+                name: Steckdose
+                icon: mdi:power-socket-de
+                state_display: >
+                  [[[
+                    const value = entity?.attributes?.plug_on;
+                    if (value === true) return 'Ein';
+                    if (value === false) return 'Aus';
+                    return value ?? '—';
+                  ]]]
+              - type: custom:button-card
+                template: hub_metric_card
+                entity: sensor.rollladen_ost_debug
+                name: Latest Close
+                icon: mdi:clock-end
+                state_display: >
+                  [[[
+                    return entity?.attributes?.latest_close ?? '—';
+                  ]]]
+      - cards:
+          - type: heading
+            heading: Debug-Sensoren West / Nord
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - type: custom:button-card
+                template: hub_metric_card
                 entity: sensor.rollladen_west_debug
-                attribute: reason
+                name: West Debug
+                icon: mdi:window-shutter-alert
+              - type: custom:button-card
+                template: detail_text_card
+                entity: sensor.rollladen_west_debug
                 name: West Grund
-              - entity: sensor.rollladen_nord_debug
-                name: Nord Debug
-              - type: attribute
+                icon: mdi:text-box-search-outline
+                label: >
+                  [[[
+                    return entity?.attributes?.reason ?? '—';
+                  ]]]
+              - type: custom:button-card
+                template: hub_metric_card
                 entity: sensor.rollladen_nord_debug
-                attribute: reason
+                name: Nord Debug
+                icon: mdi:window-shutter-alert
+              - type: custom:button-card
+                template: detail_text_card
+                entity: sensor.rollladen_nord_debug
                 name: Nord Grund
+                icon: mdi:text-box-search-outline
+                label: >
+                  [[[
+                    return entity?.attributes?.reason ?? '—';
+                  ]]]
       - cards:
           - type: heading
             heading: Historie
-          - type: history-graph
-            title: Zielpositionen (24h)
-            hours_to_show: 24
-            refresh_interval: 60
-            entities:
-              - entity: sensor.rollladen_ost_debug
-              - entity: sensor.rollladen_west_debug
-              - entity: sensor.rollladen_nord_debug
-          - type: history-graph
-            title: Einflussfaktoren (24h)
-            hours_to_show: 24
-            refresh_interval: 60
-            entities:
-              - entity: input_boolean.rollladen_automation_enabled
-              - entity: binary_sensor.rollladen_day_window
-              - entity: switch.schalt_mess_steckdose_steckdose
-              - entity: input_boolean.beschattung_ost
-              - entity: input_boolean.beschattung_west
-              - entity: binary_sensor.kuche_balkon_turkontakt
+          - type: grid
+            grid_options:
+              columns: full
+              rows: auto
+            columns: 2
+            square: false
+            cards:
+              - type: history-graph
+                title: Zielpositionen (24h)
+                hours_to_show: 24
+                refresh_interval: 60
+                entities:
+                  - entity: sensor.rollladen_ost_debug
+                  - entity: sensor.rollladen_west_debug
+                  - entity: sensor.rollladen_nord_debug
+              - type: history-graph
+                title: Einflussfaktoren (24h)
+                hours_to_show: 24
+                refresh_interval: 60
+                entities:
+                  - entity: input_boolean.rollladen_automation_enabled
+                  - entity: binary_sensor.rollladen_day_window
+                  - entity: switch.schalt_mess_steckdose_steckdose
+                  - entity: input_boolean.beschattung_ost
+                  - entity: input_boolean.beschattung_west
+                  - entity: binary_sensor.kuche_balkon_turkontakt
+        column_span: 2
 
   - title: Service
     path: rollladen-service
@@ -1898,22 +2104,51 @@ views:
     sections:
       - cards:
           - type: heading
-            heading: Sichere Skripte
-          - type: entities
-            title: Apply
-            show_header_toggle: false
-            entities:
-              - entity: script.rollladen_ost_apply
-              - entity: script.rollladen_apply_west
-                name: Rollladen West Apply
-              - entity: script.rollladen_apply_nord
-                name: Rollladen Nord Apply
+            heading: Safe-Einstiege
+          - type: grid
+            columns: 3
+            square: false
+            cards:
+              - type: custom:button-card
+                template: scene_action_card
+                name: Apply Ost
+                label: Safe Script
+                icon: mdi:window-shutter
+                tap_action:
+                  action: call-service
+                  service: script.turn_on
+                  target:
+                    entity_id: script.rollladen_ost_apply
+              - type: custom:button-card
+                template: scene_action_card
+                name: Apply West
+                label: Safe Script
+                icon: mdi:window-shutter
+                tap_action:
+                  action: call-service
+                  service: script.turn_on
+                  target:
+                    entity_id: script.rollladen_apply_west
+              - type: custom:button-card
+                template: scene_action_card
+                name: Apply Nord
+                label: Safe Script
+                icon: mdi:window-shutter
+                tap_action:
+                  action: call-service
+                  service: script.turn_on
+                  target:
+                    entity_id: script.rollladen_apply_nord
       - cards:
           - type: heading
-            heading: Direkte Bedienung
-          - type: markdown
-            content: |
-              Dieser Bereich ist bewusst als manuelle Service-/Notfallbedienung getrennt.
+            heading: Notfallbedienung
+          - type: custom:button-card
+            template: info_panel_card
+            name: Notfallbedienung
+            label: >
+              Dieser Bereich bleibt bewusst als manuelle Service- und Notfallbedienung getrennt.
+              Direkte Cover-Steuerung bleibt unverändert erreichbar.
+            icon: mdi:tools
           - type: tile
             entity: cover.rollladen_ost
             name: Rollladen Ost
@@ -1931,7 +2166,13 @@ views:
               - type: cover-position
       - cards:
           - type: heading
-            heading: Sammelbedienung
+            heading: Alle Rollläden
+          - type: custom:button-card
+            template: info_panel_card
+            name: Sammelbedienung
+            label: >
+              Gemeinsame Steuerung fuer alle Rollläden. Die Funktion bleibt unverändert.
+            icon: mdi:window-shutter-cog
           - type: tile
             entity: cover.rollladen_all
             name: Rollläden Alle

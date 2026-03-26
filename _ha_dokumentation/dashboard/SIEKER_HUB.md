@@ -58,6 +58,28 @@ werden koennen.
 Rohwerte verdichtet. `Service` bleibt der schnelle Safe-Einstieg fuer die
 autoritative Profilanwendung, ohne Modus- oder Schwellwertpflege zu verstecken.
 
+## Rollläden-Modul
+
+Das Modul `Rollläden` bleibt das fachliche Bedienzentrum fuer Zeitfenster,
+Zielpositionen, Overrides und Beschattung.
+
+Der Top-Level-View ist in fünf Bloecke gegliedert:
+
+- `Status` fuer Automatik, Day-Window, Open-/Close-Zeiten und Override-Zustaende
+- `Zielbild` fuer Ost-, West- und Nord-Zielpositionen plus Debug-Sensoren
+- `Untermenüs` fuer Diagnose, Service und Tuning
+- `Einflussfaktoren` fuer Steckdose, Beschattung und Tuerkontakt
+- `Einordnung` als Kontextkarte zur Trennung von Uebersicht, Service und Tuning
+
+Das Tuning-Subview bleibt bewusst direkt editierbar ueber klassische Helper-
+Listen, damit Zeitregeln und Beschattungsparameter ohne weiteren Tiefensprung
+geaendert werden koennen.
+
+`Diagnose` ist als Leseflaeche fuer Day-Window, Zeitfenster und thematisch
+gruppierte Debug-Gruende verdichtet. `Service` bleibt funktional
+unveraendert: Safe-Einstiege, manuelle Notfallbedienung und Sammelbedienung
+bleiben direkt erreichbar.
+
 ## Wohnen-Modul
 
 Das Modul `Wohnen` bündelt die früher auf der Startseite verteilte manuelle Bedienung.

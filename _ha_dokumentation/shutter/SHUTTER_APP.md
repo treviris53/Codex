@@ -349,26 +349,28 @@ Die Shutter-App besitzt im aktuellen Sieker Hub einen klaren Fachmodul-Einstieg.
 
 | Bereich | Inhalt |
 | --- | --- |
-| Status | Master, Day-Window, Open/Close-Zeiten und Override-Status |
+| Status | Automatik, Day-Window, Open/Close-Zeiten und Override-Status |
 | Zielbild | Zielpositionen und kompakte Debug-Sensoren |
 | Untermenues | Navigation nach Diagnose, Service und Tuning |
 | Einflussfaktoren | Steckdose, Beschattung und Tuerkontakt |
+| Einordnung | Kontextkarte zur Trennung von Uebersicht, Service und Tuning |
 
 ### Inhalte der Hub-Ansicht `rollladen-diagnose`
 
 | Bereich | Inhalt |
 | --- | --- |
-| Status | Ueberblick ueber Day-Window, Zeitfenster und Tuerkontakt |
-| Debug-Sensoren | Kernattribute fuer Ost, West und Nord |
+| Status | Ueberblick ueber Day-Window, Zeitfenster, Automatik und Tuerkontakt |
+| Debug-Sensoren Ost | Verdichtete Gruende und Kernattribute fuer Ost, inklusive Tuerstatus, Steckdose und Latest Close |
+| Debug-Sensoren West / Nord | Verdichtete Gruende und Kernattribute fuer West und Nord |
 | Historie | Zielpositionen und Einflussfaktoren ueber 24h |
 
 ### Inhalte der Hub-Ansicht `rollladen-service`
 
 | Bereich | Inhalt |
 | --- | --- |
-| Sichere Skripte | Manuell ausloesbare Apply-Skripte |
-| Direkte Bedienung | Bewusst getrennter Service-/Notfallbereich fuer Covers |
-| Sammelbedienung | Gemeinsame Steuerung fuer `cover.rollladen_all` |
+| Safe-Einstiege | Manuell ausloesbare Apply-Skripte `Apply Ost`, `Apply West` und `Apply Nord` als direkte Safe-Einstiege |
+| Notfallbedienung | Bewusst getrennter Service-/Notfallbereich fuer Covers |
+| Alle Rollläden | Gemeinsame Steuerung fuer `cover.rollladen_all`, funktional unveraendert |
 
 ### Inhalte der Hub-Ansicht `rollladen-tuning`
 
@@ -376,7 +378,7 @@ Die Shutter-App besitzt im aktuellen Sieker Hub einen klaren Fachmodul-Einstieg.
 | --- | --- |
 | Zeitregeln | Automatik-Schalter, Day-Window, Open-/Close-Policies und Offsets |
 | Beschattung | Parameter fuer Azimut, Elevation, Lux und Temperatur |
-| Diagnosewerte | Live- und Diff-Sensoren fuer die Parametrierung |
+| Diagnosewerte | Live- und Diff-Sensoren fuer die Parametrierung; Parameter bleiben direkt editierbar |
 
 ## End-to-End-Datenfluss
 
