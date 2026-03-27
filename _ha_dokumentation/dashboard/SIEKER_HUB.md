@@ -128,7 +128,7 @@ Der Top-Level-View ist als kompakte Alltagsoberfläche gedacht:
 
 - `Beleuchtung` für manuell schaltbare Lichter nach Räumen
 - `Steckdosen` für allgemeine, bewusst manuell bediente Steckdosen inklusive Leistung, Energie und Kindersicherung
-- `Szenen` für die manuellen Heizungsszenen 17, 19 und 21 Grad
+- `Szenen` für direkte manuelle Temperaturszenen der Heizung und Bäder
 
 Die Unterseite `Steckdosen` bleibt bewusst direkt editierbar ueber klassische
 Entity-Listen, damit Schalten und Kindersicherung nicht erst ueber `more-info`

@@ -12,8 +12,8 @@ Dashboard-Einstiegen und dem End-to-End-Datenfluss zwischen Entscheidung und The
 | Decision Layer | `packages/heating/heating_templates.yaml` | Berechnet Anwesenheit stabil, Sollprofil und Diagnoseattribute |
 | Execution Layer | `packages/heating/heating_scripts.yaml` | Wendet Profile ueber autoritative Szenen auf die Climates an |
 | Automation Layer | `packages/heating/heating_automations.yaml` | Steuert geplante Anwendungen, Sonderfaelle und Override-Lifecycle |
-| Scene Layer | `packages/heating/heating_scenes.yaml` | Definiert die autoritativen Runtime-Szenen fuer 17, 19 und 21 Grad |
-| Dashboard / UI | `dashboards/sieker_hub.yaml`, `dashboards/sieker_hub_v2.yaml` | Bietet den aktuellen Hub sowie die modularisierte V2-Variante mit Übersicht, Diagnose, Service, Tuning und manuellen Heizungsszenen unter `Wohnen > Szenen` |
+| Scene Layer | `packages/heating/heating_scenes.yaml` | Definiert die autoritativen Runtime-Szenen fuer 17, 19 und 21 Grad plus separate manuelle Temperaturszenen |
+| Dashboard / UI | `dashboards/sieker_hub.yaml`, `dashboards/sieker_hub_v2.yaml` | Bietet den aktuellen Hub sowie die modularisierte V2-Variante mit Übersicht, Diagnose, Service, Tuning und manuellen Temperaturszenen unter `Wohnen > Szenen` |
 
 ## Zweck der App
 
@@ -150,6 +150,18 @@ Betroffene Climates:
 - `climate.kuche_wandthermostat`
 - `climate.schlazi_wandthermostat`
 - `climate.wohnzimmer_wandthermostat`
+
+Zusaetzlich liegen in derselben Datei manuelle Temperaturszenen, die bewusst nicht von
+der Automatik genutzt werden:
+
+- `scene.heizung_manual_19deg`
+- `scene.heizung_manual_21deg`
+- `scene.heizung_manual_23deg`
+- `scene.baeder_manual_21deg`
+- `scene.baeder_manua_23deg`
+
+Diese Szenen setzen direkte Temperaturwerte an den Homematic-Thermostaten und dienen
+als alltagsnaher manueller Override-Einstieg im Dashboard.
 
 ## `packages/heating/heating_scripts.yaml`
 
@@ -295,8 +307,8 @@ In `dashboards/sieker_hub_v2.yaml` liegen die Heating-Views modular unter:
 
 | Bereich | Inhalt |
 | --- | --- |
-| Manuelle Heizungsszenen | Direkter Start der Szenen 17, 19 und 21 Grad |
-| Rueckmeldung | Aktives Profil, letzte Szene und letzte Anwendung |
+| Manuelle Temperaturszenen | Direkter Start der manuellen Temperaturszenen fuer gesamte Heizung 19/21/23 Grad sowie Baeder 21/23 Grad |
+| Rueckmeldung | Override-Status, Override-Timer, letzte Automatikentscheidung und Hinweis auf spaetere Uebersteuerung durch die Automatik |
 
 ## End-to-End-Datenfluss
 

@@ -7,7 +7,7 @@
   sections:
     - cards:
         - type: heading
-          heading: Manuelle Heizungsszenen
+          heading: Manuelle Temperaturszenen
           heading_style: title
         - type: grid
           columns: 3
@@ -15,37 +15,65 @@
           cards:
             - type: custom:button-card
               template: scene_action_card
-              entity: scene.heizung_17deg
-              name: 17°
-              label: Heizung
-              icon: mdi:home-thermometer-outline
-              tap_action:
-                action: call-service
-                service: scene.turn_on
-                target:
-                  entity_id: scene.heizung_17deg
-            - type: custom:button-card
-              template: scene_action_card
-              entity: scene.heizung_19deg
+              entity: scene.heizung_manual_19deg
               name: 19°
-              label: Heizung
+              label: Heizung manuell
               icon: mdi:home-thermometer-outline
               tap_action:
                 action: call-service
                 service: scene.turn_on
                 target:
-                  entity_id: scene.heizung_19deg
+                  entity_id: scene.heizung_manual_19deg
             - type: custom:button-card
               template: scene_action_card
-              entity: scene.heizung_21deg
+              entity: scene.heizung_manual_21deg
               name: 21°
-              label: Heizung
+              label: Heizung manuell
               icon: mdi:home-thermometer
               tap_action:
                 action: call-service
                 service: scene.turn_on
                 target:
-                  entity_id: scene.heizung_21deg
+                  entity_id: scene.heizung_manual_21deg
+            - type: custom:button-card
+              template: scene_action_card
+              entity: scene.heizung_manual_23deg
+              name: 23°
+              label: Heizung manuell
+              icon: mdi:home-thermometer
+              tap_action:
+                action: call-service
+                service: scene.turn_on
+                target:
+                  entity_id: scene.heizung_manual_23deg
+        - type: heading
+          heading: Bäder
+        - type: grid
+          columns: 2
+          square: false
+          cards:
+            - type: custom:button-card
+              template: scene_action_card
+              entity: scene.baeder_manual_21deg
+              name: 21°
+              label: Bäder
+              icon: mdi:shower
+              tap_action:
+                action: call-service
+                service: scene.turn_on
+                target:
+                  entity_id: scene.baeder_manual_21deg
+            - type: custom:button-card
+              template: scene_action_card
+              entity: scene.baeder_manua_23deg
+              name: 23°
+              label: Bäder
+              icon: mdi:shower
+              tap_action:
+                action: call-service
+                service: scene.turn_on
+                target:
+                  entity_id: scene.baeder_manua_23deg
     - cards:
         - type: heading
           heading: Rückmeldung
@@ -55,17 +83,24 @@
           square: false
           cards:
             - type: custom:button-card
-              template: hub_metric_card
-              entity: input_select.heizung_aktives_profil
-              name: Aktives Profil
-              icon: mdi:radiator
+              template: hub_alert_card
+              entity: input_boolean.heizung_override
+              name: Override aktiv
+              icon: mdi:timer-sand
             - type: custom:button-card
               template: hub_metric_card
-              entity: input_text.heizung_last_scene
-              name: Letzte Szene
-              icon: mdi:history
+              entity: timer.heizung_override
+              name: Override-Timer
+              icon: mdi:timer-outline
             - type: custom:button-card
               template: hub_metric_card
-              entity: input_datetime.heizung_last_applied
-              name: Letzte Anwendung
-              icon: mdi:clock-outline
+              entity: input_text.heizung_last_action
+              name: Automatik zuletzt
+              icon: mdi:text-box-check-outline
+            - type: custom:button-card
+              template: info_panel_card
+              name: Hinweis
+              label: >
+                Diese Szenen setzen direkte Temperaturen an den Homematic-Thermostaten.
+                Spätestens beim nächsten Automatik-Apply werden sie wieder vom Sollprofil übersteuert.
+              icon: mdi:information-outline
