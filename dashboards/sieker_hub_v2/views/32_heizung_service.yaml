@@ -65,7 +65,7 @@
             - type: custom:button-card
               template: scene_action_card
               name: Jetzt anwenden
-              label: Safe Script
+              label: Profil anwenden
               icon: mdi:play-circle-outline
               tap_action:
                 action: call-service
