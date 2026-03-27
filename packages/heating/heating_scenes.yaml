@@ -96,7 +96,7 @@ scene:
       state: auto
       temperature: 23
 
-    climate.gaste_wandthermostat:
+    climate.gastebad_wandthermostat:
       state: auto
       temperature: 23
 
@@ -108,7 +108,7 @@ scene:
       state: auto
       temperature: 21
 
-    climate.gaste_wandthermostat:
+    climate.gastebad_wandthermostat:
       state: auto
       temperature: 21
 
