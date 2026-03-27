@@ -1,11 +1,3 @@
-# Version: 1.0.1
-# Root role: Legacy-/Kompatibilitaetsebene. Neue Runtime-Logik gehoert in config/packages/<domain>/...
-# Hinweis: Heizungs-Szenenverantwortung ist fachlich getrennt:
-# - packages/heating/* ist der autoritative Runtime-Pfad fuer die automatische 3-Profil-Heizregelung.
-# - Root-Szenen bleiben manuelle Zusatzszenen sowie Legacy-/Kompatibilitaetspfade.
-# - Das gilt fuer "Heizung 22°" ebenso wie fuer die Root-Baeder-Szenen.
-# - Diese Root-Szenen sind NICHT Teil der autoritativen automatischen 3-Profil-Regelung.
-# - Das betrifft auch climate.gastebad_wandthermostat: automatische Standardprofile kommen aus packages/heating/*.
 - id: '1733645078269'
   name: Bäder 23°
   entities:
@@ -40,29 +32,3 @@
     climate.gastebad_wandthermostat:
       entity_only: true
   icon: mdi:bathtub
-# Manuelle Zusatzszene / Legacy-Kompatibilitaet:
-# - bewusst separat nutzbar fuer temporaer hoeheres Niveau
-# - nicht Teil der autoritativen automatischen 3-Profil-Regelung
-# - gleiches Abgrenzungsmodell gilt fuer die Root-Baeder-Szenen oben
-- id: '1768152452632'
-  name: Heizung 22°
-  entities:
-    climate.flur_wandthermostat:
-      state: auto
-      preset_mode: week_program_5
-    climate.gaste_wandthermostat:
-      state: auto
-      preset_mode: week_program_5
-    climate.kuche_wandthermostat:
-      state: auto
-      preset_mode: week_program_5
-    climate.gastebad_wandthermostat:
-      state: auto
-      preset_mode: week_program_5
-    climate.schlazi_wandthermostat:
-      state: auto
-      preset_mode: week_program_5
-    climate.wohnzimmer_wandthermostat:
-      state: auto
-      preset_mode: week_program_5
-  icon: mdi:radiator
