@@ -87,3 +87,123 @@ scene:
     climate.wohnzimmer_wandthermostat:
       state: auto
       preset_mode: week_program_3
+
+- id: baeder_manua_23deg
+  name: Baeder 23°
+  icon: mdi:radiator
+  entities:
+    climate.bad_wandthermostat:
+      state: auto
+      temperature: 23
+
+    climate.gaste_wandthermostat:
+      state: auto
+      temperature: 23
+
+- id: baeder_manual_21deg
+  name: Baeder 21°
+  icon: mdi:radiator
+  entities:
+    climate.bad_wandthermostat:
+      state: auto
+      temperature: 21
+
+    climate.gaste_wandthermostat:
+      state: auto
+      temperature: 21
+
+- id: heizung_manual_19deg
+  name: Manuel Heizung 19°
+  icon: mdi:radiator
+  entities:
+    climate.flur_wandthermostat:
+      state: auto
+      temperature: 19
+
+    climate.bad_wandthermostat:
+      state: auto
+      temperature: 19
+
+    climate.gaste_wandthermostat:
+      state: auto
+      temperature: 19
+
+    climate.kuche_wandthermostat:
+      state: auto
+      temperature: 19
+
+    climate.gastebad_wandthermostat:
+      state: auto
+      temperature: 19
+
+    climate.schlazi_wandthermostat:
+      state: auto
+      temperature: 19
+
+    climate.wohnzimmer_wandthermostat:
+      state: auto
+      temperature: 19
+
+- id: heizung_manual_21deg
+  name: Manuel Heizung 21°
+  icon: mdi:radiator
+  entities:
+    climate.flur_wandthermostat:
+      state: auto
+      temperature: 21
+
+    climate.bad_wandthermostat:
+      state: auto
+      temperature: 21
+
+    climate.gaste_wandthermostat:
+      state: auto
+      temperature: 21
+
+    climate.kuche_wandthermostat:
+      state: auto
+      temperature: 21
+
+    climate.gastebad_wandthermostat:
+      state: auto
+      temperature: 21
+
+    climate.schlazi_wandthermostat:
+      state: auto
+      temperature: 21
+
+    climate.wohnzimmer_wandthermostat:
+      state: auto
+      temperature: 21
+
+- id: heizung_manual_23deg
+  name: Manuel Heizung 23°
+  icon: mdi:radiator
+  entities:
+    climate.flur_wandthermostat:
+      state: auto
+      temperature: 23
+
+    climate.bad_wandthermostat:
+      state: auto
+      temperature: 23
+
+    climate.gaste_wandthermostat:
+      state: auto
+      temperature: 23
+
+    climate.kuche_wandthermostat:
+      state: auto
+      temperature: 23
+
+    climate.gastebad_wandthermostat:
+      state: auto
+      temperature: 23
+
+    climate.schlazi_wandthermostat:
+      state: auto
+      temperature: 23
+
+    climate.wohnzimmer_wandthermostat:
+      state: auto
+      temperature: 23
