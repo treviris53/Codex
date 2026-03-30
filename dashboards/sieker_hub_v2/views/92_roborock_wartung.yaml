@@ -121,6 +121,6 @@
           name: Wartung
           label: >
             Wartungs-Resets und Restlaufzeiten bleiben fachlich unverändert. Die
-            Wartungskarte oben färbt sich weiter kritisch, sobald ein
-            Verbrauchsmaterial aufgebraucht ist.
+            Wartungskarte oben und der Roborock-Status im Hausstatus färben sich
+            kritisch, sobald ein Verbrauchsmaterial aufgebraucht ist.
           icon: mdi:tools

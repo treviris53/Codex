@@ -68,11 +68,14 @@
                 ]]]
             - type: custom:button-card
               template: hub_metric_card
-              entity: sensor.saros_20_set_status
+              entity: binary_sensor.roborock_maintenance_due
               name: Roborock
               icon: mdi:robot-vacuum
+              triggers_update:
+                - sensor.saros_20_set_status
               state_display: >
                 [[[
+                  const raw = states['sensor.saros_20_set_status']?.state;
                   const map = {
                     charging: 'Lädt',
                     docked: 'Dock',
@@ -81,8 +84,20 @@
                     idle: 'Bereit',
                     returning_home: 'Rückkehr',
                   };
-                  return map[entity?.state] ?? entity?.state ?? '—';
+                  const status = map[raw] ?? raw ?? '—';
+                  return entity?.state === 'on' ? `${status} · Wartung` : status;
                 ]]]
+              state:
+                - value: 'on'
+                  styles:
+                    card:
+                      - background: rgba(var(--rgb-error-color), 0.10)
+                    img_cell:
+                      - background: rgba(var(--rgb-error-color), 0.18)
+                    icon:
+                      - color: var(--error-color)
+                    state:
+                      - color: var(--error-color)
             - type: custom:button-card
               template: hub_metric_card
               entity: sensor.eaton_3s850d_batterie_ladung

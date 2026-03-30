@@ -1,9 +1,10 @@
 # ======================================================================
 # Roborock Saros 20 - Core / Program Executor
 # File: config/packages/roborock/roborock_core.yaml
-# Version: 3.0.2
-# Date: 2026-03-21
+# Version: 3.0.3
+# Date: 2026-03-30
 # Change note:
+# - Added shared maintenance-due binary sensor for dashboard warning reuse
 # - Added missing busy helpers to remove hidden package dependencies
 # - Normalized program/job identifiers to consistent snake_case keys
 # - Added safe cleanup script so busy lock is cleared on all known failures
@@ -71,6 +72,27 @@ template:
           ] }}
         availability: >-
           {{ states('sensor.saros_20_set_status') not in ['unavailable', 'none', None] }}
+
+      - name: Roborock Maintenance Due
+        unique_id: roborock_maintenance_due
+        state: >-
+          {{
+            [
+              states('sensor.saros_20_set_verbleibende_zeit_der_hauptburste') | float(default=999999),
+              states('sensor.saros_20_set_verbleibende_zeit_der_seitenburste') | float(default=999999),
+              states('sensor.saros_20_set_verbleibende_filterzeit') | float(default=999999),
+              states('sensor.saros_20_set_verbleibende_sensorzeit') | float(default=999999),
+              states('sensor.saros_20_set_dock_schmutzfanger_verbleibend') | float(default=999999)
+            ] | min <= 0
+          }}
+        availability: >-
+          {{
+            has_value('sensor.saros_20_set_verbleibende_zeit_der_hauptburste')
+            or has_value('sensor.saros_20_set_verbleibende_zeit_der_seitenburste')
+            or has_value('sensor.saros_20_set_verbleibende_filterzeit')
+            or has_value('sensor.saros_20_set_verbleibende_sensorzeit')
+            or has_value('sensor.saros_20_set_dock_schmutzfanger_verbleibend')
+          }}
 
 automation:
   - id: roborock_busy_reset_on_start

@@ -53,6 +53,7 @@ Stand jetzt:
 
 - `Home` ist ein Leitstand ohne vollständige Raumvorschau und ohne Alltagsbedienung.
 - `Home` nutzt kompakte Status-, Alert- und Navigationskarten statt klassischer Entity-Listen, bleibt aber auf denselben autoritativen Entitäten.
+- `Home` spiegelt kritische Roborock-Wartung direkt im Roborock-Statusbutton, ohne die Wartungslogik im Dashboard nachzubauen.
 - `Wohnen` trennt manuelle Wohnfunktionen bewusst von Diagnose- und Technikmodulen.
 - `Räume` ist bewusst nicht Teil der Fachmodule.
 - `Räume` nutzt kuratierte Klima- und Kontextkarten mit bewusst gekürzten, gut lesbaren Raumlabels.
@@ -228,7 +229,9 @@ Designvereinheitlichung.
 `Wochenplan` zeigt einen kompakten globalen Schalter plus Wochentagskarten,
 waehrend die einzelnen Tages-Subviews bewusst direkt editierbar bleiben.
 `Wartung` zeigt Resets und Verbrauchsmaterial in derselben Kartensprache wie
-die anderen modernisierten Module, ohne die Funktion zu aendern.
+die anderen modernisierten Module, ohne die Funktion zu aendern. Ein
+kritischer Wartungszustand wird zusaetzlich im `Home`-View am
+Roborock-Statusbutton gespiegelt.
 
 ## Validierung
 

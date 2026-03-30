@@ -98,6 +98,7 @@ Ready-/Blocked-Sensoren, Restart-Bereinigung und die eigentliche Programm- bzw. 
 | --- | --- |
 | `binary_sensor.roborock_program_ready` | `on`, wenn Roborock in `idle`, `charging` oder `charging_complete` ist |
 | `binary_sensor.roborock_program_blocked` | `on`, wenn der Status z. B. `error`, `locked`, `device_offline`, `mapping` oder `manual_mode` ist |
+| `binary_sensor.roborock_maintenance_due` | `on`, wenn mindestens ein Verbrauchsmaterial-Sensor numerisch `<= 0` meldet |
 
 ### Skripte
 
@@ -340,6 +341,11 @@ Hub-Einstieg ab, trennt die Views aber in eigene Quelldateien unter
 | `views/84_roborock_wochenplan.yaml` | Globaler Scheduler-Schalter, Referenz und Wochentagskarten |
 | `views/85_...` bis `views/91_...` | Direkt editierbare Tages-Subviews fuer Montag bis Sonntag |
 | `views/92_roborock_wartung.yaml` | Reset-Buttons und Verbrauchsmaterial-Staende |
+
+Die Wartungswarnung fuer Verbrauchsmaterial wird dabei einmal zentral ueber
+`binary_sensor.roborock_maintenance_due` bewertet. Sowohl der Wartungs-Navigationsbutton
+im Roborock-Modul als auch der Roborock-Status im `Home`-/`Hausstatus`-Block des Hubs
+nutzen genau diesen Zustand.
 
 ### Manuelle Programme im Dashboard
 

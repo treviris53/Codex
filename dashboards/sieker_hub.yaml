@@ -680,11 +680,14 @@ views:
                   ]]]
               - type: custom:button-card
                 template: hub_metric_card
-                entity: sensor.saros_20_set_status
+                entity: binary_sensor.roborock_maintenance_due
                 name: Roborock
                 icon: mdi:robot-vacuum
+                triggers_update:
+                  - sensor.saros_20_set_status
                 state_display: >
                   [[[
+                    const raw = states['sensor.saros_20_set_status']?.state;
                     const map = {
                       charging: 'Lädt',
                       docked: 'Dock',
@@ -693,8 +696,20 @@ views:
                       idle: 'Bereit',
                       returning_home: 'Rückkehr',
                     };
-                    return map[entity?.state] ?? entity?.state ?? '—';
+                    const status = map[raw] ?? raw ?? '—';
+                    return entity?.state === 'on' ? `${status} · Wartung` : status;
                   ]]]
+                state:
+                  - value: 'on'
+                    styles:
+                      card:
+                        - background: rgba(var(--rgb-error-color), 0.10)
+                      img_cell:
+                        - background: rgba(var(--rgb-error-color), 0.18)
+                      icon:
+                        - color: var(--error-color)
+                      state:
+                        - color: var(--error-color)
               - type: custom:button-card
                 template: hub_metric_card
                 entity: sensor.eaton_3s850d_batterie_ladung
@@ -3028,6 +3043,7 @@ views:
                   navigation_path: roborock-wochenplan
               - type: custom:button-card
                 template: hub_nav_card
+                entity: binary_sensor.roborock_maintenance_due
                 name: Wartung
                 icon: mdi:tools
                 show_state: false
@@ -3035,21 +3051,7 @@ views:
                   action: navigate
                   navigation_path: roborock-wartung
                 state:
-                  - operator: template
-                    value: >
-                      [[[
-                        return [
-                          'sensor.saros_20_set_verbleibende_zeit_der_hauptburste',
-                          'sensor.saros_20_set_verbleibende_zeit_der_seitenburste',
-                          'sensor.saros_20_set_verbleibende_filterzeit',
-                          'sensor.saros_20_set_verbleibende_sensorzeit',
-                          'sensor.saros_20_set_dock_schmutzfanger_verbleibend'
-                        ].some((id) => {
-                          const raw = states[id]?.state;
-                          const value = Number(raw);
-                          return Number.isFinite(value) && value <= 0;
-                        });
-                      ]]]
+                  - value: 'on'
                     styles:
                       card:
                         - background-color: rgba(var(--rgb-error-color), 0.14)
@@ -4258,6 +4260,6 @@ views:
             name: Wartung
             label: >
               Wartungs-Resets und Restlaufzeiten bleiben fachlich unverändert. Die
-              Wartungskarte oben färbt sich weiter kritisch, sobald ein
-              Verbrauchsmaterial aufgebraucht ist.
+              Wartungskarte oben und der Roborock-Status im Hausstatus färben sich
+              kritisch, sobald ein Verbrauchsmaterial aufgebraucht ist.
             icon: mdi:tools

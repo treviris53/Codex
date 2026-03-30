@@ -179,6 +179,7 @@
                 navigation_path: roborock-wochenplan
             - type: custom:button-card
               template: hub_nav_card
+              entity: binary_sensor.roborock_maintenance_due
               name: Wartung
               icon: mdi:tools
               show_state: false
@@ -186,21 +187,7 @@
                 action: navigate
                 navigation_path: roborock-wartung
               state:
-                - operator: template
-                  value: >
-                    [[[
-                      return [
-                        'sensor.saros_20_set_verbleibende_zeit_der_hauptburste',
-                        'sensor.saros_20_set_verbleibende_zeit_der_seitenburste',
-                        'sensor.saros_20_set_verbleibende_filterzeit',
-                        'sensor.saros_20_set_verbleibende_sensorzeit',
-                        'sensor.saros_20_set_dock_schmutzfanger_verbleibend'
-                      ].some((id) => {
-                        const raw = states[id]?.state;
-                        const value = Number(raw);
-                        return Number.isFinite(value) && value <= 0;
-                      });
-                    ]]]
+                - value: 'on'
                   styles:
                     card:
                       - background-color: rgba(var(--rgb-error-color), 0.14)
