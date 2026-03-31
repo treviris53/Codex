@@ -38,51 +38,31 @@
                   return raw ?? '—';
                 ]]]
             - type: custom:button-card
-              template: qnap_high_metric_card
+              template: qnap_percent_card
               entity: sensor.nas8649a0_cpu_auslastung
               variables:
                 warn_threshold: 70
                 crit_threshold: 90
               name: CPU-Last
               icon: mdi:chip
-              state_display: >
-                [[[
-                  const value = Number(entity?.state);
-                  return Number.isFinite(value) ? `${value} %` : entity?.state ?? '—';
-                ]]]
             - type: custom:button-card
-              template: qnap_high_metric_card
+              template: qnap_percent_card
               entity: sensor.nas8649a0_arbeitsspeicherauslastung
               variables:
                 warn_threshold: 70
                 crit_threshold: 90
               name: RAM-Last
               icon: mdi:memory
-              state_display: >
-                [[[
-                  const value = Number(entity?.state);
-                  return Number.isFinite(value) ? `${value} %` : entity?.state ?? '—';
-                ]]]
             - type: custom:button-card
-              template: hub_metric_card
+              template: qnap_storage_card
               entity: sensor.nas8649a0_verwendeter_arbeitsspeicher
               name: RAM genutzt
               icon: mdi:memory-arrow-down
-              state_display: >
-                [[[
-                  const value = Number(entity?.state);
-                  return Number.isFinite(value) ? `${value} GiB` : entity?.state ?? '—';
-                ]]]
             - type: custom:button-card
-              template: hub_metric_card
+              template: qnap_storage_card
               entity: sensor.nas8649a0_verfugbarer_arbeitsspeicher
               name: RAM frei
               icon: mdi:memory-arrow-up
-              state_display: >
-                [[[
-                  const value = Number(entity?.state);
-                  return Number.isFinite(value) ? `${value} GiB` : entity?.state ?? '—';
-                ]]]
             - type: custom:button-card
               template: qnap_high_metric_card
               entity: sensor.nas8649a0_cpu_temperatur
