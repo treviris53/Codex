@@ -48,6 +48,12 @@ Primary working directory: `D:\Codex`
 - Use absolute local filesystem paths only when the task specifically needs machine-local context, external directories, or user-facing file references.
 - Make the context clear whenever both repository and runtime paths are relevant.
 
+## Network Documentation Paths
+- The authoritative, versioned repository location for network architecture is `_netzwerk/`.
+- Prefer repository paths such as `_netzwerk/netzwerk_dokumentation.md` and `_netzwerk/netzwerkdiagramm_vollstaendig.drawio` when reading or updating network structure.
+- Treat files outside the repository, for example under `D:\WLAN`, as external or legacy sources unless a task explicitly targets them.
+- When a task changes network architecture, connectivity assumptions, trusted networks, DNS, DHCP, WLAN, switching, routing, or related operator documentation, update the relevant files under `_netzwerk/` in the same task when appropriate.
+
 ## Development Shell Context
 - Default development shell context is PowerShell on Windows 11.
 - Prefer PowerShell-native commands and path handling unless the task explicitly requires another shell.
@@ -135,7 +141,9 @@ For substantial Home Assistant changes, include:
 
 ## Documentation maintenance
 - Treat documentation under `_ha_dokumentation/` as project guidance for established module behavior, operating flows, and dashboard structure.
+- Treat documentation under `_netzwerk/` as the authoritative, versioned source for repository-local network architecture and topology.
 - Before changing a documented module's behavior or operator-facing flow, read the corresponding module documentation and keep it in sync in the same task.
+- Before changing network architecture, trusted networks, DNS, DHCP, WLAN, UniFi, QNAP connectivity, routing, or related topology assumptions, read and update the relevant files under `_netzwerk/` as needed.
 - Pure formatting or strictly non-functional cleanup does not require documentation updates unless clarity, ownership, or operator guidance changed.
 - Use `_context/project_rules.md`, module rules under `_context/modules/`, and `_context/instruction_map.md` for the fuller documentation-maintenance model.
 

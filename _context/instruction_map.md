@@ -22,6 +22,7 @@ Sie beantwortet zwei Fragen:
 | Architektur, Packages, Scripts, Automationen, Dashboards | `D:\Codex\_context\architecture.md` |
 | Dashboard-Redesign, Dashboard-Bugfix, UI-/Subview-Struktur | `D:\Codex\_context\dashboard.md` |
 | Deployment, Diff, Reload, Restart, Healthcheck, produktive Diagnose mit klarer Aktivierungsgrenze | `D:\Codex\_context\deployment.md` |
+| Netzwerkarchitektur, Trusted Networks, DNS, DHCP, UniFi, QNAP-Konnektivitaet, WLAN, Routing, Topologie-Doku | `D:\Codex\AGENTS.md` und `D:\Codex\_netzwerk\...` |
 | HACS-Abhaengigkeiten, Custom Cards, Custom Integrations, Themes | `D:\Codex\_context\hacs_inventory.md` |
 | VS Code Setup, Workspace-Settings, Editor-Tasks | `D:\Codex\_context\dev_tooling.md` |
 | Runtime-Snapshot, Debug-Snapshots, lokale HA-Analyse, produktive Logs / Traces im Read-Only-Modus | `D:\Codex\_context\runtime_usage.md` |
@@ -37,6 +38,7 @@ Sie beantwortet zwei Fragen:
 Die globale Arbeitsgrundlage fuer neue Threads:
 
 - Repository- und Runtime-Pfade
+- repository-lokale Netzwerkdokumentation unter `_netzwerk/`
 - Package-Loading-Annahme
 - Laufzeit- und Shell-Kontext
 - produktionsnaher Aenderungsmodus
@@ -47,6 +49,18 @@ Die globale Arbeitsgrundlage fuer neue Threads:
 Verwendung:
 - Immer lesen
 - Bei Konflikten hat diese Datei Vorrang vor `_context`
+
+### `D:\Codex\_netzwerk\...`
+
+Die versionierte Netzwerkarchitektur fuer dieses Repository:
+
+- Netzwerktopologie
+- IP- und Rollenuebersicht
+- Diagramm und begleitende Textdokumentation
+
+Verwendung:
+- Vor Aenderungen mit Netzwerk-, Trusted-Networks-, DNS-, DHCP-, WLAN-, Routing-, UniFi- oder QNAP-Bezug
+- Wenn Netzwerkdokumentation im Repo gepflegt oder aktualisiert werden soll
 
 ### `D:\Codex\README_AGENT.md`
 

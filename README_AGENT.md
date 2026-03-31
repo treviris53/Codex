@@ -24,6 +24,7 @@ Key rules:
   - Home Assistant Core `2026.3.2`
   - Supervisor available
 - Packages in this repository live under `packages/`
+- Versioned network architecture documents live under `_netzwerk/`
 - Runtime package path is `/config/packages/`
 - Deployment path is production-oriented via Samba and deployment script
 - VS Code task integration exists for yamllint plus guarded preview, diff-only, WhatIf, and live deploy flows
