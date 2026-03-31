@@ -1,0 +1,506 @@
+- title: Diagnose
+  path: qnap-diagnose
+  icon: mdi:bug-outline
+  subview: true
+  type: sections
+  max_columns: 3
+  sections:
+    - cards:
+        - type: heading
+          heading: System
+          heading_style: title
+        - type: grid
+          columns: 1
+          square: false
+          cards:
+            - type: custom:button-card
+              template: qnap_text_health_card
+              entity: sensor.nas8649a0_status
+              name: Status
+              icon: mdi:information-outline
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.nas8649a0_betriebszeit
+              name: Betriebszeit
+              icon: mdi:clock-outline
+              state_display: >
+                [[[
+                  const raw = entity?.state;
+                  const date = raw ? new Date(raw) : null;
+                  if (date && !Number.isNaN(date.getTime())) {
+                    return date.toLocaleString('de-DE', {
+                      day: '2-digit',
+                      month: '2-digit',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    });
+                  }
+                  return raw ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: qnap_high_metric_card
+              entity: sensor.nas8649a0_cpu_auslastung
+              variables:
+                warn_threshold: 70
+                crit_threshold: 90
+              name: CPU-Last
+              icon: mdi:chip
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} %` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: qnap_high_metric_card
+              entity: sensor.nas8649a0_arbeitsspeicherauslastung
+              variables:
+                warn_threshold: 70
+                crit_threshold: 90
+              name: RAM-Last
+              icon: mdi:memory
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} %` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.nas8649a0_verwendeter_arbeitsspeicher
+              name: RAM genutzt
+              icon: mdi:memory-arrow-down
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} GiB` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.nas8649a0_verfugbarer_arbeitsspeicher
+              name: RAM frei
+              icon: mdi:memory-arrow-up
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} GiB` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: qnap_high_metric_card
+              entity: sensor.nas8649a0_cpu_temperatur
+              variables:
+                warn_threshold: 70
+                crit_threshold: 80
+              name: CPU-Temperatur
+              icon: mdi:thermometer
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} °C` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: qnap_high_metric_card
+              entity: sensor.nas8649a0_systemtemperatur
+              variables:
+                warn_threshold: 45
+                crit_threshold: 55
+              name: Systemtemperatur
+              icon: mdi:thermometer-lines
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} °C` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: qnap_high_metric_card
+              entity: sensor.qnap_ssd_temp
+              variables:
+                warn_threshold: 45
+                crit_threshold: 55
+              name: SSD-Mittel
+              icon: mdi:harddisk
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} °C` : entity?.state ?? '—';
+                ]]]
+    - cards:
+        - type: heading
+          heading: Laufwerke
+        - type: grid
+          columns: 2
+          square: false
+          cards:
+            - type: custom:button-card
+              template: qnap_text_health_card
+              entity: sensor.nas8649a0_status_des_laufwerks_0_1
+              name: Laufwerk 1 Status
+              icon: mdi:harddisk
+            - type: custom:button-card
+              template: qnap_high_metric_card
+              entity: sensor.nas8649a0_laufwerk_0_1_temperatur
+              variables:
+                warn_threshold: 50
+                crit_threshold: 60
+              name: Laufwerk 1 Temp
+              icon: mdi:thermometer
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} °C` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: qnap_text_health_card
+              entity: sensor.nas8649a0_status_des_laufwerks_0_2
+              name: Laufwerk 2 Status
+              icon: mdi:harddisk
+            - type: custom:button-card
+              template: qnap_high_metric_card
+              entity: sensor.nas8649a0_laufwerk_0_2_temperatur
+              variables:
+                warn_threshold: 50
+                crit_threshold: 60
+              name: Laufwerk 2 Temp
+              icon: mdi:thermometer
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} °C` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: qnap_text_health_card
+              entity: sensor.nas8649a0_status_des_laufwerks_0_3
+              name: Laufwerk 3 Status
+              icon: mdi:harddisk
+            - type: custom:button-card
+              template: qnap_high_metric_card
+              entity: sensor.nas8649a0_laufwerk_0_3_temperatur
+              variables:
+                warn_threshold: 50
+                crit_threshold: 60
+              name: Laufwerk 3 Temp
+              icon: mdi:thermometer
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} °C` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: qnap_text_health_card
+              entity: sensor.nas8649a0_status_des_laufwerks_0_4
+              name: Laufwerk 4 Status
+              icon: mdi:harddisk
+            - type: custom:button-card
+              template: qnap_high_metric_card
+              entity: sensor.nas8649a0_laufwerk_0_4_temperatur
+              variables:
+                warn_threshold: 50
+                crit_threshold: 60
+              name: Laufwerk 4 Temp
+              icon: mdi:thermometer
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} °C` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: qnap_text_health_card
+              entity: sensor.nas8649a0_status_des_laufwerks_0_5
+              name: Laufwerk 5 Status
+              icon: mdi:harddisk
+            - type: custom:button-card
+              template: qnap_high_metric_card
+              entity: sensor.nas8649a0_laufwerk_0_5_temperatur
+              variables:
+                warn_threshold: 50
+                crit_threshold: 60
+              name: Laufwerk 5 Temp
+              icon: mdi:thermometer
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} °C` : entity?.state ?? '—';
+                ]]]
+    - cards:
+        - type: heading
+          heading: Volumes
+        - type: grid
+          columns: 2
+          square: false
+          cards:
+            - type: custom:button-card
+              template: qnap_high_metric_card
+              entity: sensor.nas8649a0_verwendetes_volume_has
+              variables:
+                warn_threshold: 80
+                crit_threshold: 90
+              name: HAS
+              icon: mdi:home-assistant
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} %` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.nas8649a0_freier_speicherplatz_has
+              name: HAS frei
+              icon: mdi:database-arrow-right
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} GiB` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: qnap_high_metric_card
+              entity: sensor.nas8649a0_verwendetes_volume_container
+              variables:
+                warn_threshold: 80
+                crit_threshold: 90
+              name: Container
+              icon: mdi:docker
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} %` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.nas8649a0_freier_speicherplatz_container
+              name: Container frei
+              icon: mdi:database-arrow-right
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} GiB` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: qnap_high_metric_card
+              entity: sensor.nas8649a0_verwendetes_volume_homes
+              variables:
+                warn_threshold: 80
+                crit_threshold: 90
+              name: homes
+              icon: mdi:home-group
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} %` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: qnap_high_metric_card
+              entity: sensor.nas8649a0_verwendetes_volume_multimedia
+              variables:
+                warn_threshold: 80
+                crit_threshold: 90
+              name: Multimedia
+              icon: mdi:multimedia
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} %` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: qnap_high_metric_card
+              entity: sensor.nas8649a0_verwendetes_volume_public
+              variables:
+                warn_threshold: 80
+                crit_threshold: 90
+              name: Public
+              icon: mdi:folder-account-outline
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} %` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: qnap_high_metric_card
+              entity: sensor.nas8649a0_verwendetes_volume_privat
+              variables:
+                warn_threshold: 80
+                crit_threshold: 90
+              name: Privat
+              icon: mdi:folder-lock-outline
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} %` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: qnap_high_metric_card
+              entity: sensor.nas8649a0_verwendetes_volume_foto
+              variables:
+                warn_threshold: 80
+                crit_threshold: 90
+              name: Foto
+              icon: mdi:image-multiple-outline
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} %` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.nas8649a0_freier_speicherplatz_foto
+              name: Foto frei
+              icon: mdi:database-arrow-right
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} GiB` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: qnap_high_metric_card
+              entity: sensor.nas8649a0_verwendetes_volume_edms
+              variables:
+                warn_threshold: 80
+                crit_threshold: 90
+              name: EDMS
+              icon: mdi:file-document-multiple-outline
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} %` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: qnap_high_metric_card
+              entity: sensor.nas8649a0_verwendetes_volume_pdf
+              variables:
+                warn_threshold: 80
+                crit_threshold: 90
+              name: PDF
+              icon: mdi:file-pdf-box
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} %` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: qnap_high_metric_card
+              entity: sensor.nas8649a0_verwendetes_volume_macminitm
+              variables:
+                warn_threshold: 80
+                crit_threshold: 90
+              name: MacMiniTM
+              icon: mdi:laptop
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} %` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: qnap_high_metric_card
+              entity: sensor.nas8649a0_verwendetes_volume_windowslun_0
+              variables:
+                warn_threshold: 80
+                crit_threshold: 90
+              name: WindowsLun
+              icon: mdi:microsoft-windows
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} %` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: qnap_high_metric_card
+              entity: sensor.nas8649a0_volume_nutzung_install_iso
+              variables:
+                warn_threshold: 80
+                crit_threshold: 90
+              name: Install_Iso
+              icon: mdi:disc-player
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} %` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: qnap_high_metric_card
+              entity: sensor.nas8649a0_volume_nutzung_ubuntu
+              variables:
+                warn_threshold: 80
+                crit_threshold: 90
+              name: Ubuntu
+              icon: mdi:ubuntu
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} %` : entity?.state ?? '—';
+                ]]]
+    - cards:
+        - type: heading
+          heading: Netzwerk
+        - type: grid
+          columns: 1
+          square: false
+          cards:
+            - type: custom:button-card
+              template: qnap_link_card
+              entity: sensor.nas8649a0_eth0_link
+              name: eth0 Link
+              icon: mdi:ethernet
+              state_display: >
+                [[[
+                  const raw = String(entity?.state ?? '—');
+                  const value = raw.toLowerCase();
+                  if (value === 'up') return 'Verbunden';
+                  if (value === 'down') return 'Getrennt';
+                  return raw;
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.nas8649a0_eth0_hochstgeschwindigkeit
+              name: eth0 Max
+              icon: mdi:speedometer
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} Mbit/s` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: qnap_error_counter_card
+              entity: sensor.nas8649a0_eth0_paketfehler
+              variables:
+                warn_threshold: 1
+                crit_threshold: 10
+              name: eth0 Fehler
+              icon: mdi:alert-circle-outline
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value}` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: qnap_link_card
+              entity: sensor.nas8649a0_eth1_link
+              name: eth1 Link
+              icon: mdi:ethernet
+              state_display: >
+                [[[
+                  const raw = String(entity?.state ?? '—');
+                  const value = raw.toLowerCase();
+                  if (value === 'up') return 'Verbunden';
+                  if (value === 'down') return 'Getrennt';
+                  return raw;
+                ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.nas8649a0_eth1_hochstgeschwindigkeit
+              name: eth1 Max
+              icon: mdi:speedometer
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value} Mbit/s` : entity?.state ?? '—';
+                ]]]
+            - type: custom:button-card
+              template: qnap_error_counter_card
+              entity: sensor.nas8649a0_eth1_paketfehler
+              variables:
+                warn_threshold: 1
+                crit_threshold: 10
+              name: eth1 Fehler
+              icon: mdi:alert-circle-outline
+              state_display: >
+                [[[
+                  const value = Number(entity?.state);
+                  return Number.isFinite(value) ? `${value}` : entity?.state ?? '—';
+                ]]]

@@ -32,15 +32,16 @@ Stand jetzt:
 - das Rollläden-Modul ist in V2 bereits funktional aus dem bestehenden Hub
   gespiegelt
 - die restlichen Modul- und Alltags-Views `Räume`, `Wohnen`, `Steckdose Balkon`,
-  `USV` und `Waschmaschine` sind ebenfalls funktional in V2 gespiegelt
+  `USV`, `QNAP` und `Waschmaschine` sind ebenfalls funktional in V2 gespiegelt
 - die Roborock-Views leben in eigenen Dateien unter
   `dashboards/sieker_hub_v2/views/80_...` bis `92_...`
 - die Heating-Views leben in eigenen Dateien unter
   `dashboards/sieker_hub_v2/views/30_...` bis `33_...`
 - die Rollläden-Views leben in eigenen Dateien unter
   `dashboards/sieker_hub_v2/views/40_...` bis `43_...`
-- `Räume`, `Wohnen`, `Steckdose Balkon`, `USV` und `Waschmaschine` leben in
-  eigenen Dateien unter `10_...`, `20_...`, `50_...`, `60_...` und `70_...`
+- `Räume`, `Wohnen`, `Steckdose Balkon`, `USV`, `QNAP` und `Waschmaschine`
+  leben in eigenen Dateien unter `10_...`, `20_...`, `50_...`, `60_...`,
+  `62_...` bis `63_...` und `70_...`
 
 ## Navigationslogik
 
@@ -66,12 +67,13 @@ Stand jetzt:
 - Rollläden
 - Steckdose Balkon
 - USV
+- QNAP
 - Waschmaschine
 - Roborock
 
-Kleine Geraetemodule wie `USV` und `Waschmaschine` folgen derselben kompakten
-Kartensprache wie `Home`, `Räume` und `Wohnen`, bleiben fachlich aber auf
-Status, Bedienung und Einordnung begrenzt.
+Kleine Geraetemodule wie `USV`, `QNAP` und `Waschmaschine` folgen derselben
+kompakten Kartensprache wie `Home`, `Räume` und `Wohnen`, bleiben fachlich
+aber auf Status, Diagnose und Einordnung begrenzt.
 
 ## Heizung-Modul
 
@@ -165,6 +167,33 @@ Die detaillierten Rohwerte bleiben im Diagnose-Subview.
 
 Das Diagnose-Subview ist ebenfalls in kompakte Karten gegliedert und trennt
 `Rohstatus` von `Elektrik`, statt die Werte nur als lange Entity-Liste zu zeigen.
+
+## QNAP-Modul
+
+Das Modul `QNAP` bündelt den produktiven Betriebszustand des NAS als
+kompakten Geräte-View mit Fokus auf Systemgesundheit und erkennbare Probleme.
+
+Der Top-Level-View ist in vier Bloecke gegliedert:
+
+- `Übersicht` für Status, Laufzeit, CPU-/RAM-Last und Temperaturbild
+- `Speicher & Netz` für die wichtigsten Volume-Auslastungen sowie Link- und
+  Fehlerlage der beiden Netzwerkports
+- `Untermenüs` für den Diagnose-Einstieg
+- `Einordnung` als kurze Kontextkarte zur Trennung von verdichtetem Status und
+  Detaildiagnose
+
+Das Diagnose-Subview ist thematisch in `System`, `Laufwerke`, `Volumes` und
+`Netzwerk` getrennt. Dadurch bleiben SMART-Status, SSD-/Laufwerkstemperaturen,
+aktive Volume-Nutzungen und freie Speicherwerte lesbar, ohne den Top-Level-View
+mit Rohwerten zu überladen.
+
+Zusätzlich wird der QNAP-Zustand im `Home`-View als verdichtete Statuskarte
+gespiegelt. Kritische Hinweise werden dort bewusst nur verdichtet angezeigt,
+zum Beispiel Link-Abweichungen, Paketfehler oder hohe Belegung wichtiger
+Volumes.
+Kritische Sensorzustände werden im Modul zusätzlich farblich markiert, damit
+Temperatur-, SMART-, Link-, Fehler- und Belegungsprobleme direkt aus dem
+Kartenbild erkennbar sind.
 
 ## Steckdose-Balkon-Modul
 

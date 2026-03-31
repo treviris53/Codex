@@ -112,6 +112,145 @@
                   }
                   return raw ?? '—';
                 ]]]
+            - type: custom:button-card
+              template: hub_metric_card
+              entity: sensor.nas8649a0_status
+              name: QNAP
+              icon: mdi:nas
+              triggers_update:
+                - sensor.nas8649a0_eth0_link
+                - sensor.nas8649a0_eth1_link
+                - sensor.nas8649a0_eth0_paketfehler
+                - sensor.nas8649a0_eth1_paketfehler
+                - sensor.nas8649a0_verwendetes_volume_has
+                - sensor.nas8649a0_verwendetes_volume_container
+              state_display: >
+                [[[
+                  const statusRaw = entity?.state ?? '—';
+                  const status = String(statusRaw).replaceAll('_', ' ');
+                  const has = Number(states['sensor.nas8649a0_verwendetes_volume_has']?.state);
+                  const container = Number(states['sensor.nas8649a0_verwendetes_volume_container']?.state);
+                  const eth0 = String(states['sensor.nas8649a0_eth0_link']?.state ?? '—');
+                  const eth1 = String(states['sensor.nas8649a0_eth1_link']?.state ?? '—');
+                  const err0 = Number(states['sensor.nas8649a0_eth0_paketfehler']?.state);
+                  const err1 = Number(states['sensor.nas8649a0_eth1_paketfehler']?.state);
+                  if (Number.isFinite(err0) && err0 > 0) return `${status} · eth0 Fehler ${err0}`;
+                  if (Number.isFinite(err1) && err1 > 0) return `${status} · eth1 Fehler ${err1}`;
+                  if (Number.isFinite(has) && has >= 90) return `${status} · HAS ${Math.round(has)} %`;
+                  if (Number.isFinite(container) && container >= 90) return `${status} · Container ${Math.round(container)} %`;
+                  if (eth0 !== '—' && eth0.toLowerCase() !== 'up') return `${status} · eth0 ${eth0}`;
+                  if (eth1 !== '—' && eth1.toLowerCase() !== 'up') return `${status} · eth1 ${eth1}`;
+                  return status;
+                ]]]
+              styles:
+                card:
+                  - background: >
+                      [[[
+                        const statusRaw = String(entity?.state ?? '').toLowerCase();
+                        const has = Number(states['sensor.nas8649a0_verwendetes_volume_has']?.state);
+                        const container = Number(states['sensor.nas8649a0_verwendetes_volume_container']?.state);
+                        const eth0 = String(states['sensor.nas8649a0_eth0_link']?.state ?? '').toLowerCase();
+                        const eth1 = String(states['sensor.nas8649a0_eth1_link']?.state ?? '').toLowerCase();
+                        const err0 = Number(states['sensor.nas8649a0_eth0_paketfehler']?.state);
+                        const err1 = Number(states['sensor.nas8649a0_eth1_paketfehler']?.state);
+                        const okValues = ['good', 'ready', 'normal', 'healthy', 'ok'];
+                        const warnValues = ['warning', 'warn', 'degraded'];
+                        if (!statusRaw || statusRaw === 'unknown' || statusRaw === 'unavailable') return 'rgba(var(--rgb-error-color), 0.10)';
+                        if (Number.isFinite(err0) && err0 >= 10) return 'rgba(var(--rgb-error-color), 0.10)';
+                        if (Number.isFinite(err1) && err1 >= 10) return 'rgba(var(--rgb-error-color), 0.10)';
+                        if (Number.isFinite(has) && has >= 90) return 'rgba(var(--rgb-error-color), 0.10)';
+                        if (Number.isFinite(container) && container >= 90) return 'rgba(var(--rgb-error-color), 0.10)';
+                        if (eth0 && eth0 !== 'up') return 'rgba(var(--rgb-error-color), 0.10)';
+                        if (eth1 && eth1 !== 'up') return 'rgba(var(--rgb-error-color), 0.10)';
+                        if (Number.isFinite(err0) && err0 > 0) return 'rgba(var(--rgb-warning-color), 0.10)';
+                        if (Number.isFinite(err1) && err1 > 0) return 'rgba(var(--rgb-warning-color), 0.10)';
+                        if (Number.isFinite(has) && has >= 80) return 'rgba(var(--rgb-warning-color), 0.10)';
+                        if (Number.isFinite(container) && container >= 80) return 'rgba(var(--rgb-warning-color), 0.10)';
+                        if (warnValues.some((value) => statusRaw.includes(value))) return 'rgba(var(--rgb-warning-color), 0.10)';
+                        if (!okValues.some((value) => statusRaw.includes(value))) return 'rgba(var(--rgb-error-color), 0.10)';
+                        return null;
+                      ]]]
+                img_cell:
+                  - background: >
+                      [[[
+                        const statusRaw = String(entity?.state ?? '').toLowerCase();
+                        const has = Number(states['sensor.nas8649a0_verwendetes_volume_has']?.state);
+                        const container = Number(states['sensor.nas8649a0_verwendetes_volume_container']?.state);
+                        const eth0 = String(states['sensor.nas8649a0_eth0_link']?.state ?? '').toLowerCase();
+                        const eth1 = String(states['sensor.nas8649a0_eth1_link']?.state ?? '').toLowerCase();
+                        const err0 = Number(states['sensor.nas8649a0_eth0_paketfehler']?.state);
+                        const err1 = Number(states['sensor.nas8649a0_eth1_paketfehler']?.state);
+                        const okValues = ['good', 'ready', 'normal', 'healthy', 'ok'];
+                        const warnValues = ['warning', 'warn', 'degraded'];
+                        if (!statusRaw || statusRaw === 'unknown' || statusRaw === 'unavailable') return 'rgba(var(--rgb-error-color), 0.18)';
+                        if (Number.isFinite(err0) && err0 >= 10) return 'rgba(var(--rgb-error-color), 0.18)';
+                        if (Number.isFinite(err1) && err1 >= 10) return 'rgba(var(--rgb-error-color), 0.18)';
+                        if (Number.isFinite(has) && has >= 90) return 'rgba(var(--rgb-error-color), 0.18)';
+                        if (Number.isFinite(container) && container >= 90) return 'rgba(var(--rgb-error-color), 0.18)';
+                        if (eth0 && eth0 !== 'up') return 'rgba(var(--rgb-error-color), 0.18)';
+                        if (eth1 && eth1 !== 'up') return 'rgba(var(--rgb-error-color), 0.18)';
+                        if (Number.isFinite(err0) && err0 > 0) return 'rgba(var(--rgb-warning-color), 0.18)';
+                        if (Number.isFinite(err1) && err1 > 0) return 'rgba(var(--rgb-warning-color), 0.18)';
+                        if (Number.isFinite(has) && has >= 80) return 'rgba(var(--rgb-warning-color), 0.18)';
+                        if (Number.isFinite(container) && container >= 80) return 'rgba(var(--rgb-warning-color), 0.18)';
+                        if (warnValues.some((value) => statusRaw.includes(value))) return 'rgba(var(--rgb-warning-color), 0.18)';
+                        if (!okValues.some((value) => statusRaw.includes(value))) return 'rgba(var(--rgb-error-color), 0.18)';
+                        return null;
+                      ]]]
+                icon:
+                  - color: >
+                      [[[
+                        const statusRaw = String(entity?.state ?? '').toLowerCase();
+                        const has = Number(states['sensor.nas8649a0_verwendetes_volume_has']?.state);
+                        const container = Number(states['sensor.nas8649a0_verwendetes_volume_container']?.state);
+                        const eth0 = String(states['sensor.nas8649a0_eth0_link']?.state ?? '').toLowerCase();
+                        const eth1 = String(states['sensor.nas8649a0_eth1_link']?.state ?? '').toLowerCase();
+                        const err0 = Number(states['sensor.nas8649a0_eth0_paketfehler']?.state);
+                        const err1 = Number(states['sensor.nas8649a0_eth1_paketfehler']?.state);
+                        const okValues = ['good', 'ready', 'normal', 'healthy', 'ok'];
+                        const warnValues = ['warning', 'warn', 'degraded'];
+                        if (!statusRaw || statusRaw === 'unknown' || statusRaw === 'unavailable') return 'var(--error-color)';
+                        if (Number.isFinite(err0) && err0 >= 10) return 'var(--error-color)';
+                        if (Number.isFinite(err1) && err1 >= 10) return 'var(--error-color)';
+                        if (Number.isFinite(has) && has >= 90) return 'var(--error-color)';
+                        if (Number.isFinite(container) && container >= 90) return 'var(--error-color)';
+                        if (eth0 && eth0 !== 'up') return 'var(--error-color)';
+                        if (eth1 && eth1 !== 'up') return 'var(--error-color)';
+                        if (Number.isFinite(err0) && err0 > 0) return 'var(--warning-color)';
+                        if (Number.isFinite(err1) && err1 > 0) return 'var(--warning-color)';
+                        if (Number.isFinite(has) && has >= 80) return 'var(--warning-color)';
+                        if (Number.isFinite(container) && container >= 80) return 'var(--warning-color)';
+                        if (warnValues.some((value) => statusRaw.includes(value))) return 'var(--warning-color)';
+                        if (!okValues.some((value) => statusRaw.includes(value))) return 'var(--error-color)';
+                        return null;
+                      ]]]
+                state:
+                  - color: >
+                      [[[
+                        const statusRaw = String(entity?.state ?? '').toLowerCase();
+                        const has = Number(states['sensor.nas8649a0_verwendetes_volume_has']?.state);
+                        const container = Number(states['sensor.nas8649a0_verwendetes_volume_container']?.state);
+                        const eth0 = String(states['sensor.nas8649a0_eth0_link']?.state ?? '').toLowerCase();
+                        const eth1 = String(states['sensor.nas8649a0_eth1_link']?.state ?? '').toLowerCase();
+                        const err0 = Number(states['sensor.nas8649a0_eth0_paketfehler']?.state);
+                        const err1 = Number(states['sensor.nas8649a0_eth1_paketfehler']?.state);
+                        const okValues = ['good', 'ready', 'normal', 'healthy', 'ok'];
+                        const warnValues = ['warning', 'warn', 'degraded'];
+                        if (!statusRaw || statusRaw === 'unknown' || statusRaw === 'unavailable') return 'var(--error-color)';
+                        if (Number.isFinite(err0) && err0 >= 10) return 'var(--error-color)';
+                        if (Number.isFinite(err1) && err1 >= 10) return 'var(--error-color)';
+                        if (Number.isFinite(has) && has >= 90) return 'var(--error-color)';
+                        if (Number.isFinite(container) && container >= 90) return 'var(--error-color)';
+                        if (eth0 && eth0 !== 'up') return 'var(--error-color)';
+                        if (eth1 && eth1 !== 'up') return 'var(--error-color)';
+                        if (Number.isFinite(err0) && err0 > 0) return 'var(--warning-color)';
+                        if (Number.isFinite(err1) && err1 > 0) return 'var(--warning-color)';
+                        if (Number.isFinite(has) && has >= 80) return 'var(--warning-color)';
+                        if (Number.isFinite(container) && container >= 80) return 'var(--warning-color)';
+                        if (warnValues.some((value) => statusRaw.includes(value))) return 'var(--warning-color)';
+                        if (!okValues.some((value) => statusRaw.includes(value))) return 'var(--error-color)';
+                        return null;
+                      ]]]
     - cards:
         - type: heading
           heading: Handlungsbedarf
@@ -189,6 +328,13 @@
               tap_action:
                 action: navigate
                 navigation_path: usv
+            - type: custom:button-card
+              template: hub_nav_card
+              name: QNAP
+              icon: mdi:nas
+              tap_action:
+                action: navigate
+                navigation_path: qnap
             - type: custom:button-card
               template: hub_nav_card
               name: Roborock

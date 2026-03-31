@@ -207,6 +207,182 @@ hub_roborock_alert_card:
           - color: var(--primary-color)
         state:
           - color: var(--primary-color)
+qnap_high_metric_card:
+  template: hub_metric_card
+  styles:
+    card:
+      - background: >
+          [[[
+            const value = Number(entity?.state);
+            const warn = Number(variables?.warn_threshold);
+            const crit = Number(variables?.crit_threshold);
+            if (!Number.isFinite(value)) return null;
+            if (Number.isFinite(crit) && value >= crit) return 'rgba(var(--rgb-error-color), 0.10)';
+            if (Number.isFinite(warn) && value >= warn) return 'rgba(var(--rgb-warning-color), 0.10)';
+            return null;
+          ]]]
+    img_cell:
+      - background: >
+          [[[
+            const value = Number(entity?.state);
+            const warn = Number(variables?.warn_threshold);
+            const crit = Number(variables?.crit_threshold);
+            if (!Number.isFinite(value)) return null;
+            if (Number.isFinite(crit) && value >= crit) return 'rgba(var(--rgb-error-color), 0.18)';
+            if (Number.isFinite(warn) && value >= warn) return 'rgba(var(--rgb-warning-color), 0.18)';
+            return null;
+          ]]]
+    icon:
+      - color: >
+          [[[
+            const value = Number(entity?.state);
+            const warn = Number(variables?.warn_threshold);
+            const crit = Number(variables?.crit_threshold);
+            if (!Number.isFinite(value)) return null;
+            if (Number.isFinite(crit) && value >= crit) return 'var(--error-color)';
+            if (Number.isFinite(warn) && value >= warn) return 'var(--warning-color)';
+            return null;
+          ]]]
+    state:
+      - color: >
+          [[[
+            const value = Number(entity?.state);
+            const warn = Number(variables?.warn_threshold);
+            const crit = Number(variables?.crit_threshold);
+            if (!Number.isFinite(value)) return null;
+            if (Number.isFinite(crit) && value >= crit) return 'var(--error-color)';
+            if (Number.isFinite(warn) && value >= warn) return 'var(--warning-color)';
+            return null;
+          ]]]
+qnap_error_counter_card:
+  template: hub_metric_card
+  styles:
+    card:
+      - background: >
+          [[[
+            const value = Number(entity?.state);
+            const warn = Number(variables?.warn_threshold ?? 1);
+            const crit = Number(variables?.crit_threshold ?? 10);
+            if (!Number.isFinite(value)) return null;
+            if (value >= crit) return 'rgba(var(--rgb-error-color), 0.10)';
+            if (value >= warn) return 'rgba(var(--rgb-warning-color), 0.10)';
+            return null;
+          ]]]
+    img_cell:
+      - background: >
+          [[[
+            const value = Number(entity?.state);
+            const warn = Number(variables?.warn_threshold ?? 1);
+            const crit = Number(variables?.crit_threshold ?? 10);
+            if (!Number.isFinite(value)) return null;
+            if (value >= crit) return 'rgba(var(--rgb-error-color), 0.18)';
+            if (value >= warn) return 'rgba(var(--rgb-warning-color), 0.18)';
+            return null;
+          ]]]
+    icon:
+      - color: >
+          [[[
+            const value = Number(entity?.state);
+            const warn = Number(variables?.warn_threshold ?? 1);
+            const crit = Number(variables?.crit_threshold ?? 10);
+            if (!Number.isFinite(value)) return null;
+            if (value >= crit) return 'var(--error-color)';
+            if (value >= warn) return 'var(--warning-color)';
+            return null;
+          ]]]
+    state:
+      - color: >
+          [[[
+            const value = Number(entity?.state);
+            const warn = Number(variables?.warn_threshold ?? 1);
+            const crit = Number(variables?.crit_threshold ?? 10);
+            if (!Number.isFinite(value)) return null;
+            if (value >= crit) return 'var(--error-color)';
+            if (value >= warn) return 'var(--warning-color)';
+            return null;
+          ]]]
+qnap_link_card:
+  template: hub_metric_card
+  styles:
+    card:
+      - background: >
+          [[[
+            const raw = String(entity?.state ?? '').toLowerCase();
+            if (!raw) return null;
+            if (raw === 'up' || raw === 'verbunden' || raw === 'connected') return null;
+            return 'rgba(var(--rgb-error-color), 0.10)';
+          ]]]
+    img_cell:
+      - background: >
+          [[[
+            const raw = String(entity?.state ?? '').toLowerCase();
+            if (!raw) return null;
+            if (raw === 'up' || raw === 'verbunden' || raw === 'connected') return null;
+            return 'rgba(var(--rgb-error-color), 0.18)';
+          ]]]
+    icon:
+      - color: >
+          [[[
+            const raw = String(entity?.state ?? '').toLowerCase();
+            if (!raw) return null;
+            if (raw === 'up' || raw === 'verbunden' || raw === 'connected') return null;
+            return 'var(--error-color)';
+          ]]]
+    state:
+      - color: >
+          [[[
+            const raw = String(entity?.state ?? '').toLowerCase();
+            if (!raw) return null;
+            if (raw === 'up' || raw === 'verbunden' || raw === 'connected') return null;
+            return 'var(--error-color)';
+          ]]]
+qnap_text_health_card:
+  template: hub_metric_card
+  styles:
+    card:
+      - background: >
+          [[[
+            const raw = String(entity?.state ?? '').toLowerCase().trim();
+            if (!raw || raw === 'unknown' || raw === 'unavailable') return 'rgba(var(--rgb-error-color), 0.10)';
+            const okValues = ['good', 'ready', 'normal', 'healthy', 'ok'];
+            const warnValues = ['warning', 'warn', 'degraded'];
+            if (okValues.some((value) => raw.includes(value))) return null;
+            if (warnValues.some((value) => raw.includes(value))) return 'rgba(var(--rgb-warning-color), 0.10)';
+            return 'rgba(var(--rgb-error-color), 0.10)';
+          ]]]
+    img_cell:
+      - background: >
+          [[[
+            const raw = String(entity?.state ?? '').toLowerCase().trim();
+            if (!raw || raw === 'unknown' || raw === 'unavailable') return 'rgba(var(--rgb-error-color), 0.18)';
+            const okValues = ['good', 'ready', 'normal', 'healthy', 'ok'];
+            const warnValues = ['warning', 'warn', 'degraded'];
+            if (okValues.some((value) => raw.includes(value))) return null;
+            if (warnValues.some((value) => raw.includes(value))) return 'rgba(var(--rgb-warning-color), 0.18)';
+            return 'rgba(var(--rgb-error-color), 0.18)';
+          ]]]
+    icon:
+      - color: >
+          [[[
+            const raw = String(entity?.state ?? '').toLowerCase().trim();
+            if (!raw || raw === 'unknown' || raw === 'unavailable') return 'var(--error-color)';
+            const okValues = ['good', 'ready', 'normal', 'healthy', 'ok'];
+            const warnValues = ['warning', 'warn', 'degraded'];
+            if (okValues.some((value) => raw.includes(value))) return null;
+            if (warnValues.some((value) => raw.includes(value))) return 'var(--warning-color)';
+            return 'var(--error-color)';
+          ]]]
+    state:
+      - color: >
+          [[[
+            const raw = String(entity?.state ?? '').toLowerCase().trim();
+            if (!raw || raw === 'unknown' || raw === 'unavailable') return 'var(--error-color)';
+            const okValues = ['good', 'ready', 'normal', 'healthy', 'ok'];
+            const warnValues = ['warning', 'warn', 'degraded'];
+            if (okValues.some((value) => raw.includes(value))) return null;
+            if (warnValues.some((value) => raw.includes(value))) return 'var(--warning-color)';
+            return 'var(--error-color)';
+          ]]]
 hub_nav_card:
   show_state: false
   show_label: false
