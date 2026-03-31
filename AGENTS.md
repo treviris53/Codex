@@ -55,12 +55,23 @@ Primary working directory: `D:\Codex`
 - Git work may happen from Windows and occasionally with WSL involved, but PowerShell / Windows remains the primary context.
 
 ## Patch Output Trigger
-- After each change to YAML or JSON objects, emit a PowerShell-ready output that sets `$patch` to the changed repository-relative path or paths.
-- Use a stable PowerShell assignment format, for example:
-  `$patch = @('packages/example.yaml')`
+- After each change to YAML or JSON objects, emit a PowerShell-ready output that sets `$paths` to the changed repository-relative path or paths.
+- `$paths` is reserved for the most recently changed YAML or JSON object files of the actual task result. Do not replace it with later Markdown, rule, or other non-YAML/JSON file edits.
+- Use a stable multi-line PowerShell assignment format, for example:
+  ```powershell
+  $paths = @(
+    'packages/example.yaml'
+  )
+  ```
   or
-  `$patch = @('packages/a.yaml', 'dashboards/b.json')`
-- If the user's message is exactly `$PATH`, treat that as a trigger to output the current `$patch` assignment without additional explanation.
+  ```powershell
+  $paths = @(
+    'packages/a.yaml'
+    'dashboards/b.json'
+  )
+  ```
+- If the user's message is exactly `$PATH`, treat that as a trigger to output the current `$paths` assignment without additional explanation.
+- If rule or documentation files are changed after the last YAML or JSON object change, keep `$paths` pointed at the last changed YAML or JSON object files.
 
 ## Context files
 - Treat Markdown files under `_context/` as project guidance for this workspace.

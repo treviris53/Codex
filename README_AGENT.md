@@ -12,7 +12,7 @@ Key rules:
 - job_map is alias layer only
 - For production-near deploys, prefer `deploy_ha_git_guard.ps1` or the VS Code tasks in `.vscode/tasks.json`
 - Guarded deploys support YAML, JSON, and JS
-- After YAML or JSON object changes, emit a PowerShell-ready `$patch = @(...)` assignment; if the user sends exactly `$PATH`, output the current `$patch`
+- After YAML or JSON object changes, emit a PowerShell-ready multi-line `$paths = @(...)` assignment; keep `$paths` tied to the latest YAML/JSON task files rather than later rule/docs edits; if the user sends exactly `$PATH`, output the current `$paths`
 
 ## Environment Summary
 
