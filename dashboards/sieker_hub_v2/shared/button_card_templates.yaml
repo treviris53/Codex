@@ -254,6 +254,22 @@ qnap_high_metric_card:
             if (Number.isFinite(warn) && value >= warn) return 'var(--warning-color)';
             return null;
           ]]]
+qnap_percent_card:
+  template: qnap_high_metric_card
+  state_display: >
+    [[[
+      const value = Number(entity?.state);
+      if (!Number.isFinite(value)) return entity?.state ?? '—';
+      return `${value.toLocaleString('de-DE', { maximumFractionDigits: 0 })} %`;
+    ]]]
+qnap_storage_card:
+  template: hub_metric_card
+  state_display: >
+    [[[
+      const value = Number(entity?.state);
+      if (!Number.isFinite(value)) return entity?.state ?? '—';
+      return `${value.toLocaleString('de-DE', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} GiB`;
+    ]]]
 qnap_error_counter_card:
   template: hub_metric_card
   styles:

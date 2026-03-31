@@ -54,6 +54,14 @@ Primary working directory: `D:\Codex`
 - WSL exists but is used only rarely; do not assume WSL is the normal execution path.
 - Git work may happen from Windows and occasionally with WSL involved, but PowerShell / Windows remains the primary context.
 
+## Patch Output Trigger
+- After each change to YAML or JSON objects, emit a PowerShell-ready output that sets `$patch` to the changed repository-relative path or paths.
+- Use a stable PowerShell assignment format, for example:
+  `$patch = @('packages/example.yaml')`
+  or
+  `$patch = @('packages/a.yaml', 'dashboards/b.json')`
+- If the user's message is exactly `$PATH`, treat that as a trigger to output the current `$patch` assignment without additional explanation.
+
 ## Context files
 - Treat Markdown files under `_context/` as project guidance for this workspace.
 - If any `_context/` file conflicts with this `AGENTS.md`, follow `AGENTS.md`.

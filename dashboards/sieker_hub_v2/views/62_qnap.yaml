@@ -90,31 +90,21 @@
           square: false
           cards:
             - type: custom:button-card
-              template: qnap_high_metric_card
+              template: qnap_percent_card
               entity: sensor.nas8649a0_verwendetes_volume_has
               variables:
                 warn_threshold: 80
                 crit_threshold: 90
               name: HAS
               icon: mdi:home-assistant
-              state_display: >
-                [[[
-                  const value = Number(entity?.state);
-                  return Number.isFinite(value) ? `${value} %` : entity?.state ?? '—';
-                ]]]
             - type: custom:button-card
-              template: qnap_high_metric_card
+              template: qnap_percent_card
               entity: sensor.nas8649a0_verwendetes_volume_container
               variables:
                 warn_threshold: 80
                 crit_threshold: 90
               name: Container
               icon: mdi:docker
-              state_display: >
-                [[[
-                  const value = Number(entity?.state);
-                  return Number.isFinite(value) ? `${value} %` : entity?.state ?? '—';
-                ]]]
             - type: custom:button-card
               template: qnap_link_card
               entity: sensor.nas8649a0_eth0_link
