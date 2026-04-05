@@ -1,4 +1,7 @@
-# Version: 1.0.0
+# Version: 1.0.1
+# Migration note (2026-04-05): West temperature source moved from the retired
+# FRITZ repeater sensor to sensor.temperatur_sensor_temperatur_dht11. Keep the
+# internal freigabe reference aligned with the active runtime entity ID.
 # Ownership: Diese Templates treffen die fachliche Beschattungsentscheidung.
 # Nachgelagerte Dateien konsumieren nur die resultierenden Binary-Sensoren bzw.
 # die daraus abgeleiteten Output-Booleans und duplizieren die Entscheidung nicht.
@@ -50,7 +53,7 @@ template:
         unique_id: beschattung_live_temp_west
         unit_of_measurement: "°C"
         icon: mdi:thermometer
-        state: "{{ states('sensor.fritz_dect_repeater_100_temperatur') | float(0) }}"
+        state: "{{ states('sensor.temperatur_sensor_temperatur_dht11') | float(0) }}"
 
       # --- Abstand zum Schwellwert (Diff = Ist - Soll) ---
       - name: "Beschattung Diff Elevation"
@@ -103,7 +106,7 @@ template:
         unit_of_measurement: "°C"
         icon: mdi:thermometer
         state: >
-          {% set t = states('sensor.fritz_dect_repeater_100_temperatur') | float(0) %}
+          {% set t = states('sensor.temperatur_sensor_temperatur_dht11') | float(0) %}
           {% set thr = states('input_number.beschattung_temp_west_min') | float(0) %}
           {{ (t - thr) | round(1) }}
 
@@ -139,10 +142,10 @@ template:
         icon: mdi:shield-check-outline
         state: >
           {{ is_state('binary_sensor.beschattung_elevation_ok', 'on')
-             and is_state('binary_sensor.beschattung_sommer_temp_ok', 'on') }}
+             and is_state('binary_sensor.beschattung_sommer_temperatur_ok', 'on') }}
         attributes:
           ok_elevation: "{{ is_state('binary_sensor.beschattung_elevation_ok', 'on') }}"
-          ok_sommer_temp: "{{ is_state('binary_sensor.beschattung_sommer_temp_ok', 'on') }}"
+          ok_sommer_temp: "{{ is_state('binary_sensor.beschattung_sommer_temperatur_ok', 'on') }}"
 
       # --- Azimut Ost ---
       - name: "Beschattung Azimut Ost"
@@ -260,11 +263,11 @@ template:
         icon: mdi:thermometer
         device_class: heat
         state: >
-          {% set t = states('sensor.fritz_dect_repeater_100_temperatur') | float(-999) %}
+          {% set t = states('sensor.temperatur_sensor_temperatur_dht11') | float(-999) %}
           {% set thr = states('input_number.beschattung_temp_west_min') | float(22.5) %}
           {{ t >= thr }}
         attributes:
-          value: "{{ states('sensor.fritz_dect_repeater_100_temperatur') | float(0) }}"
+          value: "{{ states('sensor.temperatur_sensor_temperatur_dht11') | float(0) }}"
           threshold: "{{ states('input_number.beschattung_temp_west_min') | float(0) }}"
           diff: "{{ states('sensor.beschattung_diff_temp_west') | float(0) }}"
 

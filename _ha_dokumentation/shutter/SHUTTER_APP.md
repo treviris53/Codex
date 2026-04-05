@@ -60,7 +60,7 @@ Die App nutzt unter anderem:
 - `sensor.balkon_lichtsensor_durchschnittliche_beleuchtungsstarke`
 - `sensor.lichtsensor_schlafzimmer_illuminance`
 - `sensor.kuche_wandthermostat_temperatur`
-- `sensor.fritz_dect_repeater_100_temperatur`
+- `sensor.temperatur_sensor_temperatur_dht11`
 
 ### Paketinterne Abhaengigkeiten
 
