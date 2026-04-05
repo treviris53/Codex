@@ -4,28 +4,28 @@
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="t1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1;" value="Heimnetz - Ist-Zustand nach Migration auf UniFi Cloud Gateway Fiber (UCGF)" vertex="1">
+        <mxCell id="t1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1;" value="Heimnetz – Ist-Zustand nach Migration auf UniFi Cloud Gateway Fiber (UCGF)" vertex="1">
           <mxGeometry height="40" width="1000" x="40" y="20" as="geometry" />
         </mxCell>
         <mxCell id="internet" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;" value="Internet / Provider" vertex="1">
           <mxGeometry height="60" width="140" x="80" y="100" as="geometry" />
         </mxCell>
-        <mxCell id="fb" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=13;" value="FRITZ!Box 7590 AX&#xa;Upstream-Gateway / NAT&#xa;IP: 192.168.180.1&#xa;Exposed Host -&gt; UCGF" vertex="1">
+        <mxCell id="fb" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=13;" value="FRITZ!Box 7590 AX&#xa;Upstream-Gateway / NAT&#xa;IP: 192.168.180.1&#xa;Exposed Host → UCGF" vertex="1">
           <mxGeometry height="90" width="210" x="300" y="90" as="geometry" />
         </mxCell>
         <mxCell id="wan" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;" value="WAN-Netz&#xa;192.168.180.0/24" vertex="1">
           <mxGeometry height="70" width="160" x="570" y="100" as="geometry" />
         </mxCell>
-        <mxCell id="ucgf" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;" value="UniFi Cloud Gateway Fiber (UCGF)&#xa;WAN: DHCP aus 192.168.180.0/24&#xa;LAN/Gateway: 192.168.178.1&#xa;DHCP aktiv&#xa;DNS fuer Clients: 192.168.178.10" vertex="1">
+        <mxCell id="ucgf" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;" value="UniFi Cloud Gateway Fiber (UCGF)&#xa;WAN: DHCP aus 192.168.180.0/24&#xa;LAN/Gateway: 192.168.178.1&#xa;DHCP aktiv&#xa;DNS für Clients: 192.168.178.10" vertex="1">
           <mxGeometry height="120" width="270" x="790" y="80" as="geometry" />
         </mxCell>
         <mxCell id="lan" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;" value="LAN / Produktivnetz&#xa;192.168.178.0/24" vertex="1">
           <mxGeometry height="70" width="180" x="1110" y="100" as="geometry" />
         </mxCell>
-        <mxCell id="sx105" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" value="TP-Link TL-SX105&#xa;Uplink / Verteilung" vertex="1">
+        <mxCell id="sx105" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" value="Netgear SX105&#xa;Uplink / Verteilung" vertex="1">
           <mxGeometry height="70" width="170" x="1080" y="250" as="geometry" />
         </mxCell>
-        <mxCell id="sx1008" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" value="TP-Link TL-SX1008&#xa;Core Switch" vertex="1">
+        <mxCell id="sx1008" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" value="Netgear SX1008&#xa;Core Switch" vertex="1">
           <mxGeometry height="70" width="160" x="1300" y="250" as="geometry" />
         </mxCell>
         <mxCell id="qnap" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=13;" value="QNAP NAS&#xa;192.168.178.10&#xa;AdGuard DNS&#xa;Docker / Container&#xa;Reverse Proxy :81" vertex="1">
@@ -40,19 +40,19 @@
         <mxCell id="aps" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=13;" value="UniFi APs&#xa;192.168.178.4 / .8 / .9&#xa;SSID: Smallnet / 5g / iot" vertex="1">
           <mxGeometry height="100" width="170" x="820" y="390" as="geometry" />
         </mxCell>
-        <mxCell id="clients" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" value="Clients&#xa;DHCP 192.168.178.100-200&#xa;Gateway: 192.168.178.1&#xa;DNS: 192.168.178.10" vertex="1">
+        <mxCell id="clients" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" value="Clients&#xa;DHCP 192.168.178.100–200&#xa;Gateway: 192.168.178.1&#xa;DNS: 192.168.178.10" vertex="1">
           <mxGeometry height="100" width="210" x="1220" y="540" as="geometry" />
         </mxCell>
         <mxCell id="powerline" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" value="Powerline&#xa;jetzt hinter UCGF / Switch&#xa;Keller / Waschmaschine" vertex="1">
           <mxGeometry height="90" width="180" x="1470" y="540" as="geometry" />
         </mxCell>
-        <mxCell id="note1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" value="Wichtige Punkte&#xa;- Kein Wechsel des LAN-Subnetzes&#xa;- Double NAT aktuell bewusst aktiv&#xa;- Keine Clients direkt an der FRITZ!Box&#xa;- Powerline nicht parallel an FRITZ!Box" vertex="1">
+        <mxCell id="note1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" value="Wichtige Punkte&#xa;• Kein Wechsel des LAN-Subnetzes&#xa;• Double NAT aktuell bewusst aktiv&#xa;• Keine Clients direkt an der FRITZ!Box&#xa;• Powerline nicht parallel an FRITZ!Box" vertex="1">
           <mxGeometry height="130" width="320" x="60" y="250" as="geometry" />
         </mxCell>
-        <mxCell id="note2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" value="IPv6&#xa;- Aktuell bewusst deaktiviert fuer stabilen Betrieb&#xa;- FRITZ!Box verteilt kein RA / DHCPv6 ins LAN&#xa;- Reaktivierung spaeter geplant bei Vodafone FTTH" vertex="1">
+        <mxCell id="note2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" value="IPv6&#xa;• Aktuell bewusst deaktiviert für stabilen Betrieb&#xa;• FRITZ!Box verteilt kein RA / DHCPv6 ins LAN&#xa;• Reaktivierung später geplant bei Vodafone FTTH" vertex="1">
           <mxGeometry height="130" width="320" x="60" y="410" as="geometry" />
         </mxCell>
-        <mxCell id="note3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" value="Zukunft / FTTH&#xa;Vodafone FTTH mit Fremdrouter beantragt&#xa;Zielbild: ONT -&gt; UCGF direkt&#xa;Dann Wegfall der FRITZ!Box als Upstream" vertex="1">
+        <mxCell id="note3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" value="Zukunft / FTTH&#xa;Vodafone FTTH mit Fremdrouter beantragt&#xa;Zielbild: ONT → UCGF direkt&#xa;Dann Wegfall der FRITZ!Box als Upstream" vertex="1">
           <mxGeometry height="120" width="320" x="60" y="570" as="geometry" />
         </mxCell>
         <mxCell id="e1" edge="1" parent="1" source="internet" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;" target="fb">
