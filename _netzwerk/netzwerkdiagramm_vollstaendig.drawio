@@ -1,97 +1,98 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.6 Chrome/144.0.7559.236 Electron/40.8.4 Safari/537.36" version="29.6.6">
-  <diagram id="ucgf-migration" name="Netzwerk_komplett_ucgf">
+  <diagram id="ucgf-vlan-intro" name="Netzwerk_komplett_ucgf_vlan">
     <mxGraphModel dx="1617" dy="1104" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1080" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="t1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1;" value="Heimnetz - Ist-Zustand nach Migration auf UniFi Cloud Gateway Fiber (UCGF)" vertex="1">
-          <mxGeometry height="40" width="1000" x="40" y="20" as="geometry" />
+        <mxCell id="title" parent="1" value="Heimnetz - Ist-Zustand nach UCGF-Migration und WLAN-VLAN-Einfuehrung" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1;" vertex="1">
+          <mxGeometry x="40" y="20" width="1300" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="internet" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;" value="Internet / Provider" vertex="1">
-          <mxGeometry height="60" width="140" x="80" y="100" as="geometry" />
+        <mxCell id="internet" parent="1" value="Internet / Provider" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;" vertex="1">
+          <mxGeometry x="80" y="100" width="150" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="fb" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=13;" value="FRITZ!Box 7590 AX&#xa;Upstream-Gateway / NAT&#xa;IP: 192.168.180.1&#xa;Exposed Host -&gt; UCGF" vertex="1">
-          <mxGeometry height="90" width="210" x="300" y="90" as="geometry" />
+        <mxCell id="fritz" parent="1" value="FRITZ!Box 7590 AX&#xa;Upstream-Gateway / NAT&#xa;192.168.180.1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=13;" vertex="1">
+          <mxGeometry x="310" y="85" width="220" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="wan" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;" value="WAN-Netz&#xa;192.168.180.0/24" vertex="1">
-          <mxGeometry height="70" width="160" x="570" y="100" as="geometry" />
+        <mxCell id="wan" parent="1" value="WAN / Vornetz&#xa;192.168.180.0/24" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;" vertex="1">
+          <mxGeometry x="600" y="95" width="170" height="70" as="geometry" />
         </mxCell>
-        <mxCell id="ucgf" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;" value="UniFi Cloud Gateway Fiber (UCGF)&#xa;WAN: DHCP aus 192.168.180.0/24&#xa;LAN/Gateway: 192.168.178.1&#xa;DHCP aktiv&#xa;DNS fuer Clients: 192.168.178.10" vertex="1">
-          <mxGeometry height="120" width="270" x="790" y="80" as="geometry" />
+        <mxCell id="ucgf" parent="1" value="UniFi Cloud Gateway Fiber&#xa;Gateway Trusted: 192.168.178.1&#xa;Gateway IoT: 10.10.20.1&#xa;Gateway Guest: 10.10.30.1&#xa;DHCP + zonenbasierte Firewall" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;" vertex="1">
+          <mxGeometry x="840" y="70" width="300" height="120" as="geometry" />
         </mxCell>
-        <mxCell id="lan" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;" value="LAN / Produktivnetz&#xa;192.168.178.0/24" vertex="1">
-          <mxGeometry height="70" width="180" x="1110" y="100" as="geometry" />
+        <mxCell id="switching" parent="1" value="Bestehende Switch-Infrastruktur&#xa;aktuell noch weitgehend Trusted / flach&#xa;VLAN-Rollout derzeit primaer ueber WLAN / APs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=13;" vertex="1">
+          <mxGeometry x="1180" y="75" width="280" height="110" as="geometry" />
         </mxCell>
-        <mxCell id="sx105" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" value="TP-Link TL-SX105&#xa;Uplink / Verteilung" vertex="1">
-          <mxGeometry height="70" width="170" x="1080" y="250" as="geometry" />
+        <mxCell id="trusted" parent="1" value="Trusted / Default&#xa;192.168.178.0/24&#xa;SSID: Smallnet&#xa;2.4 / 5 / 6 GHz&#xa;WPA2/WPA3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;" vertex="1">
+          <mxGeometry x="220" y="300" width="230" height="130" as="geometry" />
         </mxCell>
-        <mxCell id="sx1008" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" value="TP-Link TL-SX1008&#xa;Core Switch" vertex="1">
-          <mxGeometry height="70" width="160" x="1300" y="250" as="geometry" />
+        <mxCell id="iot" parent="1" value="IoT / VLAN 20&#xa;10.10.20.0/24&#xa;SSID: smallnet-iot&#xa;2.4 GHz&#xa;WPA2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=14;" vertex="1">
+          <mxGeometry x="520" y="300" width="230" height="130" as="geometry" />
         </mxCell>
-        <mxCell id="qnap" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=13;" value="QNAP NAS&#xa;192.168.178.10&#xa;AdGuard DNS&#xa;Docker / Container&#xa;Reverse Proxy :81" vertex="1">
-          <mxGeometry height="110" width="190" x="1240" y="380" as="geometry" />
+        <mxCell id="guest" parent="1" value="Guest / VLAN 30&#xa;10.10.30.0/24&#xa;SSID: Guest&#xa;2.4 / 5 GHz&#xa;WPA2/WPA3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=14;" vertex="1">
+          <mxGeometry x="820" y="300" width="230" height="130" as="geometry" />
         </mxCell>
-        <mxCell id="ha" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=13;" value="Home Assistant&#xa;192.168.178.11 / .12&#xa;Automation" vertex="1">
-          <mxGeometry height="90" width="180" x="1470" y="390" as="geometry" />
+        <mxCell id="legacy" parent="1" value="Legacy / Uebergang&#xa;smallnet-5g ist nicht mehr Teil&#xa;des Zielbilds und soll spaeter entfallen" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=13;" vertex="1">
+          <mxGeometry x="1120" y="315" width="270" height="100" as="geometry" />
         </mxCell>
-        <mxCell id="ctrl" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=13;" value="UniFi Controller&#xa;192.168.178.14&#xa;(QNAP VM / Ubuntu)" vertex="1">
-          <mxGeometry height="90" width="180" x="1010" y="390" as="geometry" />
+        <mxCell id="infra" parent="1" value="Feste Dienste im Trusted-Netz&#xa;QNAP DNS: 192.168.178.10&#xa;Home Assistant: 192.168.178.12&#xa;AP-Infrastruktur und Management" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=13;" vertex="1">
+          <mxGeometry x="80" y="500" width="270" height="110" as="geometry" />
         </mxCell>
-        <mxCell id="aps" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=13;" value="UniFi APs&#xa;192.168.178.4 / .8 / .9&#xa;SSID: Smallnet / 5g / iot" vertex="1">
-          <mxGeometry height="100" width="170" x="820" y="390" as="geometry" />
+        <mxCell id="trustedClients" parent="1" value="Trusted-Geraete&#xa;Phones / Tablets&#xa;EPSON ES-580W&#xa;HP Pro 9022e&#xa;Teufel Radio&#xa;MagentaTV" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1f5e7;strokeColor=#82b366;fontSize=13;" vertex="1">
+          <mxGeometry x="390" y="500" width="220" height="130" as="geometry" />
         </mxCell>
-        <mxCell id="clients" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" value="Clients&#xa;DHCP 192.168.178.100-200&#xa;Gateway: 192.168.178.1&#xa;DNS: 192.168.178.10" vertex="1">
-          <mxGeometry height="100" width="210" x="1220" y="540" as="geometry" />
+        <mxCell id="iotClients" parent="1" value="IoT-Geraete&#xa;Echo / Echo Show&#xa;WLED / ESPHome&#xa;Roborock&#xa;L900" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d79b00;fontSize=13;" vertex="1">
+          <mxGeometry x="650" y="500" width="220" height="130" as="geometry" />
         </mxCell>
-        <mxCell id="powerline" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" value="Powerline&#xa;jetzt hinter UCGF / Switch&#xa;Keller / Waschmaschine" vertex="1">
-          <mxGeometry height="90" width="180" x="1470" y="540" as="geometry" />
+        <mxCell id="guestClients" parent="1" value="Guest-Geraete&#xa;nur Besuchergeraete&#xa;keine festen Haushaltsgeraete" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8d7da;strokeColor=#b85450;fontSize=13;" vertex="1">
+          <mxGeometry x="910" y="500" width="220" height="110" as="geometry" />
         </mxCell>
-        <mxCell id="note1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" value="Wichtige Punkte&#xa;- Kein Wechsel des LAN-Subnetzes&#xa;- Double NAT aktuell bewusst aktiv&#xa;- Keine Clients direkt an der FRITZ!Box&#xa;- Powerline nicht parallel an FRITZ!Box" vertex="1">
-          <mxGeometry height="130" width="320" x="60" y="250" as="geometry" />
+        <mxCell id="rules" parent="1" value="Aktive Kernregeln&#xa;Allow IoT to QNAP DNS&#xa;Allow Trusted to IoT&#xa;Allow HA to Roborock UDP 58866&#xa;Allow HA to Roborock TCP 58867" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=13;" vertex="1">
+          <mxGeometry x="1170" y="490" width="300" height="130" as="geometry" />
         </mxCell>
-        <mxCell id="note2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" value="IPv6&#xa;- Aktuell bewusst deaktiviert fuer stabilen Betrieb&#xa;- FRITZ!Box verteilt kein RA / DHCPv6 ins LAN&#xa;- Reaktivierung spaeter geplant bei Vodafone FTTH" vertex="1">
-          <mxGeometry height="130" width="320" x="60" y="410" as="geometry" />
+        <mxCell id="note1" parent="1" value="Betriebsregeln&#xa;• Trusted bleibt auf 192.168.178.0/24&#xa;• mDNS wird nicht als VLAN-Grundlage eingeplant&#xa;• lokale IoT-Integrationen arbeiten mit DHCP-Reservationen und nachgezogenen Ziel-IPs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1">
+          <mxGeometry x="80" y="690" width="440" height="120" as="geometry" />
         </mxCell>
-        <mxCell id="note3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" value="Zukunft / FTTH&#xa;Vodafone FTTH mit Fremdrouter beantragt&#xa;Zielbild: ONT -&gt; UCGF direkt&#xa;Dann Wegfall der FRITZ!Box als Upstream" vertex="1">
-          <mxGeometry height="120" width="320" x="60" y="570" as="geometry" />
+        <mxCell id="note2" parent="1" value="WiFi-Hinweis&#xa;• Smallnet: MLO bewusst deaktiviert&#xa;• smallnet-iot ohne Fast Roaming / BSS-Experimente&#xa;• 2.4 GHz fuer IoT ist im aktuellen Umfeld bewusst ausreichend" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1">
+          <mxGeometry x="570" y="690" width="380" height="120" as="geometry" />
         </mxCell>
-        <mxCell id="e1" edge="1" parent="1" source="internet" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;" target="fb">
+        <mxCell id="note3" parent="1" value="Naechste Schritte&#xa;• smallnet-5g spaeter entfernen&#xa;• spaetere UniFi-Managed-Switch-Umruestung fuer mehr kabelgebundene VLAN-Fuehrung&#xa;• Zielbild FTTH: ONT -&gt; UCGF direkt" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1">
+          <mxGeometry x="1000" y="690" width="470" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="internet" target="fritz" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e2" edge="1" parent="1" source="fb" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;" target="wan">
+        <mxCell id="e2" edge="1" parent="1" source="fritz" target="wan" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e3" edge="1" parent="1" source="wan" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;" target="ucgf">
+        <mxCell id="e3" edge="1" parent="1" source="wan" target="ucgf" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e4" edge="1" parent="1" source="ucgf" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;" target="lan">
+        <mxCell id="e4" edge="1" parent="1" source="ucgf" target="switching" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e5" edge="1" parent="1" source="lan" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;" target="sx105">
+        <mxCell id="e5" edge="1" parent="1" source="ucgf" target="trusted" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e6" edge="1" parent="1" source="sx105" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;" target="sx1008">
+        <mxCell id="e6" edge="1" parent="1" source="ucgf" target="iot" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e7" edge="1" parent="1" source="sx1008" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;" target="qnap">
+        <mxCell id="e7" edge="1" parent="1" source="ucgf" target="guest" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e8" edge="1" parent="1" source="sx1008" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;" target="ha">
+        <mxCell id="e8" edge="1" parent="1" source="trusted" target="trustedClients" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e9" edge="1" parent="1" source="sx1008" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;" target="ctrl">
+        <mxCell id="e9" edge="1" parent="1" source="iot" target="iotClients" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e10" edge="1" parent="1" source="sx105" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;" target="aps">
+        <mxCell id="e10" edge="1" parent="1" source="guest" target="guestClients" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e11" edge="1" parent="1" source="sx1008" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;" target="clients">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="e12" edge="1" parent="1" source="sx1008" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;" target="powerline">
+        <mxCell id="e11" edge="1" parent="1" source="trusted" target="infra" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
 </mxfile>
+
