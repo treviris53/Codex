@@ -1,14 +1,17 @@
-# Version 1.0.0
+# Version 1.0.1
+# Migration note (2026-04-05): DWD report/forecast time entities now use the
+# active *_2 object IDs in runtime; keep triggers aligned so derived sensors
+# refresh after source updates again.
 template:
   - triggers:
       - trigger: event
         event_type: homeassistant_started
 
       - trigger: state
-        entity_id: sensor.hamburg_fu_zeit_messwerte
+        entity_id: sensor.hamburg_fu_zeit_messwerte_2
 
       - trigger: state
-        entity_id: sensor.hamburg_fu_zeit_vorhersagewerte
+        entity_id: sensor.hamburg_fu_zeit_vorhersagewerte_2
 
       - trigger: event
         event_type: event_template_reloaded
