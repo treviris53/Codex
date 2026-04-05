@@ -21,7 +21,7 @@
                 action: call-service
                 service: script.turn_on
                 target:
-                  entity_id: script.rollladen_apply_ost
+                  entity_id: script.rollladen_ost_apply
             - type: custom:button-card
               template: scene_action_card
               name: Apply West

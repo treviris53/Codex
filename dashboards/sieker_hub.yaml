@@ -936,7 +936,7 @@ views:
             cards:
               - type: custom:button-card
                 template: wohnen_quick_card
-                entity: light.licht_wohnzimmer_haupt
+                entity: light.licht_wohnzimmer
                 name: Licht
                 label: Wohnen
                 icon: mdi:ceiling-light
@@ -1037,7 +1037,7 @@ views:
                 icon: mdi:wall-sconce-flat-outline
               - type: custom:button-card
                 template: wohnen_toggle_card
-                entity: light.licht_wohnzimmer_haupt
+                entity: light.licht_wohnzimmer
                 name: Hauptlicht
                 icon: mdi:ceiling-light
               - type: custom:button-card
@@ -1165,7 +1165,7 @@ views:
             cards:
               - type: custom:button-card
                 template: scene_action_card
-                entity: scene.heizung_manual_19deg
+                entity: scene.manuel_heizung_19deg
                 name: 19°
                 label: Heizung manuell
                 icon: mdi:home-thermometer-outline
@@ -1173,10 +1173,10 @@ views:
                   action: call-service
                   service: scene.turn_on
                   target:
-                    entity_id: scene.heizung_manual_19deg
+                    entity_id: scene.manuel_heizung_19deg
               - type: custom:button-card
                 template: scene_action_card
-                entity: scene.heizung_manual_21deg
+                entity: scene.manuel_heizung_21deg
                 name: 21°
                 label: Heizung manuell
                 icon: mdi:home-thermometer
@@ -1184,10 +1184,10 @@ views:
                   action: call-service
                   service: scene.turn_on
                   target:
-                    entity_id: scene.heizung_manual_21deg
+                    entity_id: scene.manuel_heizung_21deg
               - type: custom:button-card
                 template: scene_action_card
-                entity: scene.heizung_manual_23deg
+                entity: scene.manuel_heizung_23deg
                 name: 23°
                 label: Heizung manuell
                 icon: mdi:home-thermometer
@@ -1195,7 +1195,7 @@ views:
                   action: call-service
                   service: scene.turn_on
                   target:
-                    entity_id: scene.heizung_manual_23deg
+                    entity_id: scene.manuel_heizung_23deg
           - type: heading
             heading: Bäder
           - type: grid
@@ -1204,7 +1204,7 @@ views:
             cards:
               - type: custom:button-card
                 template: scene_action_card
-                entity: scene.baeder_manual_21deg
+                entity: scene.baeder_21deg
                 name: 21°
                 label: Bäder
                 icon: mdi:shower
@@ -1212,10 +1212,10 @@ views:
                   action: call-service
                   service: scene.turn_on
                   target:
-                    entity_id: scene.baeder_manual_21deg
+                    entity_id: scene.baeder_21deg
               - type: custom:button-card
                 template: scene_action_card
-                entity: scene.baeder_manua_23deg
+                entity: scene.baeder_23deg
                 name: 23°
                 label: Bäder
                 icon: mdi:shower
@@ -1223,7 +1223,7 @@ views:
                   action: call-service
                   service: scene.turn_on
                   target:
-                    entity_id: scene.baeder_manua_23deg
+                    entity_id: scene.baeder_23deg
       - cards:
           - type: heading
             heading: Rückmeldung
@@ -2546,7 +2546,7 @@ views:
               - entity: sensor.steckdose_balkon_debug
               - entity: binary_sensor.steckdose_saison_aktiv
               - entity: binary_sensor.dunkelheit_balkon
-              - entity: sensor.balkon_helligkeit_lux
+              - entity: sensor.balkon_lichtsensor_durchschnittliche_beleuchtungsstarke
 
   - title: Tuning
     path: steckdose-balkon-tuning

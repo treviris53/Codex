@@ -48,7 +48,7 @@ views:
           - type: tile
             entity: light.vitrinenlicht
           - type: tile
-            entity: light.licht_wohnzimmer_haupt
+            entity: light.licht_wohnzimmer
           - type: tile
             entity: light.licht_fernseher
           - type: tile
@@ -1062,7 +1062,7 @@ views:
               - entity: sensor.steckdose_balkon_debug
               - entity: binary_sensor.steckdose_saison_aktiv
               - entity: binary_sensor.dunkelheit_balkon
-              - entity: sensor.balkon_helligkeit_lux
+              - entity: sensor.balkon_lichtsensor_durchschnittliche_beleuchtungsstarke
   - title: USV
     path: usv
     icon: mdi:generator-mobile

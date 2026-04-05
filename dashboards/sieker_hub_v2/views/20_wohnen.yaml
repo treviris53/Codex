@@ -14,7 +14,7 @@
           cards:
             - type: custom:button-card
               template: wohnen_quick_card
-              entity: light.licht_wohnzimmer_haupt
+              entity: light.licht_wohnzimmer
               name: Licht
               label: Wohnen
               icon: mdi:ceiling-light

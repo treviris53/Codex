@@ -43,7 +43,7 @@
               icon: mdi:wall-sconce-flat-outline
             - type: custom:button-card
               template: wohnen_toggle_card
-              entity: light.licht_wohnzimmer_haupt
+              entity: light.licht_wohnzimmer
               name: Hauptlicht
               icon: mdi:ceiling-light
             - type: custom:button-card

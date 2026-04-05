@@ -93,4 +93,4 @@
             - entity: sensor.steckdose_balkon_debug
             - entity: binary_sensor.steckdose_saison_aktiv
             - entity: binary_sensor.dunkelheit_balkon
-            - entity: sensor.balkon_helligkeit_lux
+            - entity: sensor.balkon_lichtsensor_durchschnittliche_beleuchtungsstarke
